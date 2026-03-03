@@ -1,8 +1,14 @@
-import type { NextConfig } from "next";
+import { withStyleX } from 'stylex-webpack/next';
+import { createMDX } from 'fumadocs-mdx/next';
 
-const nextConfig: NextConfig = {
-  /* config options here */
+export default createMDX({
+  configPath: './source.config.ts'
+})(withStyleX()({
+  output: 'export',
   reactCompiler: true,
-};
-
-export default nextConfig;
+  reactStrictMode: true,
+  images: {
+    // required for static export
+    unoptimized: true
+  }
+}));
