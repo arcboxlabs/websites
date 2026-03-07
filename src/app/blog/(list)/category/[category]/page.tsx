@@ -1,20 +1,11 @@
-import { notFound } from 'next/navigation';
 import { BlogSource } from '@/blog/source';
+import BlogGrid from '../../../components/blog-grid';
+import type { Metadata } from 'next';
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
-  const posts = BlogSource.getPosts({ category });
 
-  if (!posts.length) {
-    notFound();
-  }
-
-  return (
-    <div>
-      <h1>Blog</h1>
-      {JSON.stringify(posts)}
-    </div>
-  );
+  return <BlogGrid category={category} />;
 }
 
 export function generateStaticParams() {
@@ -24,7 +15,7 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
 
   return {

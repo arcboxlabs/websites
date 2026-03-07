@@ -1,31 +1,40 @@
 export interface Author {
   id: string,
   name: string,
-  avatar?: string,
-  bio?: string,
-  twitter?: string,
-  github?: string,
-  website?: string
+  avatar: string
+  // bio?: string
+  // twitter?: string,
+  // github?: string,
+  // website?: string
 }
 
 export const authors: Record<string, Author> = {
-  john: {
-    id: 'john',
-    name: 'John Doe',
-    avatar: '/avatars/john.jpg',
-    bio: 'Software Engineer and Tech Writer',
-    twitter: '@johndoe',
-    github: 'johndoe',
-    website: 'https://johndoe.com'
+  kai: {
+    id: 'kai',
+    name: 'Kai Nakamura',
+    avatar: 'https://i.pravatar.cc/40?img=11'
+    // bio: 'Software Engineer and Tech Writer'
+    // twitter: '@kai',
+    // github: 'kai',
+    // website: 'https://kai.com'
   },
-  jane: {
-    id: 'jane',
-    name: 'Jane Smith',
-    avatar: '/avatars/jane.jpg',
-    bio: 'UI/UX Designer and Frontend Developer',
-    twitter: '@janesmith',
-    github: 'janesmith',
-    website: 'https://janesmith.com'
+  elias: {
+    id: 'elias',
+    name: 'Elias Brandt',
+    avatar: 'https://i.pravatar.cc/40?img=15'
+    // bio: 'Software Engineer'
+    // twitter: '@elias',
+    // github: 'elias',
+    // website: 'https://elias.com'
+  },
+  priya: {
+    id: 'priya',
+    name: 'Priya Sharma',
+    avatar: 'https://i.pravatar.cc/40?img=5'
+    // bio: 'Product and Engineering Lead'
+    // twitter: '@priya',
+    // github: 'priya',
+    // website: 'https://priya.com'
   }
 };
 
