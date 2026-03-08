@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "prepare": "fumadocs-mdx",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
