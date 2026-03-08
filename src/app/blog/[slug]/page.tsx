@@ -1,5 +1,11 @@
-import { BlogSource } from '@/blog/source';
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import { BlogSource } from '@/blog/source';
+import { getAuthor } from '../../../../content/blog-authors';
+import type { Author } from '../../../../content/blog-authors';
+import { BlogAside } from './components/blog-aside';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -11,12 +17,113 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   const MDXContent = post.data.body;
+  const postAuthors = post.data.author
+    .reduce((acc: Author[], id) => {
+      if (!id) return acc;
+      const author = getAuthor(id);
+      if (author) {
+        acc.push(author);
+      }
+      return acc;
+    }, []);
 
   return (
-    <div>
-      <h1>{post.data.title}</h1>
-      <MDXContent />
-    </div>
+    <>
+      {/* <div className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <Link
+            href="/blog"
+            className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            All Posts
+          </Link>
+        </div>
+      </div> */}
+
+      {/* Hero image — full width */}
+      {post.data.cover && (
+        <div className="relative h-85 w-full overflow-hidden md:h-105 lg:h-125 xl:h-140">
+          <Image
+            src={post.data.cover}
+            alt={post.data.title}
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-background via-background/30 to-transparent" />
+        </div>
+      )}
+
+      {/* Main layout */}
+      <div className="mx-auto max-w-6xl px-4 pb-24">
+        {/* Header block — sits above two columns */}
+        <div className="border-b border-border py-8 md:py-10">
+          {/* Category */}
+          {post.data.category && (
+            <Link href={`/blog/category/${post.data.category}`} className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-accent">
+              [{post.data.category}]
+            </Link>
+          )}
+
+          {/* Title */}
+          <h1 className="max-w-3xl text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+            {post.data.title}
+          </h1>
+
+          {/* Date + read time */}
+          <p className="mt-3 text-sm text-muted-foreground">
+            {post.data.date}
+          </p>
+
+          {/* Authors */}
+          {postAuthors.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-4">
+              {postAuthors.map((author) => (
+                <div key={author.id} className="flex items-center gap-3">
+                  <Image
+                    src={author.avatar}
+                    alt={author.name}
+                    width={38}
+                    height={38}
+                    className="rounded-full ring-2 ring-border"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{author.name}</p>
+                    <p className="text-xs text-muted-foreground">{post.data.category}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Two-column: content + sidebar */}
+        <div className="mt-10 flex gap-16">
+          {/* Main content */}
+          <article className="min-w-0 flex-1">
+            <div className="prose prose-invert max-w-none">
+              <MDXContent />
+            </div>
+
+            {/* Back link at bottom */}
+            <div className="mt-16 border-t border-border pt-8">
+              <Link
+                href="/blog"
+                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to all posts
+              </Link>
+            </div>
+          </article>
+          <BlogAside
+            toc={post.data.toc.filter((item) => item.depth <= 2)}
+            fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 

@@ -12,8 +12,7 @@ import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
 const DEFAULT_LINKS = [
-  { href: '#features', label: 'Features' },
-  { href: '#speed', label: 'Performance' },
+  { href: '/', label: 'ArcBox Desktop' },
   { href: '/blog', label: 'Blog' },
   { href: 'https://docs.arcbox.dev', label: 'Docs', external: true }
 ];

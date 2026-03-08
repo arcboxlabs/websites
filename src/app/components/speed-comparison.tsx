@@ -1,7 +1,5 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import { Zap } from 'lucide-react';
+import { ComparisonRow } from './comparison-row';
 
 const comparisons = [
   {
@@ -31,27 +29,9 @@ const comparisons = [
 ];
 
 export function SpeedComparison() {
-  const [animated, setAnimated] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setAnimated(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const element = document.getElementById('speed-section');
-    if (element) observer.observe(element);
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section id="speed" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="mb-16 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
             <Zap className="h-4 w-4" />
@@ -71,7 +51,6 @@ export function SpeedComparison() {
         </div>
 
         <div
-          id="speed-section"
           className="overflow-hidden rounded-2xl border border-border bg-card"
         >
           {/* Header */}
@@ -85,64 +64,16 @@ export function SpeedComparison() {
 
           {/* Comparison rows */}
           <div className="divide-y divide-border">
-            {comparisons.map((item, index) => {
-              const arcboxPercentage = 15;
-              const dockerPercentage = Math.min(
-                (item.docker / item.docker) * 100,
-                100
-              );
-              const improvement = Math.round(item.docker / item.arcbox);
-
-              return (
-                <div
-                  key={item.task}
-                  className="grid grid-cols-3 items-center px-6 py-6"
-                >
-                  <div>
-                    <span className="font-medium text-foreground">
-                      {item.task}
-                    </span>
-                    <span className="ml-2 rounded bg-accent/10 px-2 py-0.5 text-xs text-accent">
-                      {improvement}x faster
-                    </span>
-                  </div>
-
-                  {/* ArcBox bar */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="h-2 w-full max-w-32 overflow-hidden rounded-full bg-secondary">
-                      <div
-                        className="h-full rounded-full bg-accent transition-all duration-1000 ease-out"
-                        style={{
-                          width: animated ? `${arcboxPercentage}%` : '0%',
-                          transitionDelay: `${index * 100}ms`
-                        }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-accent">
-                      {item.arcbox}
-                      {item.unit}
-                    </span>
-                  </div>
-
-                  {/* Docker bar */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="h-2 w-full max-w-32 overflow-hidden rounded-full bg-secondary">
-                      <div
-                        className="h-full rounded-full bg-muted-foreground/50 transition-all duration-1000 ease-out"
-                        style={{
-                          width: animated ? `${dockerPercentage}%` : '0%',
-                          transitionDelay: `${index * 100}ms`
-                        }}
-                      />
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {item.docker}
-                      {item.unit}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+            {comparisons.map((item, index) => (
+              <ComparisonRow
+                key={item.task}
+                task={item.task}
+                arcbox={item.arcbox}
+                docker={item.docker}
+                unit={item.unit}
+                index={index}
+              />
+            ))}
           </div>
 
           {/* Footer note */}

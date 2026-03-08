@@ -5,7 +5,7 @@ import { Github, ExternalLink } from 'lucide-react';
 export function OpenSourceSection() {
   return (
     <section className="px-4 py-20 md:px-6 md:py-28">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           {/* Left side - Text content */}
           <div>

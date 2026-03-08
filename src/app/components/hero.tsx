@@ -6,7 +6,7 @@ import { createFixedArray } from 'foxact/create-fixed-array';
 export function Hero() {
   return (
     <section className="relative px-4 pt-28 pb-12 md:px-6 md:pt-32 md:pb-16 lg:pt-36">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-6xl">
         {/* Hero Card Container */}
         <div className="relative overflow-hidden rounded-4xl md:rounded-[2.5rem] border border-border bg-card">
           {/* Grid texture background */}
