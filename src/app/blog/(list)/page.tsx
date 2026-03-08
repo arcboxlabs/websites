@@ -1,15 +1,8 @@
-import { BlogSource } from '@/blog/source';
 import type { Metadata } from 'next';
+import BlogGrid from '../components/blog-grid';
 
-export default function BlogPage() {
-  const posts = BlogSource.getPosts();
-
-  return (
-    <div>
-      <h1>Blog</h1>
-      {JSON.stringify(posts)}
-    </div>
-  );
+export default function BlogHomePage() {
+  return <BlogGrid />;
 }
 
 export function generateMetadata() {

@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# fumadocs
+# https://www.fumadocs.dev/blog/mdx-v10-summary#:~:text=You%20can%20add%20it%20to%20.gitignore
+.source
