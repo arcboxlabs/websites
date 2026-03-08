@@ -2,7 +2,7 @@ import { Shield, Lock, Eye, Terminal } from 'lucide-react';
 
 export function AIIsolationSection() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative px-4 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Content */}

@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       )}
 
       {/* Main layout */}
-      <div className="mx-auto max-w-6xl px-4 pb-24">
+      <div className="mx-auto max-w-6xl px-4">
         {/* Header block — sits above two columns */}
         <div className="border-b border-border py-8 md:py-10">
           {/* Category */}
@@ -123,10 +123,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
           />
         </div>
-
-        {/** CTA */}
-        <CTASection />
       </div>
+      {/** CTA */}
+      <CTASection className="pt-12" />
     </>
   );
 }

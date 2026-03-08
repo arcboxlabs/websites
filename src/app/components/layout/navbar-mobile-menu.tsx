@@ -37,7 +37,7 @@ export default function NavbarMobileMenu({ links }: NavbarMobileMenuProps) {
       <DropdownMenuPortal container={portalTarget}>
         <DropdownMenuContent
           align="end"
-          className="mt-8 mx-4 rounded-2xl border border-border/50 bg-secondary/90 p-4 backdrop-blur-xl z-50"
+          className="mt-8 mx-4 rounded-2xl border border-border bg-secondary/90 p-4 backdrop-blur-xl z-50"
         >
           <nav className="flex flex-col gap-3">
             {links.map((link) => (

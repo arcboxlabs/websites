@@ -26,7 +26,7 @@ const isolationFeatures = [
 
 export function OpenClawSection() {
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-12 md:py-16 px-4">
       <div className="mx-auto max-w-6xl">
         {/* Pill card split layout */}
         <div className="overflow-hidden rounded-3xl border border-border bg-card min-h-120 flex flex-col lg:flex-row">

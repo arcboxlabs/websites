@@ -4,7 +4,7 @@ import { createFixedArray } from 'foxact/create-fixed-array';
 
 export function FeatureCards() {
   return (
-    <section id="features" className="relative py-24 md:py-32">
+    <section className="relative py-24 md:py-32 px-4">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <p className="text-sm text-muted-foreground mb-3">

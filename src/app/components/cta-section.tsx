@@ -2,10 +2,13 @@ import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
+import { cn } from '@/lib/utils';
 
-export function CTASection() {
+export interface CTASectionProps extends Omit<React.ComponentProps<'section'>, 'children'> {}
+
+export function CTASection({ className, ...props }: CTASectionProps) {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section className={cn('relative py-24 md:py-32 overflow-hidden px-4', className)} {...props}>
       <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-3xl border border-border bg-linear-to-b from-secondary to-card">
           {/* Subtle gradient overlay */}
