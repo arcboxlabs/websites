@@ -6,6 +6,7 @@ import { BlogSource } from '@/blog/source';
 import { getAuthor } from '../../../../content/blog-authors';
 import type { Author } from '../../../../content/blog-authors';
 import { BlogAside } from './components/blog-aside';
+import { CTASection } from '../../components/cta-section';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -122,6 +123,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
           />
         </div>
+
+        {/** CTA */}
+        <CTASection />
       </div>
     </>
   );

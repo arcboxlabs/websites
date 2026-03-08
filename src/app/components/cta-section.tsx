@@ -5,8 +5,8 @@ import { createFixedArray } from 'foxact/create-fixed-array';
 
 export function CTASection() {
   return (
-    <section id="download" className="relative py-24 md:py-32 overflow-hidden">
-      <div className="mx-auto max-w-6xl px-6">
+    <section className="relative py-24 md:py-32 overflow-hidden">
+      <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-3xl border border-border bg-linear-to-b from-secondary to-card">
           {/* Subtle gradient overlay */}
           <div className="absolute inset-0 bg-linear-to-br from-accent/5 via-transparent to-accent/5" />
