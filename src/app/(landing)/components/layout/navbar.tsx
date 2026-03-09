@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/ui/button';
 import { Download } from 'lucide-react';
-import { Github, Twitter } from 'lucide-react';
+import { Github } from 'lucide-react';
 import HeaderScrollContainer from './header-scroll-container';
 import { lazy, Suspense } from 'react';
 import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
+import ArcBoxLogo from '@/components/arcbox-logo';
 
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
@@ -27,13 +27,14 @@ export function Header() {
       <HeaderScrollContainer>
         <div className="flex h-14 items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image
+            {/* <Image
               src="/arcbox-logo.png"
               alt="ArcBox"
               width={28}
               height={28}
               className="rounded-lg"
-            />
+            /> */}
+            <ArcBoxLogo width={28} height={28} />
             <span className="text-base font-semibold text-foreground">
               ArcBox
             </span>
@@ -63,14 +64,14 @@ export function Header() {
               className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
             >
               <Link
-                href="https://github.com/arcbox-dev"
+                href="https://github.com/arcboxlabs"
                 target="_blank"
                 aria-label="GitHub"
               >
                 <Github className="h-4 w-4" />
               </Link>
             </Button>
-            <Button
+            {/* <Button
               size="icon"
               variant="ghost"
               asChild
@@ -83,7 +84,7 @@ export function Header() {
               >
                 <Twitter className="h-4 w-4" />
               </Link>
-            </Button>
+            </Button> */}
             <div className="mx-2 h-4 w-px bg-border" />
             <Button
               size="sm"

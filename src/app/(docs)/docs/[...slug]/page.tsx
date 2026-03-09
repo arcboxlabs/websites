@@ -5,7 +5,7 @@ import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { LLMCopyButton, ViewOptions } from '@docs/components/ai/page-actions';
-import { gitConfig } from '@docs/lib/layout.shared';
+import { gitConfig } from '@/app/(docs)/lib/layout.shared';
 
 export default async function Page(props: PageProps<'/docs/[...slug]'>) {
   const params = await props.params;
@@ -20,8 +20,10 @@ export default async function Page(props: PageProps<'/docs/[...slug]'>) {
       toc={page.data.toc}
       full={page.data.full}
       tableOfContent={{
-        style: 'clerk'
+        style: 'normal'
+        // single: true
       }}
+      className="xl:pt-12"
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
