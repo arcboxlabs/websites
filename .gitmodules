@@ -1,0 +1,4 @@
+[submodule "content/docs"]
+	path = content/docs
+	# https://stackoverflow.com/a/79573044/10494038
+	url = ../docs.git

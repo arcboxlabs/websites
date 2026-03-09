@@ -8,6 +8,8 @@
     "moduleResolution": "bundler",
     "paths": {
       "@/*": ["./src/*"],
+      "@landing/*": ["./src/app/(landing)/*"],
+      "@docs/*": ["./src/app/(docs)/*"],
       "fumadocs-mdx-collections/*": ["./.source/*"]
     },
     "resolveJsonModule": true,
@@ -28,8 +30,8 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "source.config.ts",
     "content/**/*.ts",
-    "mdx-components.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
