@@ -6,6 +6,8 @@ import '@landing/styles/global.css';
 import Layout from './components/layout';
 import { NavbarMobileMenuPortalProvider } from './contexts/navbar-mobile-menu-portal';
 import { landingOpenGraph, createTwitter } from '@/lib/metadata';
+import { akkurat, akkuratMono } from '../fonts';
+import clsx from 'clsx';
 // import 'stylex-webpack/stylex.css';
 
 export const metadata: Metadata = {
@@ -36,7 +38,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
+      <body
+        suppressHydrationWarning={process.env.NODE_ENV !== 'production'}
+        className={clsx(akkurat.variable, akkuratMono.variable, 'font-sans')}
+      >
         <NavbarMobileMenuPortalProvider id="global-navbar-mobile-menu-portal">
           <Layout>
             {children}
