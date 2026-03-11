@@ -106,7 +106,7 @@ export function Hero() {
                 </div>
 
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Requires at least macOS 14 on Apple Silicon
+                  Requires macOS 14+ on Apple Silicon
                 </p>
               </div>
             </div>
