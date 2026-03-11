@@ -7,7 +7,7 @@ import Layout from './components/layout';
 import { NavbarMobileMenuPortalProvider } from './contexts/navbar-mobile-menu-portal';
 import { landingOpenGraph, createTwitter } from '@/lib/metadata';
 import { akkurat, akkuratMono } from '../fonts';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 // import 'stylex-webpack/stylex.css';
 
 export const metadata: Metadata = {
@@ -32,7 +32,15 @@ export const metadata: Metadata = {
     description: 'The blazing-fast Docker Desktop alternative built natively for Apple Silicon.',
     images: ['/arcbox-logo.png']
   }),
-  alternates: { canonical: 'https://arcbox.dev' }
+  alternates: { canonical: 'https://arcbox.dev' },
+  icons: {
+    icon: [
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' }
+    ],
+    apple: '/apple-icon.png'
+  }
 };
 
 export default function RootLayout({ children }: React.PropsWithChildren) {

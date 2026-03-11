@@ -1,46 +1,43 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, Code2, GitCommitHorizontal, Users, TerminalSquare } from 'lucide-react';
 
 export function OpenSourceSection() {
   return (
-    <section className="px-4 py-20 md:px-6 md:py-28">
+    <section className="relative px-4 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-          {/* Left side - Text content */}
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Content */}
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
               <Github className="h-4 w-4" />
               <span>Open Source</span>
             </div>
 
-            <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+            <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               Fully open-source.
               <br />
-              <span className="text-muted-foreground">Not just a README.</span>
+              <span className="text-muted-foreground">
+                Not just a README.
+              </span>
             </h2>
 
-            <div className="mt-6 space-y-4 text-muted-foreground">
-              <p className="text-lg leading-relaxed">
-                Some projects call themselves "open source" while only hosting a
-                README, a few screenshots, and an issue template on GitHub.{' '}
-                <span className="text-foreground font-medium">
-                  That's not open source—that's a landing page.
-                </span>
-              </p>
-              <p className="text-lg leading-relaxed">
-                ArcBox Desktop is{' '}
-                <span className="text-foreground font-medium">
-                  truly open source
-                </span>.
-                {' '}
-                Every line of code, every build script, every test—it's all on
-                GitHub. Fork it, audit it, contribute to it.
-              </p>
-            </div>
+            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+              Some projects call themselves "open source" while only hosting a
+              README, a few screenshots, and an issue template on GitHub.{' '}
+              <span className="text-foreground font-medium">
+                That's not open source—that's a landing page.
+              </span>
+              {' '}ArcBox Desktop is{' '}
+              <span className="text-foreground font-medium">
+                truly open source
+              </span>.
+              {' '}Every line of code, every build script, every test—it's all on
+              GitHub. Fork it, audit it, contribute to it.
+            </p>
 
             {/* Stats/badges row */}
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mb-8 flex flex-wrap items-center gap-3">
               {/* MIT License badge */}
               <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm">
                 <svg
@@ -67,106 +64,52 @@ export function OpenSourceSection() {
                 </svg>
                 <span className="text-foreground font-medium">OSI Approved</span>
               </div>
-
-              {/* GitHub stars placeholder */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5 text-accent"
-                  fill="currentColor"
-                >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                <span className="text-foreground font-medium">2.4k Stars</span>
-              </div>
             </div>
 
-            {/* Key points */}
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 text-accent"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M9 12l2 2 4-4" />
-                    <circle cx="12" cy="12" r="10" />
-                  </svg>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                {
+                  icon: Code2,
+                  title: 'Full source code',
+                  desc: 'Not just binaries or a README'
+                },
+                {
+                  icon: GitCommitHorizontal,
+                  title: 'Actively maintained',
+                  desc: 'Weekly commits, fast issue response'
+                },
+                {
+                  icon: Users,
+                  title: 'Open contributions',
+                  desc: 'PRs welcome, community-driven'
+                },
+                {
+                  icon: TerminalSquare,
+                  title: 'Battery included',
+                  desc: 'Tests, docs, and build scripts'
+                }
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="flex items-start gap-3 rounded-xl bg-secondary/60 border border-border/50 p-4"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                    <item.icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">Full source code</p>
-                  <p className="text-sm text-muted-foreground">
-                    Not just binaries or a README
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 text-accent"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M9 12l2 2 4-4" />
-                    <circle cx="12" cy="12" r="10" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Actively maintained</p>
-                  <p className="text-sm text-muted-foreground">
-                    Weekly commits, fast issue response
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 text-accent"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M9 12l2 2 4-4" />
-                    <circle cx="12" cy="12" r="10" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Open contributions</p>
-                  <p className="text-sm text-muted-foreground">
-                    PRs welcome, community-driven
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 text-accent"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M9 12l2 2 4-4" />
-                    <circle cx="12" cy="12" r="10" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Battery included</p>
-                  <p className="text-sm text-muted-foreground">
-                    Tests, docs, and build scripts
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* CTA */}
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button
                 size="lg"
                 asChild
@@ -197,26 +140,24 @@ export function OpenSourceSection() {
             </div>
           </div>
 
-          {/* Right side - Visual card */}
+          {/* Visual card */}
           <div className="relative">
-            <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
               {/* GitHub-style header */}
-              <div className="border-b border-border bg-secondary/50 px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <Github className="h-6 w-6 text-foreground" />
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      arcbox-dev/arcbox-desktop
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Public repository
-                    </p>
-                  </div>
+              <div className="flex items-center gap-3 border-b border-border bg-secondary/80 px-6 py-4">
+                <Github className="h-6 w-6 text-foreground" />
+                <div>
+                  <p className="font-semibold text-foreground">
+                    arcbox-dev/arcbox-desktop
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Public repository
+                  </p>
                 </div>
               </div>
 
               {/* Fake file tree */}
-              <div className="p-6">
+              <div className="bg-background/50 p-6">
                 <div className="space-y-2 font-mono text-sm">
                   {[
                     { name: 'src/', type: 'folder', highlight: true },
@@ -289,7 +230,7 @@ export function OpenSourceSection() {
                         key={commit.msg + '|' + commit.time}
                         className="flex items-center justify-between text-sm"
                       >
-                        <span className="text-muted-foreground truncate max-w-[70%]">
+                         <span className="text-muted-foreground truncate max-w-[70%]">
                           {commit.msg}
                         </span>
                         <span className="text-xs text-muted-foreground/70">
@@ -303,7 +244,7 @@ export function OpenSourceSection() {
             </div>
 
             {/* Glow effect */}
-            <div className="absolute -inset-4 -z-10 rounded-4xl bg-accent/5 blur-2xl" />
+            <div className="absolute -inset-4 -z-10 rounded-3xl bg-accent/5 blur-2xl" />
           </div>
         </div>
       </div>

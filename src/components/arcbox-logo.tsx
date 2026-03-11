@@ -1,81 +1,32 @@
 export default function ArcBoxLogo(props: React.ComponentProps<'svg'>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="16 16 480 480" {...props}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={119}
+      height={128}
+      fill="none"
+      viewBox="0 0 119 128"
+      {...props}
+    >
+      <g clipPath="url(#a)">
+        <path
+          fill="currentColor"
+          d="M65.937 66.115c-2.235 1.29-3.857 4.1-3.858 6.682v49.341c0 2.22.96 4.045 2.632 5.006.77.443 1.621.662 2.503.662.486 0 .982-.073 1.479-.206V64.524l-2.756 1.591Zm8.423-4.863v63.245h.136l6.477-3.766V57.433l-6.614 3.82Z"
+        />
+        <path
+          fill="#B94D2D"
+          d="M93.254 90.436c.121-21.938 3.67-35.812 7.332-44.328l-8.94 5.163c-3.239 10.665-4.92 23.767-5.006 39.129-.047 8.585-.008 24.355-.001 27.037l6.605-3.84c-.012-5.901-.026-16.624.01-23.16Zm25.07-35.476.03-9.547c0-.03-.004-.056-.005-.085-8.517 7.935-19.43 22.882-19.43 47.394v17.575l6.614-3.846v-13.73c0-17.889 6.384-30.05 12.791-37.76Z"
+        />
+        <path
+          fill="currentColor"
+          d="M51.14 127.806c-1.035 0-2.111-.303-3.147-.905L3.989 101.317C1.773 100.029.16 97.234.151 94.671L0 45.413c-.007-2.22.946-4.048 2.615-5.016 1.67-.966 3.73-.884 5.652.225l44.15 25.493c2.235 1.29 3.858 4.1 3.858 6.683v49.338c0 2.22-.959 4.045-2.631 5.007a4.975 4.975 0 0 1-2.503.663ZM6.625 47.311l.141 47.34c.02.252.34.805.56.955L49.66 120.22V72.797c-.019-.255-.339-.81-.562-.96L6.624 47.311Zm52.552 14.975c-1.37 0-2.74-.323-3.858-.968l-44.15-25.492c-1.923-1.11-3.024-2.854-3.02-4.783.003-1.929 1.109-3.668 3.035-4.772L55.339.956c2.224-1.275 5.453-1.275 7.677 0l44.154 25.315c1.926 1.104 3.033 2.843 3.036 4.772.003 1.929-1.098 3.672-3.021 4.782l-44.15 25.493c-1.117.645-2.488.968-3.858.968Zm.548-55.592c-.23-.11-.868-.11-1.107.006L16.14 31.054 58.626 55.59c.232.112.873.113 1.113-.006l42.479-24.528L59.725 6.694Z"
+        />
+      </g>
       <defs>
-        <linearGradient id="c" x1="0%" x2="0%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#ffc89a" />
-          <stop offset="20%" stopColor="#ff8c4a" />
-          <stop offset="45%" stopColor="#e86518" />
-          <stop offset="75%" stopColor="#c04a0c" />
-          <stop offset="100%" stopColor="#8a3000" />
-        </linearGradient>
-        <linearGradient id="d" x1="0%" x2="0%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#fff" stopOpacity={0.7} />
-          <stop offset="40%" stopColor="#fff" stopOpacity={0.1} />
-          <stop offset="100%" stopColor="#fff" stopOpacity={0} />
-        </linearGradient>
-        <filter id="e" width="140%" height="140%" x="-20%" y="-20%">
-          <feGaussianBlur stdDeviation={3} />
-        </filter>
-        <filter id="b" width="200%" height="200%" x="-50%" y="-50%">
-          <feGaussianBlur stdDeviation={15} />
-        </filter>
-        <radialGradient id="a" cx="30%" cy="25%" r="75%">
-          <stop offset="0%" stopColor="#fff0e8" />
-          <stop offset="100%" stopColor="#fddaca" />
-        </radialGradient>
+        <clipPath id="a">
+          <path fill="#fff" d="M0 0h118.354v127.806H0z" />
+        </clipPath>
       </defs>
-      <rect
-        width={480}
-        height={480}
-        x={16}
-        y={16}
-        fill="url(#a)"
-        rx={96}
-        ry={96}
-      />
-      <ellipse
-        cx={170}
-        cy={140}
-        fill="#fff"
-        filter="url(#b)"
-        opacity={0.3}
-        rx={140}
-        ry={90}
-      />
-      <path
-        fill="none"
-        stroke="#a04010"
-        strokeLinecap="round"
-        strokeWidth={55}
-        d="M78 335q178-260 356 0"
-        filter="url(#b)"
-        opacity={0.15}
-      />
-      <path
-        fill="none"
-        stroke="url(#c)"
-        strokeLinecap="round"
-        strokeWidth={54}
-        d="M75 320q181-265 362 0"
-      />
-      <path
-        fill="none"
-        stroke="url(#d)"
-        strokeLinecap="round"
-        strokeWidth={40}
-        d="M80 315q176-257 352 0"
-        filter="url(#e)"
-      />
-      <path
-        fill="none"
-        stroke="#fff"
-        strokeLinecap="round"
-        strokeWidth={6}
-        d="M110 300q146-215 292 0"
-        filter="url(#e)"
-        opacity={0.7}
-      />
     </svg>
   );
 }
