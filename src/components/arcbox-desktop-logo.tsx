@@ -1,4 +1,4 @@
-export default function ArcBoxLogo(props: React.ComponentProps<'svg'>) {
+export default function ArcBoxDesktopLogo(props: React.ComponentProps<'svg'>) {
   // Use a stable, unique ID prefix for SVG components rendered multiple times
   const id = 'arcbox-desktop-logo';
 
