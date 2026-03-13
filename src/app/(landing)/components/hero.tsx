@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight, Apple } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
@@ -19,35 +22,64 @@ export function Hero() {
             }}
           />
 
-          {/* Decorative arc pattern - reflecting logo */}
-          <div className="absolute top-8 right-8 md:top-12 md:right-12 lg:top-16 lg:right-20">
+          {/* Decorative animated lines - reflecting logo soul */}
+          <div 
+            className="absolute inset-0 pointer-events-none overflow-hidden opacity-75 z-0"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)'
+            }}
+          >
             <svg
-              width="320"
-              height="200"
-              viewBox="0 0 320 200"
-              className="text-accent opacity-30 hidden md:block"
+              className="w-full h-full hidden md:block"
+              viewBox="0 0 1000 800"
+              preserveAspectRatio="xMaxYMid slice"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Dotted arc pattern like the logo */}
-              {createFixedArray(12).map((rowIndex) => {
-                const radius = 80 + rowIndex * 12;
-                const dots = Math.floor(radius * 0.3);
-                return createFixedArray(dots).map((dotIndex) => {
-                  const angle = (Math.PI * dotIndex) / (dots - 1);
-                  const x = 160 + radius * Math.cos(angle);
-                  const y = 180 - radius * Math.sin(angle);
-                  const opacity = 1 - rowIndex * 0.06;
-                  return (
-                    <circle
-                      key={`${rowIndex}-${dotIndex}`}
-                      cx={x}
-                      cy={y}
-                      r={2.5 - rowIndex * 0.1}
-                      fill="currentColor"
-                      opacity={opacity}
-                    />
-                  );
-                });
-              })}
+              {/* Line 1: Leftmost, Straight, Black/Muted */}
+              <motion.path
+                d="M 680 1000 L 680 -200"
+                stroke="currentColor"
+                strokeWidth="52"
+                className="text-foreground blur-sm"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.1 }}
+                transition={{ duration: 1.5, ease: 'easeOut', delay: 0 }}
+              />
+              
+              {/* Line 2: Center-Left, Straight, Black/Muted */}
+              <motion.path
+                d="M 760 1000 L 760 -200"
+                stroke="currentColor"
+                strokeWidth="48"
+                className="text-foreground blur-sm"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.15 }}
+                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
+              />
+              
+              {/* Line 3: Center-Right, Slightly Curved, Orange/Accent */}
+              <motion.path
+                d="M 840 1000 L 840 400 Q 840 150, 940 -200"
+                stroke="currentColor"
+                strokeWidth="44"
+                className="text-accent blur-xs"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.3 }}
+                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
+              />
+              
+              {/* Line 4: Rightmost, Curved from 25%, Orange/Accent */}
+              <motion.path
+                d="M 920 1000 L 920 400 Q 920 -50, 1400 -200"
+                stroke="currentColor"
+                strokeWidth="44"
+                className="text-accent blur-xs"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.3 }}
+                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.6 }}
+              />
             </svg>
           </div>
 
@@ -132,7 +164,7 @@ export function Hero() {
               <div className="flex-1 md:w-[72%] lg:w-[70%] overflow-hidden rounded-tl-2xl border-t border-l border-border/60 shadow-2xl">
                 {/* Window chrome */}
                 <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-4 py-2.5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#473433]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
                   <span className="ml-3 text-xs text-muted-foreground">
