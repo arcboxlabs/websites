@@ -14,5 +14,16 @@ export default function DocsLayout({ children }: React.PropsWithChildren) {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://arcbox.dev/docs')
+  title: {
+    default: 'Documentation',
+    template: '%s | ArcBox Docs'
+  },
+  description: 'Documentation for ArcBox Desktop — the blazing-fast Docker alternative for Apple Silicon.',
+  metadataBase: new URL('https://arcbox.dev'),
+  openGraph: { type: 'website', siteName: 'ArcBox', locale: 'en_US' },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@arcboxdev',
+    creator: '@arcboxdev'
+  }
 };

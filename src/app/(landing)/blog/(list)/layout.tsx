@@ -2,7 +2,7 @@ import { BlogSource } from '@/blog/cms';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AuthorAvatars } from '../components/author-avatars';
+import { AuthorAvatars } from './components/author-avatars';
 import { CategoryFilter } from '../components/category-filter';
 
 export default function BlogListLayout({ children }: React.PropsWithChildren) {

@@ -1,5 +1,5 @@
 import { BlogSource } from '@/blog/cms';
-import BlogGrid from '../../../components/blog-grid';
+import BlogGrid from '../../components/blog-grid';
 import type { Metadata } from 'next';
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
@@ -19,7 +19,15 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
 
   return {
-    title: `${category} - ArcBox Blog`,
-    description: `ArcBox Blog posts in the ${category} category`
+    title: `Category: ${category} - ArcBox Blog`,
+    description: `ArcBox Blog posts in the ${category} category`,
+    alternates: { canonical: `/blog/category/${category}` },
+    openGraph: {
+      title: `Category: ${category} - ArcBox Blog`,
+      description: `ArcBox Blog posts in the ${category} category`,
+      type: 'website',
+      url: `/blog/category/${category}`
+    },
+    twitter: { card: 'summary_large_image' }
   };
 }

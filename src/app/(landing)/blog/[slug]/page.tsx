@@ -145,8 +145,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {};
   }
 
-  const url = `https://arcbox.dev/blog/${slug}`;
-
   // Use keywords from frontmatter if available, otherwise generate from category
   const keywords =
     post.data.keywords
@@ -164,7 +162,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return acc;
       }, []),
     alternates: {
-      canonical: url
+      canonical: post.url
+    },
+    openGraph: {
+      type: 'article',
+      title: post.data.title,
+      description: post.data.description,
+      url: post.url,
+      publishedTime: post.data.date,
+      tags: keywords as string[],
+      ...(post.data.cover ? { images: [{ url: post.data.cover, alt: post.data.title }] } : {})
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.data.title,
+      description: post.data.description,
+      site: '@arcboxdev',
+      creator: '@arcboxdev',
+      ...(post.data.cover ? { images: [post.data.cover] } : {})
     }
   };
 }
