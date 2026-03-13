@@ -230,7 +230,7 @@ export function OpenSourceSection() {
                         key={commit.msg + '|' + commit.time}
                         className="flex items-center justify-between text-sm"
                       >
-                         <span className="text-muted-foreground truncate max-w-[70%]">
+                        <span className="text-muted-foreground truncate max-w-[70%]">
                           {commit.msg}
                         </span>
                         <span className="text-xs text-muted-foreground/70">

@@ -23,7 +23,7 @@ export function Hero() {
           />
 
           {/* Decorative animated lines - reflecting logo soul */}
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none overflow-hidden opacity-75 z-0"
             style={{
               maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)',
@@ -47,7 +47,7 @@ export function Hero() {
                 animate={{ pathLength: 1, opacity: 0.1 }}
                 transition={{ duration: 1.5, ease: 'easeOut', delay: 0 }}
               />
-              
+
               {/* Line 2: Center-Left, Straight, Black/Muted */}
               <motion.path
                 d="M 760 1000 L 760 -200"
@@ -58,7 +58,7 @@ export function Hero() {
                 animate={{ pathLength: 1, opacity: 0.15 }}
                 transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
               />
-              
+
               {/* Line 3: Center-Right, Slightly Curved, Orange/Accent */}
               <motion.path
                 d="M 840 1000 L 840 400 Q 840 150, 940 -200"
@@ -69,7 +69,7 @@ export function Hero() {
                 animate={{ pathLength: 1, opacity: 0.3 }}
                 transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
               />
-              
+
               {/* Line 4: Rightmost, Curved from 25%, Orange/Accent */}
               <motion.path
                 d="M 920 1000 L 920 400 Q 920 -50, 1400 -200"
