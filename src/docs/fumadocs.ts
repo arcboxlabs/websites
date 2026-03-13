@@ -4,8 +4,7 @@ import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
-  // contant/docs is the submodules, content/docs/docs is the actual content directory
-  dir: 'content/docs/docs',
+  dir: 'content/docs',
   docs: {
     schema: pageSchema,
     postprocess: {

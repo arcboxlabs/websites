@@ -1,0 +1,15 @@
+{
+  "title": "ArcBox Desktop",
+  "description": "The desktop application for ArcBox",
+  "icon": "Monitor",
+  "root": true,
+  "pages": [
+    "---Get Started---",
+    "index",
+    "install",
+    "---Learn More---",
+    "---Features---",
+    "---Docker Containers---",
+    "---Sandbox---"
+  ]
+}
