@@ -2,8 +2,13 @@ import { BlogSource } from '@/blog/cms';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AuthorAvatars } from '../components/author-avatars';
+import { AuthorAvatars } from './components/author-avatars';
 import { CategoryFilter } from '../components/category-filter';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' }
+};
 
 export default function BlogListLayout({ children }: React.PropsWithChildren) {
   const categories = BlogSource.getCategories();

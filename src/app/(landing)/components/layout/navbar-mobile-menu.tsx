@@ -47,6 +47,7 @@ export default function NavbarMobileMenu({ links }: NavbarMobileMenuProps) {
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
                   className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer outline-none"
+                  scroll
                 >
                   {link.label}
                 </Link>

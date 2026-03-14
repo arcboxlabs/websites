@@ -1,6 +1,6 @@
 import { source } from '@/docs/source';
 
-export const revalidate = false;
+export const dynamic = 'force-static';
 
 export function GET() {
   const lines: string[] = ['# Documentation', ''];
