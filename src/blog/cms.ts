@@ -1,4 +1,5 @@
 import { loader } from 'fumadocs-core/source';
+import type { InferPageType } from 'fumadocs-core/source';
 
 // has to be fumadocs-mdx-collections instead of fumadocs-mdx:collections
 // because of https://github.com/fuma-nama/fumadocs/issues/2726
@@ -8,6 +9,17 @@ const source = loader({
   baseUrl: '/blog',
   source: blog.toFumadocsSource()
 });
+
+export type BlogPage = InferPageType<typeof source>;
+
+export function getPostImage(post: BlogPage) {
+  const slug = post.slugs[0];
+  return {
+    // e.g. 'my-post.png' — for use in Next.js generateStaticParams
+    slug: `${slug}.png`,
+    url: `/og/blog/${slug}.png`
+  };
+}
 
 export const BlogSource = {
   /**

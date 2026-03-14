@@ -21,7 +21,13 @@ export const source = loader({
 });
 
 export function getPageImage(page: InferPageType<typeof source>) {
-  const segments = [...page.slugs, 'image.webp'];
+  // Embed the extension directly into the last slug segment, e.g.
+  // ['intro', 'installation'] → ['intro', 'installation.png']
+  // so the OG URL is /og/docs/intro/installation.png
+  const segments = [
+    ...page.slugs.slice(0, -1),
+    `${page.slugs.at(-1)}.png`
+  ];
 
   return {
     segments,
