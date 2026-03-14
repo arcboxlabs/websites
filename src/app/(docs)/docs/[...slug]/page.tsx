@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { LLMCopyButton, ViewOptions } from '@docs/components/ai/page-actions';
 import { gitConfig } from '@/app/(docs)/lib/layout.shared';
 
@@ -60,14 +61,12 @@ export async function generateMetadata(props: PageProps<'/docs/[...slug]'>): Pro
   return {
     title: page.data.title,
     description: page.data.description,
-    openGraph: {
+    openGraph: docsOpenGraph({
+      title: page.data.title,
+      description: page.data.description,
       images: imageUrl
-    },
-    twitter: {
-      card: 'summary_large_image', images: imageUrl,
-      site: '@arcboxdev',
-      creator: '@arcboxdev'
-    },
+    }),
+    twitter: createTwitter({ images: imageUrl }),
     alternates: {
       canonical: page.url
     }

@@ -1,6 +1,7 @@
 import { BlogSource } from '@/blog/cms';
 import BlogGrid from '../../components/blog-grid';
 import type { Metadata } from 'next';
+import { blogOpenGraph, createTwitter } from '@/lib/metadata';
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
@@ -17,17 +18,20 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
+  const title = `Category: ${category}`; // rendered as "Category: X | ArcBox Blog" via layout template
+  const ogTitle = `${category} — ArcBox Blog`;
+  const description = `ArcBox Blog posts in the ${category} category`;
 
   return {
-    title: `Category: ${category} - ArcBox Blog`,
-    description: `ArcBox Blog posts in the ${category} category`,
+    title,
+    description,
     alternates: { canonical: `/blog/category/${category}` },
-    openGraph: {
-      title: `Category: ${category} - ArcBox Blog`,
-      description: `ArcBox Blog posts in the ${category} category`,
+    openGraph: blogOpenGraph({
+      title: ogTitle,
+      description,
       type: 'website',
       url: `/blog/category/${category}`
-    },
-    twitter: { card: 'summary_large_image' }
+    }),
+    twitter: createTwitter({ title: ogTitle, description })
   };
 }

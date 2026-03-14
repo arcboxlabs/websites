@@ -2,11 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { BlogSource } from '@/blog/cms';
+import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
 import { BlogAside } from './components/blog-aside';
 import { CTASection } from '../../components/cta-section';
+import type { Metadata } from 'next';
+import { isNonNullish } from 'foxts/guard';
+import { blogOpenGraph, createTwitter } from '@/lib/metadata';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -137,7 +140,7 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = BlogSource.getPost(slug);
 
@@ -148,7 +151,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Use keywords from frontmatter if available, otherwise generate from category
   const keywords =
     post.data.keywords
-    || [post.data.category, 'ArcBox', 'web development', 'technology', 'blog', 'AI Agent'].filter(Boolean);
+    || [post.data.category, 'ArcBox', 'web development', 'technology', 'blog', 'AI Agent'].filter(isNonNullish);
 
   return {
     title: post.data.title,
@@ -164,22 +167,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: {
       canonical: post.url
     },
-    openGraph: {
+    openGraph: blogOpenGraph({
       type: 'article',
       title: post.data.title,
       description: post.data.description,
       url: post.url,
       publishedTime: post.data.date,
-      tags: keywords as string[],
-      ...(post.data.cover ? { images: [{ url: post.data.cover, alt: post.data.title }] } : {})
-    },
-    twitter: {
-      card: 'summary_large_image',
+      tags: keywords,
+      images: getPostImage(post).url
+    }),
+    twitter: createTwitter({
       title: post.data.title,
       description: post.data.description,
-      site: '@arcboxdev',
-      creator: '@arcboxdev',
-      ...(post.data.cover ? { images: [post.data.cover] } : {})
-    }
+      images: getPostImage(post).url
+    })
   };
 }
