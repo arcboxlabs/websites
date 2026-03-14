@@ -1,6 +1,6 @@
 import { getLLMText, source } from '@/docs/source';
 
-export const dynamic = "force-static"
+export const dynamic = 'force-static';
 
 export async function GET() {
   const scan = source.getPages().map(getLLMText);

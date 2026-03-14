@@ -1,7 +1,7 @@
 import { getLLMText, source } from '@/docs/source';
 import { notFound } from 'next/navigation';
 
-export const dynamic = "force-static"
+export const dynamic = 'force-static';
 
 export async function GET(_req: Request, { params }: RouteContext<'/docs/llms.mdx/docs/[[...slug]]'>) {
   const { slug } = await params;
