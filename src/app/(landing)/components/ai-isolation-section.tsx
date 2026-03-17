@@ -81,28 +81,30 @@ export function AIIsolationSection() {
               <div className="bg-background/50 p-6 font-mono text-sm">
                 <div className="space-y-2">
                   <p className="text-accent">$ arcbox sandbox create openclaw</p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     Creating isolated Firecracker VM...
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     ├─ Memory: 2GB allocated
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     ├─ Network: Isolated bridge
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     ├─ Filesystem: Read-only rootfs
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     └─ Security: Full syscall filtering
                   </p>
-                  <p className="mt-4 text-green-400">
+                  <br />
+                  <p className="text-green-400 mb-0">
                     ✓ Sandbox ready in 127ms
                   </p>
-                  <p className="mt-4 text-accent">
+                  <br />
+                  <p className="text-accent mb-0">
                     $ arcbox sandbox exec openclaw --prompt "analyze codebase"
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="mb-0 text-muted-foreground">
                     Running in isolated environment...
                   </p>
                   <p className="animate-pulse text-accent">▊</p>
