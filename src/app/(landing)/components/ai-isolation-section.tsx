@@ -7,9 +7,14 @@ export function AIIsolationSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Content */}
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
-              <Shield className="h-4 w-4" />
-              <span>AI Agent Runtime</span>
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+                <Shield className="h-4 w-4" />
+                <span>AI Agent Runtime</span>
+              </div>
+              <span className="inline-flex items-center rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-sm font-medium text-yellow-500">
+                Coming Soon
+              </span>
             </div>
 
             <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
