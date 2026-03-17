@@ -116,7 +116,7 @@ export function OpenSourceSection() {
                 className="h-11 rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
                 <Link
-                  href="https://github.com/arcbox-dev/arcbox-desktop"
+                  href="https://github.com/arcboxlabs/arcbox-desktop"
                   target="_blank"
                 >
                   <Github className="mr-2 h-4 w-4" />
@@ -130,7 +130,7 @@ export function OpenSourceSection() {
                 className="h-11 rounded-full px-6 border-border"
               >
                 <Link
-                  href="https://github.com/arcbox-dev/arcbox-desktop/blob/main/CONTRIBUTING.md"
+                  href="https://github.com/arcboxlabs/arcbox-desktop/blob/main/CONTRIBUTING.md"
                   target="_blank"
                 >
                   Contribute
@@ -148,7 +148,7 @@ export function OpenSourceSection() {
                 <Github className="h-6 w-6 text-foreground" />
                 <div>
                   <p className="font-semibold text-foreground">
-                    arcbox-dev/arcbox-desktop
+                    arcboxlabs/arcbox-desktop
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Public repository
@@ -160,17 +160,16 @@ export function OpenSourceSection() {
               <div className="bg-background/50 p-6">
                 <div className="space-y-2 font-mono text-sm">
                   {[
-                    { name: 'src/', type: 'folder', highlight: true },
-                    { name: '  core/', type: 'folder', highlight: true },
-                    { name: '  vm/', type: 'folder', highlight: true },
-                    { name: '  sandbox/', type: 'folder', highlight: true },
-                    { name: '  container/', type: 'folder', highlight: true },
-                    { name: 'tests/', type: 'folder', highlight: true },
-                    { name: 'docs/', type: 'folder', highlight: true },
-                    { name: '.github/', type: 'folder', highlight: false },
-                    { name: 'Cargo.toml', type: 'file', highlight: true },
-                    { name: 'build.rs', type: 'file', highlight: true },
-                    { name: 'LICENSE', type: 'file', highlight: false },
+                    { name: '.github/workflows/', type: 'folder', highlight: false },
+                    { name: 'ArcBox.xcodeproj/', type: 'folder', highlight: false },
+                    { name: 'ArcBox/', type: 'folder', highlight: true },
+                    { name: 'ArcBoxHelper/', type: 'folder', highlight: true },
+                    { name: 'ArcBoxTests/', type: 'folder', highlight: true },
+                    { name: 'LaunchDaemons/', type: 'folder', highlight: true },
+                    { name: 'Packages/', type: 'folder', highlight: true },
+                    { name: 'scripts/', type: 'folder', highlight: true },
+                    { name: '.gitignore', type: 'file', highlight: false },
+                    { name: 'CHANGELOG.md', type: 'file', highlight: false },
                     { name: 'README.md', type: 'file', highlight: false }
                   ].map((item) => (
                     <div
@@ -206,11 +205,6 @@ export function OpenSourceSection() {
                           </svg>
                         )}
                       <span>{item.name}</span>
-                      {item.highlight && item.type === 'folder' && (
-                        <span className="ml-auto text-xs text-accent">
-                          real code
-                        </span>
-                      )}
                     </div>
                   ))}
                 </div>
