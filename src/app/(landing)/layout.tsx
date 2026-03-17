@@ -6,9 +6,12 @@ import '@landing/styles/global.css';
 import Layout from './components/layout';
 import { NavbarMobileMenuPortalProvider } from './contexts/navbar-mobile-menu-portal';
 import { landingOpenGraph, createTwitter } from '@/lib/metadata';
-import { akkurat, akkuratMono } from '../fonts';
 import { clsx } from 'clsx';
 // import 'stylex-webpack/stylex.css';
+import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+
+const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
   title: {
@@ -48,7 +51,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
     <html lang="en">
       <body
         suppressHydrationWarning={process.env.NODE_ENV !== 'production'}
-        className={clsx(akkurat.variable, akkuratMono.variable, 'font-sans')}
+        className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}
       >
         <NavbarMobileMenuPortalProvider id="global-navbar-mobile-menu-portal">
           <Layout>
