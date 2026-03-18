@@ -39,8 +39,11 @@ export function SpeedComparison() {
           </div>
 
           <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-            Ridiculously fast.
-            <br />
+            <span>Ridiculously fast.</span>
+
+            <span className="hidden md:inline">{' '}</span>
+            <br className="block md:hidden" />
+
             <span className="text-muted-foreground">By design.</span>
           </h2>
 

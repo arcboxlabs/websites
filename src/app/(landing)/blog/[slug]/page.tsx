@@ -10,6 +10,8 @@ import { CTASection } from '../../components/cta-section';
 import type { Metadata } from 'next';
 import { isNonNullish } from 'foxts/guard';
 import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { getMDXComponents } from '@/mdx-components';
+import { createRelativeLink } from 'fumadocs-ui/mdx';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -71,7 +73,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
 
           {/* Title */}
-          <h1 className="max-w-3xl text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+          <h1 className="max-w-3xl text-balance text-3xl font-black tracking-tight text-foreground md:text-4xl lg:text-5xl">
             {post.data.title}
           </h1>
 
@@ -107,7 +109,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {/* Main content */}
           <article className="min-w-0 flex-1">
             <div className="prose prose-invert max-w-none">
-              <MDXContent />
+              <MDXContent
+                components={getMDXComponents({
+                  // this allows you to link to other pages with relative file paths
+                  a: createRelativeLink(BlogSource.source, post)
+                })}
+              />
             </div>
 
             {/* Back link at bottom */}

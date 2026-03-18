@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
 
 function XIcon({ className }: { className?: string }) {
   return (
@@ -88,13 +88,14 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5">
-              <Image
-                src="/arcbox-logo.png"
+              <ArcBoxDesktopLogo width={32} height={32} aria-hidden="true" focusable="false" />
+              {/* <Image
+                src="/arcbox-logo.svg"
                 alt="ArcBox"
                 width={32}
                 height={32}
                 className="rounded-lg"
-              />
+              /> */}
               <span className="text-lg font-semibold text-foreground">
                 ArcBox Desktop
               </span>
@@ -143,7 +144,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ArcBox Desktop. All rights reserved.
+            © {new Date().getFullYear()} ArcBox. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link

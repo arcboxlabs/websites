@@ -28,7 +28,7 @@ export function Header() {
         <div className="flex h-14 items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5" scroll>
             {/* <Image
-              src="/arcbox-logo.png"
+              src="/arcbox-logo.svg"
               alt="ArcBox"
               width={28}
               height={28}

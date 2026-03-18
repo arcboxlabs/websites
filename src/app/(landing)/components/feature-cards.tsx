@@ -112,7 +112,7 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Dev Containers — with background image */}
-          <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
+          <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col lg:col-span-2">
             <Image
               src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80"
               alt="Development environment"
@@ -134,7 +134,7 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Security */}
-          <div className="group relative overflow-hidden rounded-3xl bg-linear-to-br from-slate-600/90 to-slate-800/90 p-6 min-h-[200px] flex flex-col">
+          <div className="group relative overflow-hidden rounded-3xl bg-linear-to-br from-slate-600/90 to-slate-800/90 p-6 min-h-[200px] flex flex-col lg:col-span-2">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-4">
               <Lock className="h-6 w-6 text-white" />
             </div>

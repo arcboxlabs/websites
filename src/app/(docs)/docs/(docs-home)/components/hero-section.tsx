@@ -43,7 +43,7 @@ export default function HeroSection() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/docs/desktop"
-              className="group inline-flex items-center gap-2 rounded-lg border border-border bg-fd-accent text-fd-accent-foreground px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-fd-accent/90"
+              className="group inline-flex items-center gap-2 rounded-lg bg-accent text-accent-foreground px-5 py-3 text-sm font-medium transition-colors hover:bg-accent/90"
             >
               <Monitor className="h-4 w-4" />
               Get started with ArcBox Desktop

@@ -6,7 +6,12 @@ import '@landing/styles/global.css';
 import Layout from './components/layout';
 import { NavbarMobileMenuPortalProvider } from './contexts/navbar-mobile-menu-portal';
 import { landingOpenGraph, createTwitter } from '@/lib/metadata';
+import { clsx } from 'clsx';
 // import 'stylex-webpack/stylex.css';
+import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+
+const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
   title: {
@@ -30,13 +35,24 @@ export const metadata: Metadata = {
     description: 'The blazing-fast Docker Desktop alternative built natively for Apple Silicon.',
     images: ['/arcbox-logo.png']
   }),
-  alternates: { canonical: 'https://arcbox.dev' }
+  alternates: { canonical: 'https://arcbox.dev' },
+  icons: {
+    icon: [
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' }
+    ],
+    apple: '/apple-icon.png'
+  }
 };
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
+      <body
+        suppressHydrationWarning={process.env.NODE_ENV !== 'production'}
+        className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}
+      >
         <NavbarMobileMenuPortalProvider id="global-navbar-mobile-menu-portal">
           <Layout>
             {children}

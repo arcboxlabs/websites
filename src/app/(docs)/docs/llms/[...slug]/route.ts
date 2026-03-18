@@ -3,11 +3,14 @@ import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-static';
 
-export async function GET(_req: Request, { params }: RouteContext<'/docs/llms.mdx/docs/[[...slug]]'>) {
+export async function GET(_req: Request, { params }: RouteContext<'/docs/llms/[...slug]'>) {
   const { slug } = await params;
-  // remove the appended "index.mdx"
-  const page = source.getPage(slug?.slice(0, -1));
-  if (!page) notFound();
+  const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(/\.[^.]+$/, '')];
+
+  const page = source.getPage(pageSlugs);
+  if (!page) {
+    return notFound();
+  }
 
   return new Response(await getLLMText(page), {
     headers: {
@@ -18,6 +21,9 @@ export async function GET(_req: Request, { params }: RouteContext<'/docs/llms.md
 
 export function generateStaticParams() {
   return source.getPages().map((page) => ({
-    slug: [...page.slugs, 'index.mdx']
+    slug: [
+      ...page.slugs.slice(0, -1),
+      `${page.slugs.at(-1)}.txt`
+    ]
   }));
 }

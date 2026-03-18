@@ -11,10 +11,10 @@ export default function Home() {
     <>
       <Hero />
       <FeatureCards />
-      <AIIsolationSection />
-      <OpenClawSection />
       <SpeedComparison />
       <OpenSourceSection />
+      <AIIsolationSection />
+      <OpenClawSection />
       <CTASection />
     </>
   );
