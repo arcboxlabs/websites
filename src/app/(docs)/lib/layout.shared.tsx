@@ -1,5 +1,6 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import type { BaseLayoutProps, LinkItemType } from 'fumadocs-ui/layouts/shared';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
+import { socialLinks } from '../../../constants/social-links';
 
 export const gitConfig = {
   user: 'arcboxlabs',
@@ -18,7 +19,27 @@ export const baseOptions: BaseLayoutProps = {
     ),
     url: '/docs'
   },
+  themeSwitch: {
+    enabled: true,
+    mode: 'light-dark-system'
+  },
   links: [
+    ...socialLinks.reduce<LinkItemType[]>(
+      (acc, social) => {
+        if (social.name === 'GitHub') {
+          return acc; // covered by githubUrl
+        }
+        acc.push({
+          type: 'icon',
+          label: social.name,
+          icon: <social.icon />,
+          text: social.name,
+          url: social.href
+        });
+        return acc;
+      },
+      []
+    )
     // {
     //   text: 'Blog',
     //   url: '/blog'
