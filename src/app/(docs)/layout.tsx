@@ -33,11 +33,11 @@ export const metadata: Metadata = {
   description: 'Documentation for ArcBox Desktop — the blazing-fast Docker alternative for Apple Silicon.',
   icons: {
     icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' }
+      { url: '/favicon/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon/favicon-96x96.png', sizes: '96x96', type: 'image/png' }
     ],
-    apple: '/apple-icon.png'
+    shortcut: '/favicon.ico',
+    apple: '/favicon/apple-touch-icon.png'
   },
   metadataBase: new URL('https://arcbox.dev'),
   openGraph: docsOpenGraph({

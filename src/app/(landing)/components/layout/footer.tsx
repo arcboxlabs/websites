@@ -77,15 +77,16 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-4">
               {socialLinks.map((social) => (
-                <Link
+                <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                   aria-label={social.name}
                 >
                   <social.icon className="h-5 w-5" />
-                </Link>
+                </a>
               ))}
             </div>
           </div>
