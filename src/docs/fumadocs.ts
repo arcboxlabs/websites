@@ -1,6 +1,6 @@
-import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
-import { remarkMdxMermaid } from 'fumadocs-core/mdx-plugins';
+import { defineDocs } from 'fumadocs-mdx/config';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
+import { rehypeToc, remarkHeading, remarkImage, remarkGfm } from 'fumadocs-core/mdx-plugins';
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
@@ -10,15 +10,13 @@ export const docs = defineDocs({
     schema: pageSchema,
     postprocess: {
       includeProcessedMarkdown: true
+    },
+    mdxOptions: {
+      remarkPlugins: [remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
+      rehypePlugins: [rehypeToc]
     }
   },
   meta: {
     schema: metaSchema
-  }
-});
-
-export default defineConfig({
-  mdxOptions: {
-    remarkPlugins: [remarkMdxMermaid]
   }
 });
