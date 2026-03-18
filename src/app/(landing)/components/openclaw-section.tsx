@@ -74,15 +74,15 @@ export function OpenClawSection() {
 
           {/* Visual - Terminal Window */}
           <div className="relative">
-            <div className="relative overflow-hidden rounded-2xl border border-border bg-black w-full lg:h-[600px] shadow-2xl">
-              {/* Terminal Header */}
-              <div className="flex items-center gap-2 bg-gray-800/50 border-b border-gray-700 px-4 py-3">
-                <div className="flex gap-2">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                </div>
-                <span className="ml-4 text-xs text-gray-400 font-mono">openclaw@vm-9f23a</span>
+            <div className="overflow-hidden rounded-2xl border border-border bg-card">
+              {/* Terminal header */}
+              <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-4 py-3">
+                <div className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+                <div className="h-3 w-3 rounded-full bg-[#febc2e]" />
+                <div className="h-3 w-3 rounded-full bg-[#28c840]" />
+                <span className="ml-4 text-sm text-muted-foreground">
+                  openclaw@vm-9f23a
+                </span>
               </div>
 
               {/* Terminal Content */}
@@ -97,7 +97,7 @@ export function OpenClawSection() {
                 </div>
 
                 {/* Terminal output */}
-                <div className="space-y-3 text-gray-300 flex-1 overflow-hidden">
+                <div className="space-y-1 text-gray-300 flex-1 overflow-hidden">
                   <div>
                     <span className="text-blue-400">$ </span>
                     <span className="text-white">openclaw --tui</span>

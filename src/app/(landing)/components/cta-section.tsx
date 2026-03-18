@@ -25,7 +25,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </h2>
 
             <p className="mx-auto mb-10 max-w-xl text-base text-muted-foreground">
-              Join thousands of developers who switched to something faster, lighter, and built for the way they actually work.
+              Switch to something faster, lighter, and built for the way you actually work
             </p>
 
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -53,7 +53,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </div>
 
             <p className="mt-6 text-sm text-muted-foreground">
-              Free for personal use. Pro plans available for teams.
+              Free forever for personal use. Business & commercial usage free during beta.
             </p>
 
             {/* Floating Screenshots */}

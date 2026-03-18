@@ -1,10 +1,10 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight, Apple } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
+import BrewSnippetCopyButton from './brew-command';
+
+const BREW_COMMAND = 'brew install arcbox-desktop';
 
 export function Hero() {
   return (
@@ -30,57 +30,7 @@ export function Hero() {
               WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)'
             }}
           >
-            <svg
-              className="w-full h-full hidden md:block"
-              viewBox="0 0 1000 800"
-              preserveAspectRatio="xMaxYMid slice"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Line 1: Leftmost, Straight, Black/Muted */}
-              <motion.path
-                d="M 680 1000 L 680 -200"
-                stroke="currentColor"
-                strokeWidth="52"
-                className="text-foreground blur-sm"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.1 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0 }}
-              />
-
-              {/* Line 2: Center-Left, Straight, Black/Muted */}
-              <motion.path
-                d="M 760 1000 L 760 -200"
-                stroke="currentColor"
-                strokeWidth="48"
-                className="text-foreground blur-sm"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.15 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
-              />
-
-              {/* Line 3: Center-Right, Slightly Curved, Orange/Accent */}
-              <motion.path
-                d="M 840 1000 L 840 400 Q 840 150, 940 -200"
-                stroke="currentColor"
-                strokeWidth="44"
-                className="text-accent blur-xs"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.3 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
-              />
-
-              {/* Line 4: Rightmost, Curved from 25%, Orange/Accent */}
-              <motion.path
-                d="M 920 1000 L 920 400 Q 920 -50, 1400 -200"
-                stroke="currentColor"
-                strokeWidth="44"
-                className="text-accent blur-xs"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.3 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.6 }}
-              />
-            </svg>
+            <div />
           </div>
 
           {/* Subtle gradient overlay */}
@@ -124,6 +74,13 @@ export function Hero() {
                       Download for macOS
                     </Link>
                   </Button>
+
+                  <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
+                    <span className="text-muted-foreground select-none">$</span>
+                    <code className="text-foreground">{BREW_COMMAND}</code>
+                    <BrewSnippetCopyButton brewCommand={BREW_COMMAND} />
+                  </div>
+
                   <Button
                     variant="outline"
                     size="lg"
@@ -131,14 +88,14 @@ export function Hero() {
                     className="h-10 rounded-full px-6 bg-transparent border-border hover:bg-secondary"
                   >
                     <Link href="/docs">
-                      Quick Start
+                      Learn More
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
 
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Requires macOS 14+ on Apple Silicon
+                  Requires macOS 14+ on Apple Silicon. Free forever for personal use. Business & commercial usage free during beta.
                 </p>
               </div>
             </div>
