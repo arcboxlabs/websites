@@ -116,7 +116,7 @@ export function OpenSourceSection() {
               <Button
                 size="lg"
                 asChild
-                className="h-11 flex-1 md:flex-0 rounded-full bg-foreground text-background hover:bg-foreground/90"
+                className="h-11 flex-1 md:flex-none rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
                 <a
                   href="https://github.com/arcboxlabs/arcbox-desktop"
@@ -130,7 +130,7 @@ export function OpenSourceSection() {
               <Button
                 size="lg"
                 asChild
-                className="h-11 flex-1 md:flex-0 rounded-full bg-foreground text-background hover:bg-foreground/90"
+                className="h-11 flex-1 md:flex-none rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
                 <a
                   href="https://github.com/arcboxlabs/arcbox"
