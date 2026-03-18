@@ -1,4 +1,4 @@
-import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid } from 'fumadocs-core/mdx-plugins';
+import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid, remarkGfm } from 'fumadocs-core/mdx-plugins';
 import { applyMdxPreset, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
 
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export const blog = defineDocs({
       includeProcessedMarkdown: true
     },
     mdxOptions: applyMdxPreset({
-      remarkPlugins: [remarkMdxMermaid, remarkHeading, [remarkImage, { useImport: false }]],
+      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
       rehypePlugins: [rehypeToc]
     })
   },
