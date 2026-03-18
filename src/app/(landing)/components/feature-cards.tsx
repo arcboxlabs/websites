@@ -11,9 +11,9 @@ export function FeatureCards() {
     <section className="relative py-24 md:py-32 px-4">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 text-center">
-          <p className="text-sm text-muted-foreground mb-3">
-            What can ArcBox do?
-          </p>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+            <span>Feature Rich</span>
+          </div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl text-balance">
             The superpowers are{' '}
             <span className="text-accent">endless.</span>

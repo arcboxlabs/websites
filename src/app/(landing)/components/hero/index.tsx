@@ -151,7 +151,7 @@ export function Hero() {
                 </div>
 
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Requires macOS 14+ on Apple Silicon. Free forever for personal use. Business & commercial usage free during beta.
+                  Requires macOS 15+ on Apple Silicon. Free forever for personal use. Business & commercial usage free during beta.
                 </p>
               </div>
             </div>
