@@ -3,8 +3,8 @@ import { Box, Cpu, Shield, Zap, Layers, Lock } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 
 import ImageInfrastructure from '@/images/infrastructure.jpeg';
-import ImageSandbox from '@/images/sandbox.jpeg';
 import ImageDevelopmentEnvrionment from '@/images/development-environment.jpeg';
+import AppleNative from '@/images/apple-native.jpeg';
 
 export function FeatureCards() {
   return (
@@ -23,7 +23,7 @@ export function FeatureCards() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Large Card - Containers */}
-          <div className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-[400px] flex flex-col">
+          <div className="lg:col-span-2 md:row-span-3 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-[400px] flex flex-col">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
               <Box className="h-7 w-7 text-white" />
             </div>
@@ -59,7 +59,7 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Firecracker VMs — with background image */}
-          <div className="lg:col-span-2 group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
+          <div className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
             <Image
               src={ImageInfrastructure}
               alt="Lightweight microVMs"
@@ -80,39 +80,39 @@ export function FeatureCards() {
             </div>
           </div>
 
-          {/* Small Card - Sandboxed — with background image */}
-          <div className="group relative overflow-hidden rounded-3xl min-h-[180px] flex flex-col">
-            <Image
-              src={ImageSandbox}
-              alt="Security sandbox"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-linear-to-br from-violet-600/85 to-purple-700/75" />
-            <div className="relative z-10 flex flex-col p-6 h-full">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-3">
-                <Shield className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-1">
-                Sandboxed execution.
-              </h3>
-              <p className="text-white/70 text-sm">
-                Run untrusted code safely in complete isolation.
-              </p>
+          {/* Small Card - Sandboxed */}
+          <div className="group relative overflow-hidden rounded-3xl min-h-[180px] p-6 flex flex-col bg-linear-to-br from-violet-600/85 to-purple-700/75">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-3">
+              <Shield className="h-5 w-5 text-white" />
             </div>
+            <h3 className="text-lg font-bold text-white mb-1">
+              Sandboxed execution.
+            </h3>
+            <p className="text-white/70 text-sm">
+              Run untrusted code safely in complete isolation.
+            </p>
           </div>
 
           {/* Small Card - Apple Silicon */}
-          <div className="group relative overflow-hidden rounded-3xl bg-linear-to-br from-sky-500/90 to-blue-600/90 p-6 min-h-[180px] flex flex-col">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-3">
-              <Zap className="h-5 w-5 text-white" />
+          <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
+            <Image
+              src={AppleNative}
+              alt="Apple Silicon native"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-linear-to-br from-sky-500/90 to-blue-600/90" />
+            <div className="relative z-10 flex flex-col p-6 h-full">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-3">
+                <Zap className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">
+                Apple Silicon native.
+              </h3>
+              <p className="text-white/70 text-sm">
+                Built from scratch for M1, M2, M3, and M4 chips.
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-white mb-1">
-              Apple Silicon native.
-            </h3>
-            <p className="text-white/70 text-sm">
-              Built from scratch for M1, M2, M3, and M4 chips.
-            </p>
           </div>
 
           {/* Medium Card - Dev Containers — with background image */}
