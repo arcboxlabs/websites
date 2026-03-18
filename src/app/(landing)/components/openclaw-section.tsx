@@ -86,74 +86,66 @@ export function OpenClawSection() {
               </div>
 
               {/* Terminal Content */}
-              <div className="p-6 font-mono text-sm overflow-hidden h-full flex flex-col">
-                {/* Status indicator */}
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-                  </span>
-                  <span className="text-green-400 text-xs">Sandbox active</span>
-                </div>
+              <div className="p-5 font-mono text-xs leading-relaxed overflow-hidden h-full flex flex-col">
+                <div className="space-y-0.5 text-gray-300">
+                  {/* Header */}
+                  <div className="ml-2">
+                    <span className="text-red-400">🦞 OpenClaw Installer</span>
+                  </div>
+                  <div className="ml-2 text-gray-500">
+                    Claws out, commit in—let&apos;s ship something mildly responsible.
+                  </div>
 
-                {/* Terminal output */}
-                <div className="space-y-1 text-gray-300 flex-1 overflow-hidden">
+                  <div className="h-2" />
+
+                  {/* Detected */}
                   <div>
-                    <span className="text-blue-400">$ </span>
-                    <span className="text-white">openclaw --tui</span>
+                    <span className="text-cyan-400">✓</span>
+                    <span className="ml-1 text-cyan-400">Detected:</span>
+                    <span className="text-white"> linux</span>
                   </div>
 
-                  <div className="space-y-2 ml-2 border-l border-gray-700 pl-3">
-                    <div>
-                      <span className="text-cyan-400">╭─ OpenClaw TUI</span>
-                    </div>
-                    <div className="space-y-1 text-xs">
-                      <div>
-                        <span className="text-gray-500">▸</span>
-                        <span className="text-white ml-2">Network Isolation</span>
-                        <span className="ml-2 text-green-400">✓ blocked</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">▸</span>
-                        <span className="text-white ml-2">Filesystem</span>
-                        <span className="ml-2 text-green-400">✓ ephemeral</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">▸</span>
-                        <span className="text-white ml-2">I/O Operations</span>
-                        <span className="ml-2 text-green-400">✓ audited</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">▸</span>
-                        <span className="text-white ml-2">Syscall Filtering</span>
-                        <span className="ml-2 text-green-400">✓ enabled</span>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-cyan-400">╰─ Resources</span>
-                    </div>
-                    <div className="space-y-1 text-xs">
-                      <div className="ml-2">
-                        <span className="text-gray-500">├</span>
-                        <span className="text-white ml-2">CPU</span>
-                        <span className="ml-2 text-amber-400">2 cores</span>
-                      </div>
-                      <div className="ml-2">
-                        <span className="text-gray-500">├</span>
-                        <span className="text-white ml-2">Memory</span>
-                        <span className="ml-2 text-amber-400">4 GiB</span>
-                      </div>
-                      <div className="ml-2">
-                        <span className="text-gray-500">└</span>
-                        <span className="text-white ml-2">Uptime</span>
-                        <span className="ml-2 text-amber-400">12m 34s</span>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="h-2" />
 
-                  <div className="mt-3 pt-3 border-t border-gray-700">
-                    <span className="text-blue-400">$ </span>
-                    <span className="text-white animate-pulse">_</span>
+                  {/* Install plan */}
+                  <div className="text-red-400 font-bold">Install plan</div>
+                  <div><span className="text-red-400">OS:</span> <span className="text-white">linux</span></div>
+                  <div><span className="text-red-400">Install method:</span> <span className="text-white">npm</span></div>
+                  <div><span className="text-red-400">Requested version:</span> <span className="text-white">latest</span></div>
+
+                  <div className="h-2" />
+
+                  {/* Phase 1 */}
+                  <div className="text-red-400 font-bold">[1/3] Preparing environment</div>
+                  <div><span className="text-cyan-400">✓</span> <span className="text-white">Build tools installed</span></div>
+                  <div><span className="text-cyan-400">✓</span> <span className="text-white">Node.js v22 installed</span></div>
+                  <div><span className="text-gray-500">·</span> <span>Active Node.js: v22.22.1 (/usr/bin/node)</span></div>
+                  <div><span className="text-gray-500">·</span> <span>Active npm: 10.9.4 (/usr/bin/npm)</span></div>
+
+                  <div className="h-2" />
+
+                  {/* Phase 2 */}
+                  <div className="text-red-400 font-bold">[2/3] Installing OpenClaw</div>
+                  <div><span className="text-gray-500">·</span> <span>Git not found, installing it now</span></div>
+                  <div><span className="text-cyan-400">✓</span> <span className="text-white">Git installed</span></div>
+                  <div><span className="text-gray-500">·</span> <span>Installing OpenClaw</span></div>
+                  <div><span className="text-cyan-400">✓</span> <span className="text-white">OpenClaw npm package installed</span></div>
+                  <div><span className="text-cyan-400">✓</span> <span className="text-white">OpenClaw installed</span></div>
+
+                  <div className="h-2" />
+
+                  {/* Phase 3 */}
+                  <div className="text-red-400 font-bold">[3/3] Finalizing setup</div>
+
+                  <div className="h-2" />
+
+                  {/* Success */}
+                  <div>
+                    <span className="text-cyan-400">🦞 </span>
+                    <span className="text-cyan-400 font-bold">OpenClaw installed successfully!</span>
+                  </div>
+                  <div className="text-gray-500">
+                    Finally unpacked. Now point me at your problems.
                   </div>
                 </div>
               </div>
