@@ -1,6 +1,6 @@
-import type { TOCItemType } from './blog-aside-toc';
 import BlogAsideToc from './blog-aside-toc';
 import BlogAsideCopyPostUrl from './blog-aside-copy-post-url';
+import type { TOCItemType } from 'fumadocs-core/toc';
 
 interface BlogAsideProps {
   toc: TOCItemType[],

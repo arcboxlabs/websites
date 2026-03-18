@@ -3,7 +3,7 @@ import { Box, Cpu, Shield, Zap, Layers, Lock } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 
 import ImageInfrastructure from '@/images/infrastructure.jpeg';
-import ImageDevelopmentEnvrionment from '@/images/development-environment.jpeg';
+import ImageDevelopmentEnvironment from '@/images/development-environment.jpeg';
 import AppleNative from '@/images/apple-native.jpeg';
 
 export function FeatureCards() {
@@ -118,7 +118,7 @@ export function FeatureCards() {
           {/* Medium Card - Dev Containers — with background image */}
           <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col lg:col-span-2">
             <Image
-              src={ImageDevelopmentEnvrionment}
+              src={ImageDevelopmentEnvironment}
               alt="Development environment"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

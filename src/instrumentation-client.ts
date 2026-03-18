@@ -11,9 +11,9 @@ console.log(
   asciiArt
   + '\n%c We build high-performance container and VM runtime.\n'
   + '\n'
-  + '%c Checkout our GitHub at                         %chttps://arcbox.link/github\n'
-  + '%c Checkout the source code of ArcBox Desktop at  %chttps://github.com/arcboxlabs/arcbox-desktop\n'
-  + '%c Checkout the source code of our core at        %chttps://github.com/arcboxlabs/arcbox\n',
+  + '%c Check out our GitHub at                         %chttps://arcbox.link/github\n'
+  + '%c Check out the source code of ArcBox Desktop at  %chttps://github.com/arcboxlabs/arcbox-desktop\n'
+  + '%c Check out the source code of our core at        %chttps://github.com/arcboxlabs/arcbox\n',
 
   'color: #e86518; font-family: monospace; font-weight: bold;',
   'color: #e86518; font-size: 14px; font-weight: bold; padding: 4px 0;',
