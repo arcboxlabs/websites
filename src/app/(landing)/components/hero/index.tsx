@@ -6,6 +6,52 @@ import BrewSnippetCopyButton from './brew-command';
 
 const BREW_COMMAND = 'brew install arcbox-desktop';
 
+// Generate dot positions arranged in a semicircle arc (180°), ported from OG template.
+// The arch center sits below-right so:
+//   - smaller rings form readable mini-arches in the right portion
+//   - larger rings extend partially off-canvas, adding depth
+function generateArcDots(): Array<{ x: number, y: number, op: number }> {
+  const W = 480;
+  const H = 240;
+
+  // Center at bottom-right so the left two-thirds of the top half-circle is visible
+  const cx = 400;
+  const cy = 280;
+
+  const RINGS = 10;
+  const R_MIN = 80;
+  const R_MAX = 240;
+  const DOT_SPACING = 12;
+  const A_START = Math.PI;
+  const A_END = 2 * Math.PI;
+
+  const dots: Array<{ x: number, y: number, op: number }> = [];
+
+  for (let ring = 0; ring < RINGS; ring++) {
+    const r = R_MIN + ((R_MAX - R_MIN) * ring) / (RINGS - 1);
+    const arcLength = r * Math.PI;
+    const dotCount = Math.max(6, Math.round(arcLength / DOT_SPACING));
+
+    const ringPhase = ring / (RINGS - 1);
+    const baseOp = 0.08 + 0.34 * Math.sin(ringPhase * Math.PI);
+
+    for (let d = 0; d <= dotCount; d++) {
+      const t = d / dotCount;
+      const angle = A_START + t * (A_END - A_START);
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+
+      if (x >= 0 && x <= W && y >= 0 && y <= H) {
+        dots.push({ x: Math.round(x), y: Math.round(y), op: baseOp });
+      }
+    }
+  }
+
+  return dots;
+}
+
+const ARC_DOTS = generateArcDots();
+
 export function Hero() {
   return (
     <section className="relative px-4 pt-28 pb-12 md:px-6 md:pt-32 md:pb-16 lg:pt-36">
@@ -22,15 +68,25 @@ export function Hero() {
             }}
           />
 
-          {/* Decorative animated lines - reflecting logo soul */}
-          <div
-            className="absolute inset-0 pointer-events-none overflow-hidden opacity-75 z-0"
-            style={{
-              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)'
-            }}
-          >
-            <div />
+          {/* Decorative arc dots - ported from OG template */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
+            <svg
+              className="absolute top-0 right-0"
+              width="480"
+              height="240"
+              viewBox="0 0 480 240"
+              fill="none"
+            >
+              {ARC_DOTS.map((dot) => (
+                <circle
+                  key={`${dot.x}-${dot.y}`}
+                  cx={dot.x}
+                  cy={dot.y}
+                  r={1.8}
+                  fill={`rgba(220, 105, 30, ${dot.op.toFixed(3)})`}
+                />
+              ))}
+            </svg>
           </div>
 
           {/* Subtle gradient overlay */}
