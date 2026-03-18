@@ -22,6 +22,8 @@ export function getPostImage(post: BlogPage) {
 }
 
 export const BlogSource = {
+  source,
+
   /**
    * Get a single blog post by slug
    * @param slug - The slug of the post to retrieve
