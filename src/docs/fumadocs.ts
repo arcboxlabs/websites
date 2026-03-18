@@ -1,4 +1,4 @@
-import { defineDocs } from 'fumadocs-mdx/config';
+import { applyMdxPreset, defineDocs } from 'fumadocs-mdx/config';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { rehypeToc, remarkHeading, remarkImage, remarkGfm, remarkMdxMermaid } from 'fumadocs-core/mdx-plugins';
 
@@ -11,10 +11,10 @@ export const docs = defineDocs({
     postprocess: {
       includeProcessedMarkdown: true
     },
-    mdxOptions: {
+    mdxOptions: applyMdxPreset({
       remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
       rehypePlugins: [rehypeToc]
-    }
+    })
   },
   meta: {
     schema: metaSchema
