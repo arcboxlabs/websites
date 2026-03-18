@@ -13,7 +13,7 @@ export const baseOptions: BaseLayoutProps = {
       <div className="inline-flex items-center">
         <ArcBoxDesktopLogo width={24} height={24} />
         <span className="ml-2 font-semibold">ArcBox</span>
-        <span className="ml-1 uppercase font-normal">Docs</span>
+        <span className="ml-1 uppercase font-normal text-accent">Docs</span>
       </div>
     ),
     url: '/docs'

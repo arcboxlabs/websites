@@ -13,6 +13,8 @@ export function Mermaid({ chart }: { chart: string }) {
         {
           bg: 'var(--color-fd-background)',
           fg: 'var(--color-fd-foreground)',
+          border: 'var(--color-fd-border)',
+          line: 'var(--color-fd-primary)',
           interactive: true,
           transparent: true
         }
