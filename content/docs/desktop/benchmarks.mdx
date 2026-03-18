@@ -1,0 +1,88 @@
+---
+title: Benchmarks
+description: Performance data for ArcBox on Apple Silicon.
+---
+
+<Mermaid
+  chart="
+graph TD;
+subgraph AA [Consumers]
+A[Mobile app];
+B[Web app];
+C[Node.js client];
+end
+subgraph BB [Services]
+E[REST API];
+F[GraphQL API];
+G[SOAP API];
+end
+Z[GraphQL API];
+A --> Z;
+B --> Z;
+C --> Z;
+Z --> E;
+Z --> F;
+Z --> G;"
+/>
+
+## Test Environment
+
+All benchmarks run on Apple Silicon hardware (M3 Max, 36 GB RAM, macOS 15). Numbers represent the median of multiple runs with warm caches unless otherwise noted.
+
+## Container Startup
+
+10,000 container starts using `alpine:latest`:
+
+| Metric | ArcBox | Docker Desktop | Speedup |
+|--------|--------|----------------|---------|
+| Cold start (mean) | 312ms | 1,247ms | **4.0x** |
+| Cold start (p99) | 580ms | 2,100ms | **3.6x** |
+| Warm start (mean) | 89ms | 487ms | **5.5x** |
+| Warm start (p99) | 145ms | 820ms | **5.7x** |
+
+### Where the Difference Comes From
+
+1. **Lighter hypervisor** — Virtualization.framework adds ~100ms overhead vs ~400ms for Docker Desktop's VM
+2. **Optimized kernel** — stripped-down guest kernel with minimal module loading
+3. **Smart caching** — pre-warmed filesystem snapshots eliminate redundant work
+4. **Apple Silicon native** — no translation layer, direct hardware access
+
+## File I/O
+
+Sequential read/write throughput using `fio` with a 1 GB test file:
+
+| Operation | ArcBox | Docker Desktop | Native |
+|-----------|--------|----------------|--------|
+| Sequential read | 4.2 GB/s | 2.8 GB/s | 4.5 GB/s |
+| Sequential write | 3.8 GB/s | 2.1 GB/s | 4.1 GB/s |
+| Random 4K read | 95K IOPS | 62K IOPS | 105K IOPS |
+| Random 4K write | 88K IOPS | 54K IOPS | 98K IOPS |
+
+ArcBox achieves >90% of native filesystem performance for most workloads.
+
+## Memory Usage
+
+| State | ArcBox | Docker Desktop |
+|-------|--------|----------------|
+| Idle (no containers) | 130 MB | 220 MB |
+| 1 container (nginx) | 180 MB | 310 MB |
+| 10 containers | 420 MB | 850 MB |
+| 50 containers | 1.2 GB | 2.8 GB |
+
+ArcBox returns memory to the host as containers stop. Docker Desktop retains allocated memory until the VM is restarted.
+
+## Network Throughput
+
+`iperf3` between host and container:
+
+| Metric | ArcBox | Docker Desktop |
+|--------|--------|----------------|
+| TCP throughput | 52 Gbps | 44 Gbps |
+| UDP throughput | 48 Gbps | 38 Gbps |
+| Latency (ping) | 0.15ms | 0.4ms |
+
+## Methodology
+
+All benchmarks are reproducible. Source code and scripts are available at [github.com/arcboxd/arcbox-benchmarks](https://github.com/arcboxd/arcbox-benchmarks).
+
+Results vary by hardware. Run the benchmark suite on your own machine for numbers specific to your setup.

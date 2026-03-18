@@ -1,6 +1,5 @@
-import { rehypeToc, remarkHeading, remarkImage } from 'fumadocs-core/mdx-plugins';
-import { defineConfig, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
-import remarkGfm from 'remark-gfm';
+import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid, remarkGfm } from 'fumadocs-core/mdx-plugins';
+import { applyMdxPreset, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
 
 import { z } from 'zod';
 
@@ -23,26 +22,13 @@ export const blog = defineDocs({
     }),
     postprocess: {
       includeProcessedMarkdown: true
-    }
+    },
+    mdxOptions: applyMdxPreset({
+      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
+      rehypePlugins: [rehypeToc]
+    })
   },
   meta: {
     schema: metaSchema
-  }
-});
-
-export default defineConfig({
-  mdxOptions: {
-    rehypeCodeOptions: {
-      themes: {
-        light: 'vesper',
-        dark: 'vesper'
-      },
-      colorReplacements: {
-        '#99ffe4': '#ff5e4f',
-        '#ffc799': '#FFF'
-      }
-    },
-    remarkPlugins: [remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
-    rehypePlugins: [rehypeToc]
   }
 });

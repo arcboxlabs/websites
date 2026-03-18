@@ -1,0 +1,83 @@
+---
+title: ArcBox vs OrbStack
+description: How ArcBox compares to OrbStack, and how to migrate.
+---
+
+## Comparison
+
+| | ArcBox | OrbStack |
+|--|--------|----------|
+| **Pricing** | Free (core + desktop) | Free for personal, paid for commercial |
+| **Open source** | Core runtime is MIT/Apache-2.0 | Proprietary |
+| **Cold start** | ~300ms | ~500ms |
+| **File I/O** | >90% native | 75–95% native |
+| **Idle memory** | \<150 MB | ~180 MB |
+| **Account required** | No | No |
+| **Linux machines** | Built-in | Built-in |
+| **Sandboxes** | Built-in | Not available |
+| **Docker compatibility** | Full | Full |
+| **Kubernetes** | Pod/service viewer | Full cluster |
+| **GUI framework** | SwiftUI | AppKit |
+| **`.local` domains** | `.arcbox` | `.orb` |
+
+## What's Better in ArcBox
+
+- **Open-source core** — inspect, audit, and contribute to the runtime
+- **Faster container startup** — ~300ms cold start vs ~500ms
+- **Better file I/O** — >90% native vs 75–95%
+- **Sandboxes** — disposable development environments from templates
+- **No commercial license required** for small-team use
+- **Transparent architecture** — documented, auditable, forkable
+
+## What OrbStack Has That ArcBox Doesn't
+
+- **Intel Mac** support
+- **Full Kubernetes cluster** (ArcBox provides a viewer, not a cluster)
+- **Longer track record** — more mature product with a larger user base
+- **Docker Desktop migration wizard** — automated migration tool
+- **NFS/SMB** file sharing for machines
+
+## Migrate from OrbStack
+
+<Steps>
+  <Step>
+    ### Install ArcBox
+
+    [Install ArcBox Desktop](./install). Keep OrbStack installed until verified.
+  </Step>
+  <Step>
+    ### Stop OrbStack
+
+    Quit OrbStack from the menu bar.
+  </Step>
+  <Step>
+    ### Verify
+
+    ```bash
+    docker info
+    ```
+
+    Confirm ArcBox is the active runtime.
+  </Step>
+  <Step>
+    ### Recreate Workloads
+
+    Pull images and start containers. Compose files work without changes.
+
+    For OrbStack Linux machines, create equivalents in ArcBox:
+
+    ```bash
+    arcbox machine create --name dev --cpus 4 --memory 4g
+    ```
+  </Step>
+  <Step>
+    ### Uninstall OrbStack (Optional)
+
+    ```bash
+    rm -rf ~/.orbstack
+    rm -rf ~/Library/Application\ Support/OrbStack
+    ```
+
+    Then remove OrbStack from Applications.
+  </Step>
+</Steps>

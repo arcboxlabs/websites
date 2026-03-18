@@ -1,0 +1,90 @@
+---
+title: Installation
+description: Install ArcBox Desktop on macOS.
+---
+
+## System Requirements
+
+<Callout type="info">
+  ArcBox Desktop requires **macOS 15 (Sequoia)** or later on **Apple Silicon** (M1 or later) with at least 4 GB of available memory.
+</Callout>
+
+## Install
+
+<Tabs items={['Homebrew', 'Direct Download']}>
+  <Tab>
+    ```bash
+    brew install --cask arcbox
+    ```
+  </Tab>
+  <Tab>
+    Download the latest `.dmg` from [arcbox.dev/download](https://arcbox.dev/download). Open the disk image and drag ArcBox to your Applications folder.
+  </Tab>
+</Tabs>
+
+## First Launch
+
+<Steps>
+  <Step>
+    ### Authorize the Privileged Helper
+
+    ArcBox requests permission to install a privileged helper. This helper manages the Docker socket symlink, CLI tools, and DNS configuration. It runs with minimal privileges and only performs validated operations. See [Helper](./helper) for details.
+  </Step>
+  <Step>
+    ### Initialize the Runtime
+
+    ArcBox creates a lightweight VM on demand. This takes a few seconds the first time and is near-instant afterward.
+  </Step>
+  <Step>
+    ### Install CLI Tools (Optional)
+
+    ArcBox can install the `arcbox` and `docker` CLI commands to `/usr/local/bin`. You can skip this and do it later from Settings.
+  </Step>
+</Steps>
+
+## Verify
+
+Open ArcBox Desktop. If you see the container list (even if empty), the runtime is ready.
+
+From the terminal:
+
+```bash
+arcbox status
+```
+
+You should see the daemon status and VM state.
+
+## Uninstall
+
+<Steps>
+  <Step>
+    ### Quit ArcBox Desktop
+  </Step>
+  <Step>
+    ### Remove the App
+
+    Drag ArcBox from Applications to Trash.
+  </Step>
+  <Step>
+    ### Remove the Helper
+
+    ```bash
+    sudo /Library/PrivilegedHelperTools/dev.arcbox.helper uninstall
+    ```
+  </Step>
+  <Step>
+    ### Remove Data
+
+    ```bash
+    rm -rf ~/Library/Application\ Support/ArcBox
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+<Cards>
+  <Card title="Quick Start" href="./quickstart">
+    Run your first container in under five minutes.
+  </Card>
+</Cards>

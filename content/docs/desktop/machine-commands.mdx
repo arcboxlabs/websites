@@ -1,0 +1,57 @@
+---
+title: Machine Commands
+description: Common commands for working with Linux machines.
+---
+
+## ArcBox CLI
+
+Manage machines from the terminal:
+
+```bash
+arcbox machine create --name dev          # Create a machine
+arcbox machine list                       # List all machines
+arcbox machine start dev                  # Start a machine
+arcbox machine stop dev                   # Stop a machine
+arcbox machine remove dev                 # Delete a machine
+
+arcbox ssh dev                            # SSH into a machine
+```
+
+## Inside a Machine
+
+Once connected via SSH or the Desktop terminal, you have a full Linux environment:
+
+```bash
+# Package management (Ubuntu/Debian)
+sudo apt update && sudo apt install -y build-essential
+
+# System services
+sudo systemctl status docker
+sudo systemctl restart nginx
+
+# Process management
+htop
+```
+
+## Running Docker Inside a Machine
+
+Each machine can run its own Docker daemon, independent of the host ArcBox runtime:
+
+```bash
+sudo apt install docker.io
+sudo systemctl start docker
+docker run hello-world
+```
+
+This is useful for testing Docker-in-Docker workflows or running containers with specific kernel requirements.
+
+## Accessing Machine Services from Your Mac
+
+Services running inside a machine are accessible via the `.arcbox` domain:
+
+```bash
+# Machine "dev" running a web server on port 3000
+curl http://dev.arcbox:3000
+```
+
+No port forwarding configuration needed. See [Domains](./domains).

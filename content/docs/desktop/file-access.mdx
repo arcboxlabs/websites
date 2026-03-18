@@ -1,0 +1,35 @@
+---
+title: File Access
+description: Browse and manage files inside containers, images, and volumes.
+---
+
+## Container Files
+
+Select a container and open the **Files** tab to explore its filesystem.
+
+The browser shows a tree view of the container's root filesystem. Navigate directories by clicking. File metadata (size, permissions, modification time) is displayed for each entry.
+
+### Operations
+
+- **View** — click a file to preview its contents. Text files render inline. Binary files show metadata only.
+- **Download** — right-click a file and select **Download** to copy it to your Mac.
+- **Upload** — drag a file from Finder into the browser to copy it into the container.
+
+### CLI Equivalent
+
+```bash
+docker cp <container>:/path/to/file ./local-path
+docker cp ./local-file <container>:/path/to/destination
+```
+
+## Volume Files
+
+Click a volume in the Volumes view to browse its contents. This works even when no container has the volume mounted.
+
+## Image Files
+
+Click an image to inspect its layers. Each layer shows the files added, modified, or removed by that layer.
+
+## Performance
+
+The file browser fetches directory listings on demand. Large directories load progressively. For bulk file operations or recursive copies, the CLI is faster.

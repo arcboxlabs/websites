@@ -1,0 +1,42 @@
+---
+title: Volumes
+description: Create and manage persistent volumes for container data.
+---
+
+## Volume List
+
+Click **Volumes** in the sidebar to see all Docker volumes on your system.
+
+Each entry shows the volume name, driver, mount count, and creation date.
+
+## Create a Volume
+
+Click **New Volume**. Give it a name. The default `local` driver is used unless you specify otherwise.
+
+Or from the CLI:
+
+```bash
+docker volume create my-data
+```
+
+## Browse Contents
+
+Click a volume to browse its contents in a file viewer. This shows the files stored in the volume without needing to attach it to a running container.
+
+## Remove
+
+Select a volume and click **Delete**. Volumes in use by a container cannot be removed.
+
+To clean up unused volumes:
+
+```bash
+docker volume prune
+```
+
+## Bind Mounts vs Volumes
+
+**Bind mounts** map a directory on your Mac into a container. They are good for source code and config files where you want changes to sync both ways.
+
+**Volumes** are managed by the container runtime. They are better for persistent data like databases that do not need to be accessed directly from the host.
+
+ArcBox optimizes both paths for near-native filesystem performance.

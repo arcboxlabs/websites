@@ -1,0 +1,35 @@
+---
+title: Updates
+description: How ArcBox Desktop handles automatic updates.
+---
+
+## Update Mechanism
+
+ArcBox Desktop uses Sparkle for automatic updates. When an update is available, you see a notification in the app with release notes and a one-click install option.
+
+## Update Channels
+
+| Channel | Description |
+|---------|-------------|
+| **Stable** | Production-ready releases. Default for all users. |
+| **Beta** | Early access to upcoming features. May contain rough edges. |
+
+Switch channels in **Settings → General → Update channel**.
+
+## Checking Manually
+
+Click **Check for Updates** in the app menu or in Settings. ArcBox checks immediately and shows the result.
+
+## Rollback
+
+If an update introduces problems, you can reinstall a previous version:
+
+1. Download the specific version from [arcbox.dev/releases](https://arcbox.dev/releases)
+2. Quit ArcBox Desktop
+3. Replace the app in `/Applications`
+
+Your containers, images, volumes, and machines are preserved across updates and rollbacks. Only the Desktop application binary changes.
+
+## Offline Usage
+
+ArcBox Desktop works fully offline. Update checks fail silently when there is no internet connection. No functionality is lost.

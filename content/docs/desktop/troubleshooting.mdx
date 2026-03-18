@@ -1,0 +1,120 @@
+---
+title: Troubleshooting
+description: Solutions for common issues with ArcBox Desktop.
+---
+
+<Accordions type="single">
+  <Accordion title="Containers won't start" id="containers-wont-start">
+    **Check the daemon status:**
+
+    ```bash
+    arcbox status
+    ```
+
+    If the daemon is not running, start it:
+
+    ```bash
+    arcbox start
+    ```
+
+    **Check the Docker socket:**
+
+    ```bash
+    ls -la /var/run/docker.sock
+    ```
+
+    If the symlink is missing or broken, reinstall the helper from **Settings → Docker → Reinstall Helper**, or see [Helper](./helper).
+  </Accordion>
+
+  <Accordion title='Cannot connect to Docker ("Cannot connect to the Docker daemon")' id="cannot-connect">
+    <Steps>
+      <Step>
+        Verify the daemon is running: `arcbox status`
+      </Step>
+      <Step>
+        Check `DOCKER_HOST` is not set to something unexpected: `echo $DOCKER_HOST`
+      </Step>
+      <Step>
+        If using a non-default socket path, set `DOCKER_HOST=unix:///path/to/socket`
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Slow filesystem performance" id="slow-fs">
+    Bind mount performance depends on the underlying filesystem implementation.
+
+    - Verify you are running the latest version of ArcBox
+    - Check if antivirus or endpoint security software is intercepting file operations
+    - For very large directory trees (>100k files), consider using a Docker volume instead of a bind mount
+  </Accordion>
+
+  <Accordion title="Container cannot reach the internet" id="no-internet">
+    <Steps>
+      <Step>
+        Check host network connectivity first
+      </Step>
+      <Step>
+        Check if a VPN is active — some VPNs interfere with container networking
+      </Step>
+      <Step>
+        Restart the ArcBox runtime: `arcbox restart`
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title='Cannot resolve ".arcbox" hostnames' id="dns">
+    <Steps>
+      <Step>
+        Verify the DNS resolver file exists: `cat /etc/resolver/arcbox`
+      </Step>
+      <Step>
+        If missing, reinstall the helper from Settings
+      </Step>
+      <Step>
+        Flush the macOS DNS cache:
+
+        ```bash
+        sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="High memory usage" id="memory">
+    ArcBox reclaims memory from idle containers automatically. If memory usage seems high:
+
+    1. Check which containers are running: `docker ps`
+    2. Stop containers you are not actively using
+    3. Check for memory leaks inside your containers using the **Stats** tab
+  </Accordion>
+
+  <Accordion title="App crashes" id="crashes">
+    ArcBox Desktop reports crashes via Sentry (if you opted in during setup).
+
+    To help debug manually:
+
+    1. Check logs: `~/Library/Logs/ArcBox/`
+    2. Check the daemon log: `arcbox logs`
+    3. Reset the app if needed: **Settings → Advanced → Reset**
+  </Accordion>
+
+  <Accordion title="Helper authorization failed" id="helper-auth">
+    If macOS refuses to authorize the helper:
+
+    <Steps>
+      <Step>
+        Open **System Settings → Privacy & Security → Login Items & Extensions**
+      </Step>
+      <Step>
+        Enable the ArcBox helper
+      </Step>
+      <Step>
+        Restart ArcBox Desktop
+      </Step>
+    </Steps>
+
+    <Callout type="warn">
+      On managed devices, your IT administrator may need to approve the helper via MDM.
+    </Callout>
+  </Accordion>
+</Accordions>

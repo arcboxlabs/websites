@@ -1,0 +1,87 @@
+---
+title: ArcBox vs Colima
+description: How ArcBox compares to Colima, and how to migrate.
+---
+
+## Comparison
+
+| | ArcBox | Colima |
+|--|--------|--------|
+| **Pricing** | Free | Free (open source) |
+| **License** | MIT/Apache-2.0 (core) | MIT |
+| **GUI** | Native SwiftUI desktop app | None (CLI only) |
+| **Cold start** | ~300ms | ~3–5s |
+| **File I/O** | >90% native | 50–80% native |
+| **Idle memory** | \<150 MB | ~300 MB |
+| **Hypervisor** | Virtualization.framework | QEMU / Virtualization.framework |
+| **Docker compatibility** | Full | Full (via Lima) |
+| **Linux machines** | Built-in | Via Lima |
+| **Sandboxes** | Built-in | Not available |
+| **Kubernetes** | Pod/service viewer | K3s built-in |
+| **Apple Silicon** | Native | Native |
+| **Intel Mac** | Not yet | Supported |
+
+## What's Better in ArcBox
+
+- **Native desktop GUI** — visual container management, logs, terminal, stats
+- **10x faster startup** — optimized kernel and hypervisor vs QEMU overhead
+- **Better file I/O** — >90% native vs 50–80% (depends on Colima's mount type)
+- **Lower resource usage** — \<150 MB idle vs ~300 MB
+- **Sandboxes** — disposable dev environments
+- **Automatic DNS** — `.arcbox` domains with zero configuration
+
+## What Colima Has That ArcBox Doesn't
+
+- **Fully open source** — Colima is MIT licensed end-to-end, including the CLI
+- **Intel Mac support**
+- **K3s Kubernetes** — built-in lightweight Kubernetes cluster
+- **Multiple runtimes** — supports containerd and Docker
+- **SSH-based architecture** — simple, debuggable, and scriptable
+- **Linux/Windows** — runs anywhere Lima runs
+
+## Migrate from Colima
+
+<Steps>
+  <Step>
+    ### Install ArcBox
+
+    [Install ArcBox Desktop](./install).
+  </Step>
+  <Step>
+    ### Stop Colima
+
+    ```bash
+    colima stop
+    ```
+  </Step>
+  <Step>
+    ### Set Docker Context
+
+    ```bash
+    docker context use default
+    ```
+  </Step>
+  <Step>
+    ### Verify
+
+    ```bash
+    docker info
+    ```
+
+    Confirm ArcBox is the active runtime.
+  </Step>
+  <Step>
+    ### Recreate Workloads
+
+    Pull images and start your containers. Compose files work without changes.
+  </Step>
+  <Step>
+    ### Uninstall Colima (Optional)
+
+    ```bash
+    colima delete
+    brew uninstall colima
+    rm -rf ~/.colima
+    ```
+  </Step>
+</Steps>

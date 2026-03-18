@@ -1,0 +1,39 @@
+---
+title: Efficiency
+description: How ArcBox minimizes CPU, memory, and battery usage.
+---
+
+## Design Philosophy
+
+ArcBox treats efficiency as a structural property, not a tuning knob. Low resource usage comes from architecture decisions, not from asking users to configure limits.
+
+## Idle Behavior
+
+When no containers are running, ArcBox consumes minimal resources:
+
+| Resource | Idle Usage |
+|----------|------------|
+| CPU | ~0% |
+| Memory | \<150 MB |
+| Disk I/O | None |
+| Network | None |
+
+The VM pauses when idle and resumes instantly when you start a container. There is no background polling, indexing, or sync when nothing is running.
+
+## Dynamic Scaling
+
+Resources scale with actual demand:
+
+- **CPU** — virtual cores are shared with the host. Containers get CPU time when they need it and yield it when idle.
+- **Memory** — the VM uses only the memory containers actively require. Freed memory is returned to the host.
+- **Disk** — the virtual disk grows on demand and does not pre-allocate space.
+
+## Battery Impact
+
+ArcBox is designed for laptop use. When idle, it has near-zero battery impact. Active workloads use CPU efficiently through Apple Silicon's native performance cores.
+
+## Compared to Docker Desktop
+
+Docker Desktop runs a full Linux VM that consumes memory even when idle, polls for file changes continuously, and keeps background services running. ArcBox avoids all of these patterns.
+
+See [Benchmarks](./benchmarks) for specific numbers.

@@ -1,0 +1,109 @@
+---
+title: ArcBox vs Docker Desktop
+description: How ArcBox compares to Docker Desktop, and how to migrate.
+---
+
+## Comparison
+
+| | ArcBox | Docker Desktop |
+|--|--------|----------------|
+| **Pricing** | Free (core + desktop) | Free for personal, $11+/mo for business |
+| **Open source** | Core runtime is MIT/Apache-2.0 | Proprietary |
+| **Cold start** | ~300ms | ~1,200ms |
+| **Warm start** | ~90ms | ~490ms |
+| **Idle memory** | \<150 MB | ~220 MB |
+| **File I/O** | >90% native | 75–95% native |
+| **Network throughput** | 52 Gbps | 44 Gbps |
+| **Account required** | No | Yes |
+| **Linux machines** | Built-in | Via Docker contexts only |
+| **Sandboxes** | Built-in | Not available |
+| **Docker Extensions** | Not supported | Supported |
+| **Windows containers** | Not supported | Supported |
+| **Platform** | macOS (Apple Silicon) | macOS, Windows, Linux |
+
+## What's Better in ArcBox
+
+- **4x faster container startup** with a lighter hypervisor and optimized kernel
+- **Lower resource usage** both idle and under load
+- **No account or subscription** for any tier of personal use
+- **Open-source core** you can inspect, audit, and contribute to
+- **Built-in Linux machines** and sandboxes
+- **`.arcbox` domains** for zero-config service access
+
+## What Docker Desktop Has That ArcBox Doesn't
+
+- **Docker Extensions** marketplace
+- **Windows container** support
+- **Intel Mac** support (ArcBox is Apple Silicon only)
+- **Multi-platform** (Windows, Linux desktop)
+- **Docker Scout** vulnerability scanning integration
+- **Docker Hub** integrated admin features
+
+## Migrate from Docker Desktop
+
+<Steps>
+  <Step>
+    ### Install ArcBox
+
+    [Install ArcBox Desktop](./install). Do not uninstall Docker Desktop yet.
+  </Step>
+  <Step>
+    ### Stop Docker Desktop
+
+    Quit Docker Desktop from the menu bar to release the Docker socket.
+  </Step>
+  <Step>
+    ### Verify
+
+    ```bash
+    docker info
+    ```
+
+    Should show ArcBox as the runtime.
+  </Step>
+  <Step>
+    ### Pull Your Images
+
+    ```bash
+    # Export image list while Docker Desktop was running
+    docker images --format '{{.Repository}}:{{.Tag}}' > images.txt
+
+    # Pull into ArcBox
+    cat images.txt | xargs -I {} docker pull {}
+    ```
+  </Step>
+  <Step>
+    ### Migrate Volumes (Optional)
+
+    ```bash
+    # Export from Docker Desktop
+    docker run --rm -v my-volume:/data -v $(pwd):/backup alpine \
+      tar czf /backup/my-volume.tar.gz -C /data .
+
+    # Import into ArcBox
+    docker volume create my-volume
+    docker run --rm -v my-volume:/data -v $(pwd):/backup alpine \
+      tar xzf /backup/my-volume.tar.gz -C /data
+    ```
+  </Step>
+  <Step>
+    ### Start Your Projects
+
+    ```bash
+    docker compose up -d
+    ```
+
+    Compose files work without modification.
+  </Step>
+  <Step>
+    ### Uninstall Docker Desktop (Optional)
+
+    Once verified, remove Docker Desktop from Applications.
+  </Step>
+</Steps>
+
+## Differences to Expect
+
+<Callout type="info">
+  ArcBox does not support Docker Desktop Extensions or Windows containers. The built-in features cover most development use cases. If you rely on a specific Extension, check if ArcBox has equivalent functionality before migrating.
+</Callout>

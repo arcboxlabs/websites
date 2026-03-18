@@ -1,0 +1,85 @@
+---
+title: Quick Start
+description: Run your first container in ArcBox Desktop in under five minutes.
+---
+
+This guide takes you from a fresh install to a running container. It assumes ArcBox Desktop is already [installed](./install).
+
+<Steps>
+  <Step>
+    ### Pull an Image
+
+    Open ArcBox Desktop. Click **Images** in the sidebar.
+
+    Type `nginx` in the search bar and click **Pull**. ArcBox downloads the image from Docker Hub with layer-by-layer progress.
+  </Step>
+  <Step>
+    ### Run a Container
+
+    <Tabs items={['Desktop', 'CLI']}>
+      <Tab>
+        Click **Run** next to the image. ArcBox creates and starts a container with sensible defaults. The container appears in the **Containers** list immediately.
+      </Tab>
+      <Tab>
+        ```bash
+        docker run -d -p 8080:80 nginx
+        ```
+      </Tab>
+    </Tabs>
+
+    ArcBox syncs state in real time — changes made via CLI show up in the GUI and vice versa.
+  </Step>
+  <Step>
+    ### View Logs
+
+    Click the container in the list to open its detail view. The **Logs** tab shows output in real time.
+
+    Logs stream automatically. Use the search bar to filter, or toggle timestamps with the clock icon.
+  </Step>
+  <Step>
+    ### Open a Terminal
+
+    Switch to the **Terminal** tab to get a shell inside the container.
+
+    This is equivalent to `docker exec -it <container> /bin/sh`. ArcBox picks the appropriate shell automatically.
+  </Step>
+  <Step>
+    ### Inspect the Container
+
+    The **Inspect** tab shows environment variables, port mappings, mount points, and network configuration.
+
+    The **Stats** tab shows live CPU, memory, and network usage.
+  </Step>
+  <Step>
+    ### Stop and Remove
+
+    <Tabs items={['Desktop', 'CLI']}>
+      <Tab>
+        Click the stop button to stop the container. Click the trash icon to remove it.
+      </Tab>
+      <Tab>
+        ```bash
+        docker stop <container-id>
+        docker rm <container-id>
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+</Steps>
+
+## What's Next
+
+<Cards>
+  <Card title="Container Management" href="./containers">
+    Grouping, filtering, batch operations.
+  </Card>
+  <Card title="Compose Projects" href="./compose">
+    Managing multi-container applications.
+  </Card>
+  <Card title="Linux Machines" href="./machines">
+    Running full Linux VMs.
+  </Card>
+  <Card title="Sandboxes" href="./sandbox">
+    Disposable development environments.
+  </Card>
+</Cards>

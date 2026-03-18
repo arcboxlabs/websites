@@ -1,0 +1,37 @@
+---
+title: What's New
+description: Release notes and changelog for ArcBox Desktop.
+---
+
+## 1.0.0
+
+_2026-02-28_
+
+The first stable release of ArcBox Desktop.
+
+### Highlights
+
+- **Full Docker compatibility** — Docker CLI, Compose v2, BuildKit, and the complete container lifecycle
+- **Native SwiftUI interface** — container list, logs, terminal, inspect, stats, images, volumes, networks
+- **Real-time event sync** — CLI and GUI stay in sync via Docker event streaming with sub-second latency
+- **Linux machines** — create and manage lightweight VMs with SSH access
+- **Sandboxes** — disposable development environments from built-in templates
+- **Kubernetes** — view pods and services from your local cluster
+- **`.arcbox` DNS** — automatic hostname resolution for containers and machines
+- **Privileged helper** — Docker socket symlink, CLI install, and DNS resolver via SMAppService
+- **Auto-updates** — Sparkle-based updates with stable and beta channels
+
+### Performance
+
+- Container cold start: ~300ms (4x faster than Docker Desktop)
+- Container warm start: ~90ms (5.5x faster)
+- Idle memory: \<150 MB
+- File I/O: >90% of native speed
+
+### Known Issues
+
+See [Known Issues](./known-issues) for current limitations.
+
+---
+
+Release notes for future versions will be added here as they ship.
