@@ -1,7 +1,7 @@
 # TODO
 
 - [x] Blog Content Pages
-- [ ] Styles Polish
+- [x] Styles Polish
 - [ ] Fill in real Images, Screenshots, and Real GitHub Repo information
 - [x] Text, Slogan adjustments
 - [x] SEO

@@ -2,6 +2,10 @@ import Image from 'next/image';
 import { Box, Cpu, Shield, Zap, Layers, Lock } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 
+import ImageInfrastructure from '@/images/infrastructure.jpeg';
+import ImageSandbox from '@/images/sandbox.jpeg';
+import ImageDevelopmentEnvrionment from '@/images/development-environment.jpeg';
+
 export function FeatureCards() {
   return (
     <section className="relative py-24 md:py-32 px-4">
@@ -57,8 +61,8 @@ export function FeatureCards() {
           {/* Medium Card - Firecracker VMs — with background image */}
           <div className="lg:col-span-2 group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
             <Image
-              src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80"
-              alt="Server infrastructure"
+              src={ImageInfrastructure}
+              alt="Lightweight microVMs"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -79,7 +83,7 @@ export function FeatureCards() {
           {/* Small Card - Sandboxed — with background image */}
           <div className="group relative overflow-hidden rounded-3xl min-h-[180px] flex flex-col">
             <Image
-              src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80"
+              src={ImageSandbox}
               alt="Security sandbox"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -114,7 +118,7 @@ export function FeatureCards() {
           {/* Medium Card - Dev Containers — with background image */}
           <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col lg:col-span-2">
             <Image
-              src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80"
+              src={ImageDevelopmentEnvrionment}
               alt="Development environment"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
