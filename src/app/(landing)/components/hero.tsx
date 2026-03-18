@@ -164,7 +164,7 @@ export function Hero() {
               <div className="flex-1 md:w-[72%] lg:w-[70%] overflow-hidden rounded-tl-2xl border-t border-l border-border/60 shadow-2xl">
                 {/* Window chrome */}
                 <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-4 py-2.5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#473433]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
                   <span className="ml-3 text-xs text-muted-foreground">

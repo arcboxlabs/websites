@@ -88,7 +88,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5">
-              <ArcBoxDesktopLogo width={32} height={32} />
+              <ArcBoxDesktopLogo width={32} height={32} aria-hidden="true" focusable="false" />
               {/* <Image
                 src="/arcbox-logo.svg"
                 alt="ArcBox"

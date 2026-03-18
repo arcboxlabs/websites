@@ -15,6 +15,8 @@ export default function DocsLayout({ children }: React.PropsWithChildren) {
     <html
       lang="en"
       className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}
+      // next-themes
+      suppressHydrationWarning
     >
       <body className="flex flex-col min-h-screen" suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
         <Provider>{children}</Provider>

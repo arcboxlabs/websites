@@ -1,4 +1,6 @@
 export default function ArcBoxLogo(props: React.ComponentProps<'svg'>) {
+  const id = 'arcbox-logo';
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +10,7 @@ export default function ArcBoxLogo(props: React.ComponentProps<'svg'>) {
       viewBox="0 0 119 128"
       {...props}
     >
-      <g clipPath="url(#a)">
+      <g clipPath={`url(#${id}-a)`}>
         <path
           fill="currentColor"
           d="M65.937 66.115c-2.235 1.29-3.857 4.1-3.858 6.682v49.341c0 2.22.96 4.045 2.632 5.006.77.443 1.621.662 2.503.662.486 0 .982-.073 1.479-.206V64.524l-2.756 1.591Zm8.423-4.863v63.245h.136l6.477-3.766V57.433l-6.614 3.82Z"
@@ -23,7 +25,7 @@ export default function ArcBoxLogo(props: React.ComponentProps<'svg'>) {
         />
       </g>
       <defs>
-        <clipPath id="a">
+        <clipPath id={`${id}-a`}>
           <path fill="#fff" d="M0 0h118.354v127.806H0z" />
         </clipPath>
       </defs>
