@@ -1,3 +1,5 @@
+'use client';
+
 import { useClipboard } from 'foxact/use-clipboard';
 import { Check, Link2 } from 'lucide-react';
 import { useCallback } from 'react';
