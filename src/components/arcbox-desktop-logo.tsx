@@ -1,7 +1,5 @@
-import { useId } from 'react';
-
 export default function ArcBoxDesktopLogo(props: React.ComponentProps<'svg'>) {
-  const id = useId() + ':arcbox-desktop-logo';
+  const id = 'arcbox-desktop-logo';
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="16 16 480 480" {...props}>

@@ -19,13 +19,13 @@ export function CTASection({ className, ...props }: CTASectionProps) {
               That's all. Except not.
             </p>
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-5xl text-balance">
-              Ready to ditch
+              Ready to switch to
               <br />
-              <span className="text-accent">Docker Desktop?</span>
+              <span className="text-accent">ArcBox Desktop?</span>
             </h2>
 
             <p className="mx-auto mb-10 max-w-xl text-base text-muted-foreground">
-              Join thousands of developers who switched to something faster, lighter, and built for the way they actually work.
+              Faster and lighter, built for the way you actually work
             </p>
 
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -43,7 +43,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 variant="outline"
                 size="lg"
                 asChild
-                className="h-12 rounded-full px-8"
+                className="h-12 rounded-full px-8 bg-transparent border-border hover:bg-secondary"
               >
                 <Link href="/docs">
                   Get Started
@@ -53,7 +53,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </div>
 
             <p className="mt-6 text-sm text-muted-foreground">
-              Free for personal use. Pro plans available for teams.
+              Requires macOS 15+ on Apple Silicon. Free forever for personal use. Business & commercial usage free during beta.
             </p>
 
             {/* Floating Screenshots */}
@@ -105,7 +105,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                       Terminal
                     </span>
                   </div>
-                  <div className="aspect-[4/3] bg-background p-3">
+                  <div className="aspect-[4/3] bg-background p-3 text-left">
                     <div className="font-mono text-[8px] md:text-[10px] text-muted-foreground space-y-1">
                       <p><span className="text-accent">$</span> arcbox run nginx</p>
                       <p className="text-foreground/60">Starting container...</p>

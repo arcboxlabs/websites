@@ -1,18 +1,18 @@
 import {
-  LifeBuoy,
+  // LifeBuoy,
   MessageCircle,
   FileText,
-  HelpCircle,
+  // HelpCircle,
   Bot
 } from 'lucide-react';
 
 const footerLinks = [
-  {
-    icon: LifeBuoy,
-    text: 'Need help?',
-    linkText: 'Contact Support',
-    href: '#'
-  },
+  // {
+  //   icon: LifeBuoy,
+  //   text: 'Need help?',
+  //   linkText: 'Contact Support',
+  //   href: '#'
+  // },
   {
     icon: MessageCircle,
     text: 'Chat with ArcBox community on',
@@ -25,12 +25,12 @@ const footerLinks = [
     linkText: 'changelog',
     href: '#'
   },
-  {
-    icon: HelpCircle,
-    text: 'Questions?',
-    linkText: 'Contact Sales',
-    href: '#'
-  },
+  // {
+  //   icon: HelpCircle,
+  //   text: 'Questions?',
+  //   linkText: 'Contact Sales',
+  //   href: '#'
+  // },
   {
     icon: Bot,
     text: 'LLM?',

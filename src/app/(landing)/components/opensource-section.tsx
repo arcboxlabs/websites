@@ -1,6 +1,7 @@
 import { Button } from '@/ui/button';
-import clsx from 'clsx';
-import { Github, Code2, GitCommitHorizontal, Users, TerminalSquare, FolderIcon, FileIcon } from 'lucide-react';
+import { clsx } from 'clsx';
+import { Code2, GitCommitHorizontal, Users, TerminalSquare, FolderIcon, FileIcon } from 'lucide-react';
+import { SiGithub, SiOpensourceinitiative } from '@icons-pack/react-simple-icons';
 
 export function OpenSourceSection() {
   return (
@@ -8,7 +9,7 @@ export function OpenSourceSection() {
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
-            <Github className="h-4 w-4" />
+            <SiOpensourceinitiative className="h-4 w-4" />
             <span>Open Source</span>
           </div>
 
@@ -29,8 +30,8 @@ export function OpenSourceSection() {
           {/* Content */}
           <div className="lg:basis-4/7 lg:shrink-0">
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-              Some projects call themselves "open source" while only hosting a
-              README, and a few screenshots on GitHub.{' '}
+              Some projects have a GitHub repository while only hosting a
+              README, and a few screenshots.{' '}
               <span className="text-foreground font-medium">
                 That's not open source—that's a landing page.
               </span>
@@ -41,8 +42,18 @@ export function OpenSourceSection() {
               <span className="text-foreground font-medium">
                 truly open source
               </span>.
-              {' '}Every line of code, every build script, every test—it's all on
-              GitHub. Fork it, audit it, contribute to it.
+              {' '}
+              <span className="text-foreground font-medium">
+                We open source every line of code
+              </span>,
+              {' '}
+              every build script, every test —
+              {' '}
+              <span className="text-foreground font-medium">
+                it's all on GitHub
+              </span>
+              .{' '}
+              Star it, fork it, audit it, contribute to it.
             </p>
 
             {/* Stats/badges row */}
@@ -116,28 +127,28 @@ export function OpenSourceSection() {
               <Button
                 size="lg"
                 asChild
-                className="h-11 rounded-full bg-foreground text-background hover:bg-foreground/90"
+                className="h-11 flex-1 md:flex-none rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
                 <a
                   href="https://github.com/arcboxlabs/arcbox-desktop"
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <Github className="mr-2 h-4 w-4" />
+                  <SiGithub className="mr-2 h-4 w-4" />
                   arcboxlabs/arcbox-desktop
                 </a>
               </Button>
               <Button
                 size="lg"
                 asChild
-                className="h-11 rounded-full bg-foreground text-background hover:bg-foreground/90"
+                className="h-11 flex-1 md:flex-none rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
                 <a
                   href="https://github.com/arcboxlabs/arcbox"
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <Github className="mr-2 h-4 w-4" />
+                  <SiGithub className="mr-2 h-4 w-4" />
                   arcboxlabs/arcbox
                 </a>
               </Button>
@@ -150,7 +161,7 @@ export function OpenSourceSection() {
               {/* GitHub-style header */}
               <a href="https://github.com/arcboxlabs/arcbox-desktop" target="_blank" rel="noopener noreferrer external">
                 <div className="flex items-center gap-3 border-b border-border bg-secondary/80 px-6 py-4">
-                  <Github className="h-6 w-6 text-foreground" />
+                  <SiGithub className="h-6 w-6 text-foreground" />
                   <div>
                     <p className="font-semibold text-foreground">
                       arcboxlabs/arcbox-desktop

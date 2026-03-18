@@ -1,4 +1,4 @@
-import ArcBoxLogo from '@/components/arcbox-logo';
+import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
 
 interface OGImageProps {
   title: string,
@@ -140,7 +140,7 @@ export function OGImage({
         */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{ width: 48, height: 48, display: 'flex', flexShrink: 0 }}>
-            <ArcBoxLogo width={48} height={48} />
+            <ArcBoxDesktopLogo width={48} height={48} />
           </div>
 
           <span

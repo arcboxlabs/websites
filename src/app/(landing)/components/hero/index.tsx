@@ -1,10 +1,56 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight, Apple } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
+import BrewSnippetCopyButton from './brew-command';
+
+const BREW_COMMAND = 'brew install arcbox-desktop';
+
+// Generate dot positions arranged in a semicircle arc (180°), ported from OG template.
+// The arch center sits below-right so:
+//   - smaller rings form readable mini-arches in the right portion
+//   - larger rings extend partially off-canvas, adding depth
+function generateArcDots(): Array<{ x: number, y: number, op: number }> {
+  const W = 480;
+  const H = 240;
+
+  // Center at bottom-right so the left two-thirds of the top half-circle is visible
+  const cx = 400;
+  const cy = 280;
+
+  const RINGS = 10;
+  const R_MIN = 80;
+  const R_MAX = 240;
+  const DOT_SPACING = 12;
+  const A_START = Math.PI;
+  const A_END = 2 * Math.PI;
+
+  const dots: Array<{ x: number, y: number, op: number }> = [];
+
+  for (let ring = 0; ring < RINGS; ring++) {
+    const r = R_MIN + ((R_MAX - R_MIN) * ring) / (RINGS - 1);
+    const arcLength = r * Math.PI;
+    const dotCount = Math.max(6, Math.round(arcLength / DOT_SPACING));
+
+    const ringPhase = ring / (RINGS - 1);
+    const baseOp = 0.08 + 0.34 * Math.sin(ringPhase * Math.PI);
+
+    for (let d = 0; d <= dotCount; d++) {
+      const t = d / dotCount;
+      const angle = A_START + t * (A_END - A_START);
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+
+      if (x >= 0 && x <= W && y >= 0 && y <= H) {
+        dots.push({ x: Math.round(x), y: Math.round(y), op: baseOp });
+      }
+    }
+  }
+
+  return dots;
+}
+
+const ARC_DOTS = generateArcDots();
 
 export function Hero() {
   return (
@@ -22,64 +68,24 @@ export function Hero() {
             }}
           />
 
-          {/* Decorative animated lines - reflecting logo soul */}
-          <div
-            className="absolute inset-0 pointer-events-none overflow-hidden opacity-75 z-0"
-            style={{
-              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 30%, black 100%)'
-            }}
-          >
+          {/* Decorative arc dots - ported from OG template */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
             <svg
-              className="w-full h-full hidden md:block"
-              viewBox="0 0 1000 800"
-              preserveAspectRatio="xMaxYMid slice"
+              className="absolute top-0 right-0"
+              width="480"
+              height="240"
+              viewBox="0 0 480 240"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Line 1: Leftmost, Straight, Black/Muted */}
-              <motion.path
-                d="M 680 1000 L 680 -200"
-                stroke="currentColor"
-                strokeWidth="52"
-                className="text-foreground blur-sm"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.1 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0 }}
-              />
-
-              {/* Line 2: Center-Left, Straight, Black/Muted */}
-              <motion.path
-                d="M 760 1000 L 760 -200"
-                stroke="currentColor"
-                strokeWidth="48"
-                className="text-foreground blur-sm"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.15 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
-              />
-
-              {/* Line 3: Center-Right, Slightly Curved, Orange/Accent */}
-              <motion.path
-                d="M 840 1000 L 840 400 Q 840 150, 940 -200"
-                stroke="currentColor"
-                strokeWidth="44"
-                className="text-accent blur-xs"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.3 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
-              />
-
-              {/* Line 4: Rightmost, Curved from 25%, Orange/Accent */}
-              <motion.path
-                d="M 920 1000 L 920 400 Q 920 -50, 1400 -200"
-                stroke="currentColor"
-                strokeWidth="44"
-                className="text-accent blur-xs"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.3 }}
-                transition={{ duration: 1.5, ease: 'easeOut', delay: 0.6 }}
-              />
+              {ARC_DOTS.map((dot) => (
+                <circle
+                  key={`${dot.x}-${dot.y}`}
+                  cx={dot.x}
+                  cy={dot.y}
+                  r={1.8}
+                  fill={`rgba(220, 105, 30, ${dot.op.toFixed(3)})`}
+                />
+              ))}
             </svg>
           </div>
 
@@ -124,6 +130,13 @@ export function Hero() {
                       Download for macOS
                     </Link>
                   </Button>
+
+                  <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
+                    <span className="text-muted-foreground select-none">$</span>
+                    <code className="text-foreground">{BREW_COMMAND}</code>
+                    <BrewSnippetCopyButton brewCommand={BREW_COMMAND} />
+                  </div>
+
                   <Button
                     variant="outline"
                     size="lg"
@@ -131,14 +144,14 @@ export function Hero() {
                     className="h-10 rounded-full px-6 bg-transparent border-border hover:bg-secondary"
                   >
                     <Link href="/docs">
-                      Quick Start
+                      Learn More
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
 
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Requires macOS 14+ on Apple Silicon
+                  Requires macOS 15+ on Apple Silicon. Free forever for personal use. Business & commercial usage free during beta.
                 </p>
               </div>
             </div>

@@ -1,13 +1,11 @@
-'use client';
-
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { Download } from 'lucide-react';
-import { Github } from 'lucide-react';
 import HeaderScrollContainer from './header-scroll-container';
 import { lazy, Suspense } from 'react';
 import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
-import ArcBoxLogo from '@/components/arcbox-logo';
+import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
+import { socialLinks } from '@/constants/social-links';
 
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
@@ -16,9 +14,9 @@ const DEFAULT_LINKS: Array<{
   label: string,
   external?: boolean
 }> = [
-  { href: '/', label: 'ArcBox Desktop' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/docs', label: 'Docs' }
+  // { href: '/', label: 'ArcBox Desktop' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/blog', label: 'Blog' }
 ];
 
 export function Header() {
@@ -26,53 +24,59 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <HeaderScrollContainer>
         <div className="flex h-14 items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2.5" scroll>
-            {/* <Image
+          <nav className="flex gap-8">
+            <Link href="/" className="flex items-center gap-2.5" scroll>
+              {/* <Image
               src="/arcbox-logo.svg"
               alt="ArcBox"
               width={28}
               height={28}
               className="rounded-lg"
             /> */}
-            <ArcBoxLogo width={28} height={28} />
-            <span className="text-base font-semibold text-foreground">
-              ArcBox
-            </span>
-          </Link>
+              <ArcBoxDesktopLogo width={28} height={28} />
+              <span className="text-base font-semibold text-foreground">
+                ArcBox Desktop
+              </span>
+            </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {
-              DEFAULT_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  scroll={false}
-                >
-                  {link.label}
-                </Link>
-              ))
-            }
+            <div className="hidden items-center gap-8 md:flex">
+              {
+                DEFAULT_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    scroll={false}
+                  >
+                    {link.label}
+                  </Link>
+                ))
+              }
+            </div>
           </nav>
 
           <div className="hidden items-center gap-1 md:flex">
-            <Button
-              size="icon"
-              variant="ghost"
-              asChild
-              className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
-            >
-              <a
-                href="https://github.com/arcboxlabs"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
+
+            {socialLinks.map((social) => (
+              <Button
+                key={social.name}
+                size="icon"
+                variant="ghost"
+                asChild
+                className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
               >
-                <Github className="h-4 w-4" />
-              </a>
-            </Button>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                >
+                  <social.icon className="h-4 w-4" />
+                </a>
+              </Button>
+            ))}
             {/* <Button
               size="icon"
               variant="ghost"

@@ -1,4 +1,4 @@
-import { Shield, Lock, Eye, Terminal } from 'lucide-react';
+import { Lock, Eye, Terminal, ShieldCheckIcon } from 'lucide-react';
 
 export function AIIsolationSection() {
   return (
@@ -9,7 +9,7 @@ export function AIIsolationSection() {
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
-                <Shield className="h-4 w-4" />
+                <ShieldCheckIcon className="h-4 w-4" />
                 <span>AI Agent Runtime</span>
               </div>
               <span className="inline-flex items-center rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-sm font-medium text-yellow-500">

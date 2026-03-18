@@ -10,11 +10,11 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <FeatureCards />
-      <SpeedComparison />
       <OpenSourceSection />
+      <SpeedComparison />
       <AIIsolationSection />
       <OpenClawSection />
+      <FeatureCards />
       <CTASection />
     </>
   );
