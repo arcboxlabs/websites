@@ -1,5 +1,7 @@
-import { Provider } from '@docs/components/provider';
-import '@docs/styles/global.css';
+import './styles/global.css';
+import './styles/themes.css';
+
+import { Provider } from './components/provider';
 import type { Metadata } from 'next';
 import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
