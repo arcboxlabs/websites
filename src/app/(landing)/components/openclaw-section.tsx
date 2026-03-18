@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Wifi, HardDrive, Activity, ShieldCheck } from 'lucide-react';
 
 const isolationFeatures = [
@@ -73,44 +72,89 @@ export function OpenClawSection() {
             </div>
           </div>
 
-          {/* Visual */}
+          {/* Visual - Terminal Window */}
           <div className="relative">
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-card w-full lg:aspect-auto lg:h-[600px]">
-              <Image
-                src="/openclaw-screenshot-placeholder.jpg"
-                alt="OpenClaw running in an isolated ArcBox sandbox"
-                fill
-                className="object-cover"
-              />
-              {/* Dark overlay for legibility */}
-              <div className="absolute inset-0 bg-black/30" />
-
-              {/* Floating status badge */}
-              <div className="absolute bottom-6 left-6 right-6 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-md p-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-400" />
-                  </span>
-                  <span className="text-xs font-medium text-white/90">
-                    Sandbox active — openclaw@vm-9f23a
-                  </span>
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-black w-full lg:h-[600px] shadow-2xl">
+              {/* Terminal Header */}
+              <div className="flex items-center gap-2 bg-gray-800/50 border-b border-gray-700 px-4 py-3">
+                <div className="flex gap-2">
+                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
                 </div>
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  {[
-                    { label: 'Network', value: 'Blocked' },
-                    { label: 'Disk', value: 'Ephemeral' },
-                    { label: 'I/O', value: 'Audited' }
-                  ].map((stat) => (
-                    <div key={stat.label} className="rounded-lg bg-white/5 p-2">
-                      <p className="text-[10px] text-white/50 mb-0.5">
-                        {stat.label}
-                      </p>
-                      <p className="text-xs font-semibold text-accent">
-                        {stat.value}
-                      </p>
+                <span className="ml-4 text-xs text-gray-400 font-mono">openclaw@vm-9f23a</span>
+              </div>
+
+              {/* Terminal Content */}
+              <div className="p-6 font-mono text-sm overflow-hidden h-full flex flex-col">
+                {/* Status indicator */}
+                <div className="mb-4 flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+                  </span>
+                  <span className="text-green-400 text-xs">Sandbox active</span>
+                </div>
+
+                {/* Terminal output */}
+                <div className="space-y-3 text-gray-300 flex-1 overflow-hidden">
+                  <div>
+                    <span className="text-blue-400">$ </span>
+                    <span className="text-white">openclaw --tui</span>
+                  </div>
+
+                  <div className="space-y-2 ml-2 border-l border-gray-700 pl-3">
+                    <div>
+                      <span className="text-cyan-400">╭─ OpenClaw TUI</span>
                     </div>
-                  ))}
+                    <div className="space-y-1 text-xs">
+                      <div>
+                        <span className="text-gray-500">▸</span>
+                        <span className="text-white ml-2">Network Isolation</span>
+                        <span className="ml-2 text-green-400">✓ blocked</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">▸</span>
+                        <span className="text-white ml-2">Filesystem</span>
+                        <span className="ml-2 text-green-400">✓ ephemeral</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">▸</span>
+                        <span className="text-white ml-2">I/O Operations</span>
+                        <span className="ml-2 text-green-400">✓ audited</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">▸</span>
+                        <span className="text-white ml-2">Syscall Filtering</span>
+                        <span className="ml-2 text-green-400">✓ enabled</span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-cyan-400">╰─ Resources</span>
+                    </div>
+                    <div className="space-y-1 text-xs">
+                      <div className="ml-2">
+                        <span className="text-gray-500">├</span>
+                        <span className="text-white ml-2">CPU</span>
+                        <span className="ml-2 text-amber-400">2 cores</span>
+                      </div>
+                      <div className="ml-2">
+                        <span className="text-gray-500">├</span>
+                        <span className="text-white ml-2">Memory</span>
+                        <span className="ml-2 text-amber-400">4 GiB</span>
+                      </div>
+                      <div className="ml-2">
+                        <span className="text-gray-500">└</span>
+                        <span className="text-white ml-2">Uptime</span>
+                        <span className="ml-2 text-amber-400">12m 34s</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-gray-700">
+                    <span className="text-blue-400">$ </span>
+                    <span className="text-white animate-pulse">_</span>
+                  </div>
                 </div>
               </div>
             </div>
