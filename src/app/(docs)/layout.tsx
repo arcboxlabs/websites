@@ -2,12 +2,19 @@ import { Provider } from '@docs/components/provider';
 import '@docs/styles/global.css';
 import type { Metadata } from 'next';
 import { docsOpenGraph, createTwitter } from '@/lib/metadata';
-import { akkurat, akkuratMono } from '../fonts';
+import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+import { clsx } from 'clsx';
+
+const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-mono' });
 
 // The Root Layout for /docs only.
 export default function DocsLayout({ children }: React.PropsWithChildren) {
   return (
-    <html lang="en" className={`${akkurat.variable} ${akkuratMono.variable} font-sans`}>
+    <html
+      lang="en"
+      className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}
+    >
       <body className="flex flex-col min-h-screen" suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
         <Provider>{children}</Provider>
       </body>
