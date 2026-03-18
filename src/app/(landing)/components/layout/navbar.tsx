@@ -7,7 +7,7 @@ import { Github } from 'lucide-react';
 import HeaderScrollContainer from './header-scroll-container';
 import { lazy, Suspense } from 'react';
 import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
-import ArcBoxLogo from '@/components/arcbox-logo';
+import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
 
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
@@ -16,9 +16,9 @@ const DEFAULT_LINKS: Array<{
   label: string,
   external?: boolean
 }> = [
-  { href: '/', label: 'ArcBox Desktop' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/docs', label: 'Docs' }
+  // { href: '/', label: 'ArcBox Desktop' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/blog', label: 'Blog' }
 ];
 
 export function Header() {
@@ -26,35 +26,37 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <HeaderScrollContainer>
         <div className="flex h-14 items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2.5" scroll>
-            {/* <Image
+          <nav className="flex gap-8">
+            <Link href="/" className="flex items-center gap-2.5" scroll>
+              {/* <Image
               src="/arcbox-logo.svg"
               alt="ArcBox"
               width={28}
               height={28}
               className="rounded-lg"
             /> */}
-            <ArcBoxLogo width={28} height={28} />
-            <span className="text-base font-semibold text-foreground">
-              ArcBox
-            </span>
-          </Link>
+              <ArcBoxDesktopLogo width={28} height={28} />
+              <span className="text-base font-semibold text-foreground">
+                ArcBox Desktop
+              </span>
+            </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {
-              DEFAULT_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  scroll={false}
-                >
-                  {link.label}
-                </Link>
-              ))
-            }
+            <div className="hidden items-center gap-8 md:flex">
+              {
+                DEFAULT_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    scroll={false}
+                  >
+                    {link.label}
+                  </Link>
+                ))
+              }
+            </div>
           </nav>
 
           <div className="hidden items-center gap-1 md:flex">
