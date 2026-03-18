@@ -3,7 +3,7 @@ import ArcBoxLogo from '@/components/arcbox-logo';
 
 export const gitConfig = {
   user: 'arcboxlabs',
-  repo: 'docs',
+  repo: 'websites',
   branch: 'master'
 };
 
