@@ -1,33 +1,42 @@
-import Link from 'next/link';
 import { Button } from '@/ui/button';
-import { Github, ExternalLink, Code2, GitCommitHorizontal, Users, TerminalSquare } from 'lucide-react';
+import clsx from 'clsx';
+import { Github, Code2, GitCommitHorizontal, Users, TerminalSquare, FolderIcon, FileIcon } from 'lucide-react';
 
 export function OpenSourceSection() {
   return (
     <section className="relative px-4 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="mb-16 text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+            <Github className="h-4 w-4" />
+            <span>Open Source</span>
+          </div>
+
+          <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            <span className="text-foreground">Fully open-source.</span>
+
+            <span className="hidden md:inline">{' '}</span>
+            <br className="block md:hidden" />
+
+            <span className="text-muted-foreground">
+              Not just a README.
+            </span>
+          </h2>
+
+        </div>
+
+        <div className="flex flex-col items-center gap-12 lg:flex-row lg:gap-16">
           {/* Content */}
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
-              <Github className="h-4 w-4" />
-              <span>Open Source</span>
-            </div>
-
-            <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-              Fully open-source.
-              <br />
-              <span className="text-muted-foreground">
-                Not just a README.
-              </span>
-            </h2>
-
-            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+          <div className="lg:basis-4/7 lg:shrink-0">
+            <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
               Some projects call themselves "open source" while only hosting a
-              README, a few screenshots, and an issue template on GitHub.{' '}
+              README, and a few screenshots on GitHub.{' '}
               <span className="text-foreground font-medium">
                 That's not open source—that's a landing page.
               </span>
+            </p>
+
+            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
               {' '}ArcBox Desktop is{' '}
               <span className="text-foreground font-medium">
                 truly open source
@@ -38,21 +47,6 @@ export function OpenSourceSection() {
 
             {/* Stats/badges row */}
             <div className="mb-8 flex flex-wrap items-center gap-3">
-              {/* MIT License badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5 text-accent"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M9 12l2 2 4-4" />
-                  <circle cx="12" cy="12" r="10" />
-                </svg>
-                <span className="text-foreground font-medium">MIT License</span>
-              </div>
-
               {/* OSI Approved badge */}
               <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm">
                 <svg
@@ -64,6 +58,15 @@ export function OpenSourceSection() {
                 </svg>
                 <span className="text-foreground font-medium">OSI Approved</span>
               </div>
+
+              {/* License badge */}
+              {
+                ['MIT', 'Apache 2.0', 'AGPL 3.0'].map((license) => (
+                  <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm" key={license}>
+                    <span className="text-foreground font-medium">{license}</span>
+                  </div>
+                ))
+              }
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -71,12 +74,12 @@ export function OpenSourceSection() {
                 {
                   icon: Code2,
                   title: 'Full source code',
-                  desc: 'Not just binaries or a README'
+                  desc: 'Not just binaries and a README'
                 },
                 {
                   icon: GitCommitHorizontal,
                   title: 'Actively maintained',
-                  desc: 'Weekly commits, fast issue response'
+                  desc: 'Frequent commits, fast response'
                 },
                 {
                   icon: Users,
@@ -115,46 +118,49 @@ export function OpenSourceSection() {
                 asChild
                 className="h-11 rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
-                <Link
+                <a
                   href="https://github.com/arcboxlabs/arcbox-desktop"
                   target="_blank"
+                  rel="noopener noreferrer external"
                 >
                   <Github className="mr-2 h-4 w-4" />
-                  View on GitHub
-                </Link>
+                  arcboxlabs/arcbox-desktop
+                </a>
               </Button>
               <Button
-                variant="outline"
                 size="lg"
                 asChild
-                className="h-11 rounded-full px-6 border-border"
+                className="h-11 rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
-                <Link
-                  href="https://github.com/arcboxlabs/arcbox-desktop/blob/main/CONTRIBUTING.md"
+                <a
+                  href="https://github.com/arcboxlabs/arcbox"
                   target="_blank"
+                  rel="noopener noreferrer external"
                 >
-                  Contribute
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </Link>
+                  <Github className="mr-2 h-4 w-4" />
+                  arcboxlabs/arcbox
+                </a>
               </Button>
             </div>
           </div>
 
           {/* Visual card */}
-          <div className="relative">
+          <div className="relative w-full lg:basis-3/7 lg:min-w-0">
             <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
               {/* GitHub-style header */}
-              <div className="flex items-center gap-3 border-b border-border bg-secondary/80 px-6 py-4">
-                <Github className="h-6 w-6 text-foreground" />
-                <div>
-                  <p className="font-semibold text-foreground">
-                    arcboxlabs/arcbox-desktop
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Public repository
-                  </p>
+              <a href="https://github.com/arcboxlabs/arcbox-desktop" target="_blank" rel="noopener noreferrer external">
+                <div className="flex items-center gap-3 border-b border-border bg-secondary/80 px-6 py-4">
+                  <Github className="h-6 w-6 text-foreground" />
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      arcboxlabs/arcbox-desktop
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Public repository
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </a>
 
               {/* Fake file tree */}
               <div className="bg-background/50 p-6">
@@ -170,6 +176,7 @@ export function OpenSourceSection() {
                     { name: 'scripts/', type: 'folder', highlight: true },
                     { name: '.gitignore', type: 'file', highlight: false },
                     { name: 'CHANGELOG.md', type: 'file', highlight: false },
+                    { name: 'LICENSE', type: 'file', highlight: false },
                     { name: 'README.md', type: 'file', highlight: false }
                   ].map((item) => (
                     <div
@@ -182,27 +189,10 @@ export function OpenSourceSection() {
                     >
                       {item.type === 'folder'
                         ? (
-                          <svg
-                            viewBox="0 0 24 24"
-                            className={`h-4 w-4 ${
-                              item.highlight ? 'text-accent' : 'text-muted-foreground'
-                            }`}
-                            fill="currentColor"
-                          >
-                            <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z" />
-                          </svg>
+                          <FolderIcon className={clsx('h-4 w-4', item.highlight ? 'text-accent' : 'text-muted-foreground')} />
                         )
                         : (
-                          <svg
-                            viewBox="0 0 24 24"
-                            className="h-4 w-4 text-muted-foreground"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                            <path d="M14 2v6h6" />
-                          </svg>
+                          <FileIcon className={clsx('h-4 w-4', item.highlight ? 'text-accent' : 'text-muted-foreground')} />
                         )}
                       <span>{item.name}</span>
                     </div>
@@ -210,7 +200,7 @@ export function OpenSourceSection() {
                 </div>
 
                 {/* Commit activity */}
-                <div className="mt-6 rounded-xl bg-secondary/50 p-4">
+                {/* <div className="mt-6 rounded-xl bg-secondary/50 p-4">
                   <p className="text-sm font-medium text-foreground mb-3">
                     Recent activity
                   </p>
@@ -233,7 +223,7 @@ export function OpenSourceSection() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
