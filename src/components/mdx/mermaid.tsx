@@ -5,12 +5,18 @@ import { useMemo } from 'react';
 export function Mermaid({ chart }: { chart: string }) {
   const svg = useMemo(() => {
     try {
-      return renderMermaidSVG(chart, {
-        bg: 'var(--color-fd-background)',
-        fg: 'var(--color-fd-foreground)',
-        interactive: true,
-        transparent: true
-      });
+      // beautiful-mermaid doesn't handle semicolons properly,
+      // strip them since they're optional in mermaid syntax
+      const sanitized = chart.replaceAll(/;\s*/g, '\n');
+      return renderMermaidSVG(
+        sanitized,
+        {
+          bg: 'var(--color-fd-background)',
+          fg: 'var(--color-fd-foreground)',
+          interactive: true,
+          transparent: true
+        }
+      );
     } catch (e) {
       // eslint-disable-next-line no-console -- for error logging
       console.error('Failed to render Mermaid chart:', e);
@@ -25,7 +31,9 @@ export function Mermaid({ chart }: { chart: string }) {
 
   return (
     <CodeBlock title="Mermaid">
-      <Pre>{chart}</Pre>
+      <Pre>
+        {chart}
+      </Pre>
     </CodeBlock>
   );
 }
