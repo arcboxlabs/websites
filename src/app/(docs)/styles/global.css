@@ -1,3 +1,27 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+}
+
+:root {
+  --accent: oklch(0.7 0.16 45);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --color-fd-primary: oklch(0.7 0.16 45);
+  --color-fd-primary-foreground: oklch(0.98 0 0);
+  --color-fd-ring: oklch(0.5 0.16 45);
+}
+
+.dark {
+  --color-fd-primary: oklch(0.7 0.16 45);
+  --color-fd-primary-foreground: oklch(0.15 0 0);
+  --color-fd-ring: oklch(0.7 0.16 45);
+}
+
+.prose {
+  --tw-prose-links: var(--color-fd-primary);
+}
