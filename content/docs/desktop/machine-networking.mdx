@@ -1,0 +1,46 @@
+---
+title: Machine Networking
+description: Network configuration and connectivity for Linux machines.
+---
+
+## Default Setup
+
+Each machine gets its own virtual network interface connected to the ArcBox network. Outbound internet access works via NAT. No configuration needed.
+
+## Connectivity
+
+| Direction | How |
+|-----------|-----|
+| Machine → Internet | NAT via host (automatic) |
+| Mac → Machine | `<name>.arcbox` hostname or SSH |
+| Machine → Mac | `host.arcbox.internal` hostname |
+| Machine → Machine | `<name>.arcbox` hostnames |
+
+## Port Access
+
+All ports on a machine are accessible from your Mac via the `.arcbox` domain. There is no need to forward individual ports.
+
+```bash
+# Machine "dev" running multiple services
+curl http://dev.arcbox:3000    # Web app
+curl http://dev.arcbox:5432    # PostgreSQL
+ssh dev.arcbox                  # SSH (port 22)
+```
+
+## Static IP
+
+Machines receive a stable IP address from the ArcBox DHCP server. The address persists across reboots.
+
+You can view a machine's IP in the Desktop app (machine detail view) or via:
+
+```bash
+arcbox machine inspect dev --format '{{.NetworkSettings.IPAddress}}'
+```
+
+## DNS Inside the Machine
+
+Machines can resolve:
+
+- Public hostnames (via upstream DNS)
+- Other machine names (`<name>.arcbox`)
+- Container names (when on the same network)

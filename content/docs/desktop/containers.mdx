@@ -1,0 +1,118 @@
+---
+title: Using Containers
+description: Create, manage, and inspect containers in ArcBox Desktop.
+---
+
+## Container List
+
+The main view shows all containers on your system. Each entry displays the container name, image, status, and exposed ports.
+
+Containers are organized in two groups:
+
+- **Compose projects** — containers started via `docker compose` are grouped under their project name. You can expand or collapse each group.
+- **Standalone** — containers started individually appear in a flat list.
+
+### Status Indicators
+
+| Icon | State |
+|------|-------|
+| Green | Running |
+| Yellow | Paused |
+| Red | Stopped / Exited |
+| Spinner | Starting / Stopping |
+
+## Operations
+
+**Start / Stop / Restart** — use the control buttons next to each container, or right-click for the context menu.
+
+**Remove** — removes a stopped container. Running containers must be stopped first, or use force-remove from the context menu.
+
+**Batch operations** — select multiple containers with `⌘`-click, then apply an action to all selected containers at once.
+
+## Creating Containers
+
+Click **Run** from the Images view to create a container from an image. The run dialog lets you configure:
+
+- Container name
+- Port mappings
+- Environment variables
+- Volume mounts
+- Network
+- Resource limits
+- Restart policy
+
+For most development workflows, the defaults work well. Override only what you need.
+
+## Filtering and Search
+
+Use the search bar at the top of the container list to filter by name, image, or status.
+
+The filter persists across navigation. Clear it with `Esc` or the clear button.
+
+## Container Detail Tabs
+
+Select a container to open its detail view. Information is organized across tabs:
+
+<Tabs items={['Logs', 'Terminal', 'Inspect', 'Stats']}>
+  <Tab>
+    Logs stream in real time. New lines appear at the bottom as they are written. The view auto-scrolls to follow output unless you scroll up manually.
+
+    **Search** — type in the search bar to highlight matching lines. The viewer jumps to the first match and shows a count of total matches.
+
+    **Timestamps** — toggle the clock icon to show or hide timestamps.
+
+    **Follow mode** — keeps the log viewer scrolled to the bottom. Scrolling up pauses it. Click **Resume** or scroll to the bottom to re-enable.
+
+    **Copy** — select log lines and use `⌘C` to copy. Right-click for options to copy with or without timestamps.
+
+    <Callout type="info">
+      The log viewer handles high-throughput output without blocking the UI. For containers that produce extremely high log volumes, use `docker logs --tail` from the CLI to limit initial output.
+    </Callout>
+  </Tab>
+  <Tab>
+    Get an interactive shell inside a running container. ArcBox picks the best available shell automatically: `/bin/bash` if present, otherwise `/bin/sh`.
+
+    This is equivalent to:
+
+    ```bash
+    docker exec -it <container> /bin/bash
+    ```
+
+    Colors, cursor movement, and interactive programs (like `top` or `vim`) work as expected. `⌘C` / `⌘V` for copy and paste. The terminal resizes with the window.
+
+    You can open multiple independent terminal sessions to the same container.
+
+    <Callout type="warn">
+      The terminal requires a running container with a shell binary. Stopped containers and `scratch`-based images do not support terminal access.
+    </Callout>
+  </Tab>
+  <Tab>
+    The full configuration of a container:
+
+    - **Environment variables** — all `ENV` values set at build time or runtime
+    - **Port mappings** — host-to-container port bindings
+    - **Mount points** — bound volumes and bind mounts with source and destination paths
+    - **Network** — attached networks, IP addresses, and aliases
+    - **Labels** — container labels including Compose metadata
+    - **Health check** — configured health check command and current status
+    - **Restart policy** — the container's restart behavior
+
+    This is the same data as `docker inspect <container>`, organized into readable sections instead of raw JSON.
+  </Tab>
+  <Tab>
+    Live resource usage for a running container:
+
+    - **CPU** — percentage of allocated CPU time in use
+    - **Memory** — current RSS and configured limit
+    - **Network I/O** — bytes sent and received since container start
+    - **Disk I/O** — read and write throughput
+
+    Stats update in real time. The graphs show a rolling window of recent activity.
+  </Tab>
+</Tabs>
+
+## Real-time Sync
+
+ArcBox Desktop listens to Docker events in real time. Containers created or modified via the CLI, Compose, or other tools appear in the GUI within a fraction of a second.
+
+This works in both directions — actions taken in the GUI are reflected immediately in `docker ps` and other CLI tools.

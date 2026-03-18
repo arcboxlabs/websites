@@ -1,0 +1,41 @@
+---
+title: File Sharing
+description: Share files between your Mac and Linux machines.
+---
+
+## Built-in File Sharing
+
+ArcBox mounts your home directory into each machine automatically:
+
+```
+/Users/<username>  →  /mnt/mac/<username>
+```
+
+Files sync in both directions with near-native performance. Changes made on your Mac appear inside the machine immediately, and vice versa.
+
+## Custom Mounts
+
+Add additional mount points when creating a machine:
+
+```bash
+arcbox machine create --name dev --mount /path/on/mac:/path/in/machine
+```
+
+Or configure mounts in the machine settings panel in Desktop.
+
+## SCP and rsync
+
+For machines without shared mounts, use standard file transfer tools:
+
+```bash
+scp ./file.txt dev.arcbox:/home/user/
+rsync -av ./project/ dev.arcbox:/home/user/project/
+```
+
+See [SSH](./ssh) for connection details.
+
+## Performance
+
+Shared mounts use VirtIO filesystem passthrough for minimal overhead. Sequential read/write performance is >90% of native.
+
+For workloads that are sensitive to filesystem latency (e.g., `git status` on very large repositories), consider working directly inside the machine filesystem rather than through a shared mount.

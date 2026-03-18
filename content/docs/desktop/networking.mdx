@@ -1,0 +1,65 @@
+---
+title: Networking
+description: Container networking, port mapping, host access, and DNS.
+---
+
+## Default Network
+
+Every container connects to a default bridge network. Containers on the same network can communicate using container names as hostnames.
+
+No manual network configuration is needed for most development workflows.
+
+## Port Mapping
+
+Expose container ports to your Mac with `-p`:
+
+```bash
+docker run -d -p 8080:80 nginx
+```
+
+The service is then accessible at `localhost:8080` and `<container-name>.arcbox:8080`.
+
+Port mappings are displayed in the container list and the Inspect tab.
+
+## Host Networking
+
+Containers can reach services running on your Mac using the special hostname:
+
+```
+host.docker.internal
+```
+
+This resolves to your Mac's IP address as seen from inside the container. Useful for connecting to local databases, APIs, or other services during development.
+
+## Container-to-Container
+
+Containers on the same user-defined network can reach each other by name:
+
+```bash
+docker network create my-net
+docker run -d --name db --network my-net postgres
+docker run -d --name app --network my-net my-app
+# "app" can connect to "db" using hostname "db"
+```
+
+ArcBox provides built-in DNS resolution within Docker networks.
+
+## `.arcbox` Domains
+
+Containers are also reachable from your Mac at `<name>.arcbox`. See [Domains](./domains) for details.
+
+## Managing Networks
+
+Click **Networks** in the sidebar to view, create, and delete Docker networks. Each network shows its driver, subnet, and connected containers.
+
+The default networks (`bridge`, `host`, `none`) cannot be removed.
+
+## VPN Compatibility
+
+Some VPN clients modify the routing table in ways that break container networking. If containers lose internet access after connecting to a VPN, restart the runtime:
+
+```bash
+arcbox restart
+```
+
+Contact your VPN provider about split-tunnel configuration for long-term compatibility.

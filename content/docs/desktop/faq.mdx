@@ -1,0 +1,63 @@
+---
+title: Frequently Asked Questions
+description: Common questions about ArcBox Desktop.
+---
+
+## General
+
+<Accordions type="single">
+  <Accordion title="Is ArcBox free?" id="free">
+    Yes. The core runtime and Desktop application are free to use with no account required. Enterprise features (SSO, audit logs, Kubernetes integration) are available under a commercial license.
+  </Accordion>
+  <Accordion title="Does ArcBox require an internet connection?" id="offline">
+    No. ArcBox runs entirely offline after installation. Image pulls require internet access, but cached images and running containers work without connectivity.
+  </Accordion>
+  <Accordion title="Does ArcBox support Intel Macs?" id="intel">
+    Currently, ArcBox Desktop requires Apple Silicon (M1 or later). Intel support is on the roadmap but not yet available.
+  </Accordion>
+  <Accordion title="Does ArcBox support Linux or Windows?" id="platforms">
+    ArcBox Desktop is macOS-only. The ArcBox core runtime supports Linux (x86_64 and ARM64). There is no Windows version.
+  </Accordion>
+</Accordions>
+
+## Docker Compatibility
+
+<Accordions type="single">
+  <Accordion title="Can I use my existing Docker Compose files?" id="compose">
+    Yes. ArcBox is fully compatible with Docker Compose v2. Your `docker-compose.yml` files work without changes.
+  </Accordion>
+  <Accordion title="Can I use Docker CLI with ArcBox?" id="docker-cli">
+    Yes. ArcBox installs a `docker` CLI that talks to the ArcBox runtime. Existing scripts and tools that use the Docker CLI work as-is.
+  </Accordion>
+  <Accordion title="Does ArcBox support Docker Extensions?" id="extensions">
+    No. Docker Extensions are a proprietary Docker Desktop feature. ArcBox provides equivalent functionality through its built-in features.
+  </Accordion>
+  <Accordion title="Does ArcBox support Docker BuildKit?" id="buildkit">
+    Yes. BuildKit is the default build engine. `docker build` and `docker buildx` work as expected.
+  </Accordion>
+</Accordions>
+
+## Performance
+
+<Accordions type="single">
+  <Accordion title="Why is ArcBox faster than Docker Desktop?" id="faster">
+    ArcBox uses a lighter hypervisor (Apple Virtualization.framework), an optimized guest kernel, and pre-warmed filesystem snapshots. These structural choices reduce overhead on every critical path. See [Benchmarks](./benchmarks) for data.
+  </Accordion>
+  <Accordion title="How much memory does ArcBox use when idle?" id="memory">
+    Under 150 MB. ArcBox scales resources with actual workload demand and reclaims memory from idle containers.
+  </Accordion>
+</Accordions>
+
+## Troubleshooting
+
+<Accordions type="single">
+  <Accordion title='Docker commands return "Cannot connect to the Docker daemon"' id="daemon">
+    The ArcBox daemon is not running. Start it with `arcbox start` or launch ArcBox Desktop.
+  </Accordion>
+  <Accordion title="Containers can't access the internet" id="network">
+    Check if a VPN is active. Some VPNs interfere with container networking. Restart the runtime with `arcbox restart` after connecting to a VPN. See [Troubleshooting](./troubleshooting) for more.
+  </Accordion>
+  <Accordion title="The privileged helper won't install" id="helper">
+    Open **System Settings → Privacy & Security → Login Items & Extensions** and enable the ArcBox helper. On managed devices, your IT administrator may need to approve it via MDM. See [Helper](./helper).
+  </Accordion>
+</Accordions>

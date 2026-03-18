@@ -1,0 +1,87 @@
+---
+title: Command Line
+description: Use the Docker CLI and ArcBox CLI alongside the Desktop app.
+---
+
+## Docker CLI
+
+ArcBox provides a drop-in `docker` CLI. Install it from **Settings → Docker → Install CLI Tools**, or let ArcBox install it on first launch.
+
+Once installed, all standard Docker commands work:
+
+```bash
+docker run -d -p 8080:80 nginx
+docker compose up -d
+docker build -t my-app .
+docker logs -f my-container
+```
+
+The CLI communicates with the same ArcBox daemon as the Desktop GUI. Changes made via CLI appear in the GUI immediately, and vice versa.
+
+## ArcBox CLI
+
+The `arcbox` CLI provides additional commands for managing the runtime:
+
+<Tabs items={['Runtime', 'Machines', 'Diagnostics']}>
+  <Tab>
+    ```bash
+    arcbox start          # Start the ArcBox daemon
+    arcbox stop           # Stop the daemon and all workloads
+    arcbox restart        # Restart the daemon
+    arcbox status         # Show daemon and VM status
+    arcbox version        # Show version info
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    arcbox machine create # Create a Linux machine
+    arcbox machine list   # List machines
+    arcbox ssh <name>     # SSH into a machine
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    arcbox logs           # Show daemon logs
+    arcbox doctor         # Diagnose common issues
+    ```
+  </Tab>
+</Tabs>
+
+## CI Usage
+
+ArcBox's Docker CLI is compatible with CI tools that expect a Docker daemon. If you run CI locally (e.g., `act` for GitHub Actions), it works with ArcBox.
+
+```bash
+# Run GitHub Actions locally
+act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+```
+
+## Socket Path
+
+By default, ArcBox creates the Docker socket at `/var/run/docker.sock`.
+
+If another tool occupies that path, or you prefer a user-level socket:
+
+```bash
+export DOCKER_HOST=unix://$HOME/.arcbox/docker.sock
+```
+
+## Shell Completions
+
+<Tabs items={['zsh', 'bash', 'fish']}>
+  <Tab>
+    ```bash
+    arcbox completions zsh > ~/.zfunc/_arcbox
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    arcbox completions bash > /usr/local/etc/bash_completion.d/arcbox
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    arcbox completions fish > ~/.config/fish/completions/arcbox.fish
+    ```
+  </Tab>
+</Tabs>

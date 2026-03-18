@@ -1,0 +1,56 @@
+---
+title: Images
+description: Pull, browse, and manage container images.
+---
+
+## Image List
+
+Click **Images** in the sidebar to see all images on your system.
+
+Each entry shows the image name, tag, size, and creation date. Images are sorted by most recently used.
+
+## Pull an Image
+
+Type an image name (e.g., `nginx`, `postgres:16`, `ghcr.io/org/app:latest`) in the search bar and click **Pull**.
+
+ArcBox shows layer-by-layer download progress. Shared layers are skipped automatically.
+
+## Run from Image
+
+Click **Run** next to any image to create a container from it. This opens the container creation dialog with the image pre-selected.
+
+## Remove
+
+Select one or more images and click **Delete**. Images in use by running containers cannot be removed — stop the container first.
+
+Dangling images (untagged layers left behind by rebuilds) can be cleaned up with the **Prune** button at the top of the image list, or from the CLI:
+
+```bash
+docker image prune
+```
+
+## Image Details
+
+Click an image to see its metadata:
+
+- **Layers** — ordered list of layers with sizes
+- **Configuration** — entrypoint, cmd, exposed ports, environment variables
+- **Labels** — image labels and annotations
+- **History** — build history showing each Dockerfile instruction
+
+## Private Registries
+
+ArcBox uses Docker Hub as the default registry. Public images pull without authentication.
+
+To pull from a private registry, authenticate via the CLI:
+
+```bash
+docker login ghcr.io
+docker login registry.example.com
+```
+
+ArcBox Desktop uses the same credential store as the Docker CLI. Once logged in, private images are accessible from both the CLI and the GUI.
+
+Credentials are stored in the macOS Keychain by default. If your `~/.docker/config.json` specifies a different credential helper (e.g., `osxkeychain`, `pass`), ArcBox respects that configuration.
+
+To configure a registry mirror or HTTP proxy, see [Settings](./settings).

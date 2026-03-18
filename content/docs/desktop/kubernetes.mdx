@@ -1,0 +1,44 @@
+---
+title: Kubernetes
+description: View and manage local Kubernetes pods and services.
+---
+
+## Overview
+
+ArcBox Desktop provides a read-and-manage view of Kubernetes resources running in your local cluster.
+
+This is not a full Kubernetes dashboard. It covers the resources developers interact with most: pods and services.
+
+## Pods
+
+The **Kubernetes** section in the sidebar shows pods grouped by namespace.
+
+Each pod entry shows:
+
+- Pod name and namespace
+- Status (Running, Pending, Failed, etc.)
+- Container count and readiness
+- Age
+
+Click a pod to see its containers. Each container supports logs and terminal access, the same as Docker containers.
+
+## Services
+
+The services view shows:
+
+- Service name and type (ClusterIP, NodePort, LoadBalancer)
+- Ports and target ports
+- Selector labels
+- Connected pods
+
+## Cluster Connection
+
+ArcBox uses your existing kubeconfig (`~/.kube/config`) to connect to the cluster. It respects the current context.
+
+To switch contexts, use the CLI:
+
+```bash
+kubectl config use-context <context-name>
+```
+
+ArcBox Desktop picks up context changes automatically.

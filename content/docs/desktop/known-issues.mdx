@@ -1,0 +1,45 @@
+---
+title: Known Issues
+description: Current known issues and workarounds.
+---
+
+## Current Known Issues
+
+### VPN Compatibility
+
+Some VPN clients modify the system routing table in ways that break container networking. If containers lose internet access after connecting to a VPN:
+
+- Restart the ArcBox runtime after connecting: `arcbox restart`
+- Contact your VPN provider about split-tunnel configuration
+
+This is an active area of improvement.
+
+### Large Compose Projects
+
+Compose projects with more than 50 services may show delayed UI updates during bulk start/stop operations. All containers will eventually reach the correct state — the display catches up within a few seconds.
+
+### File Watcher Limits
+
+If a container mounts a very large directory tree and uses inotify-based file watching, you may hit the default watcher limit. Increase it inside the container:
+
+```bash
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+### Docker BuildKit Cache
+
+BuildKit build cache is not yet visible in the Desktop images view. Use the CLI to manage build cache:
+
+```bash
+docker builder prune
+```
+
+## Reporting Issues
+
+File issues at [github.com/arcboxd/arcbox/issues](https://github.com/arcboxd/arcbox/issues) with:
+
+- ArcBox version (`arcbox version`)
+- macOS version
+- Steps to reproduce
+- Relevant logs from `~/Library/Logs/ArcBox/`

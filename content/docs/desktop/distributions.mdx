@@ -1,0 +1,52 @@
+---
+title: Distributions
+description: Available Linux distributions for ArcBox machines.
+---
+
+## Supported Distributions
+
+| Distribution | Versions | Default |
+|-------------|----------|---------|
+| **Ubuntu** | 24.04 LTS, 22.04 LTS | Yes |
+| **Debian** | 12 (Bookworm) | No |
+| **Fedora** | 40, 39 | No |
+| **Alpine** | 3.20 | No |
+| **Arch Linux** | Rolling | No |
+
+Ubuntu 24.04 is the default distribution for new machines. It provides the broadest compatibility with development tools and packages.
+
+## Choosing a Distribution
+
+<Tabs items={['Desktop', 'CLI']}>
+  <Tab>
+    Select the distribution in the machine creation dialog when clicking **New Machine**.
+  </Tab>
+  <Tab>
+    ```bash
+    arcbox machine create --name dev --distro ubuntu:24.04
+    arcbox machine create --name server --distro alpine:3.20
+    ```
+  </Tab>
+</Tabs>
+
+## What's Included
+
+All distributions ship with:
+
+- SSH server (for remote access)
+- Core utilities (curl, git, tar, etc.)
+- Package manager configured with default repositories
+
+<Callout type="info">
+  Development tools (compilers, runtimes, etc.) are not pre-installed. Install them via the distribution's package manager after creating the machine.
+</Callout>
+
+## Custom Images
+
+You can create a machine from a custom disk image if your preferred distribution is not listed:
+
+```bash
+arcbox machine create --name custom --image /path/to/disk.qcow2
+```
+
+The image must be in qcow2 format.

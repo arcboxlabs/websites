@@ -1,0 +1,43 @@
+---
+title: SSH
+description: Connect to machines via SSH from your terminal.
+---
+
+## Built-in SSH
+
+ArcBox configures SSH access for every machine automatically. No manual key setup is needed.
+
+```bash
+arcbox ssh <machine-name>
+```
+
+This opens an SSH session using ArcBox's built-in key management. Keys are generated per-machine and stored locally.
+
+## Using Standard SSH
+
+You can also connect with the standard `ssh` command. ArcBox registers machines in your SSH config:
+
+```bash
+ssh <machine-name>.arcbox
+```
+
+The hostname `<machine-name>.arcbox` resolves to the machine's internal IP address via ArcBox's DNS resolver.
+
+## Port Forwarding
+
+SSH port forwarding works as expected:
+
+```bash
+ssh -L 3000:localhost:3000 <machine-name>.arcbox
+```
+
+This forwards port 3000 from the machine to your Mac.
+
+## File Transfer
+
+Use `scp` or `rsync` to move files between your Mac and a machine:
+
+```bash
+scp ./file.txt <machine-name>.arcbox:/home/user/
+rsync -av ./project/ <machine-name>.arcbox:/home/user/project/
+```

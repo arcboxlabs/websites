@@ -1,0 +1,28 @@
+---
+title: Compose Projects
+description: Manage multi-container applications defined with Docker Compose.
+---
+
+## Automatic Grouping
+
+ArcBox Desktop detects containers started with `docker compose` and groups them under their project name. No configuration is needed.
+
+Each Compose project appears as a collapsible group in the container list. The group header shows the project name and an aggregate status (running, partially running, stopped).
+
+## Project Operations
+
+**Start / Stop** — click the play or stop button on the project header to start or stop all containers in the project at once.
+
+**Expand / Collapse** — click the project name to show or hide individual containers.
+
+Each container within the project supports the same operations as standalone containers: logs, terminal, inspect, files, and stats.
+
+## Compose File Detection
+
+ArcBox reads Compose labels (`com.docker.compose.project`, `com.docker.compose.service`) from container metadata. Any tool that sets these labels — including `docker compose`, Podman Compose, or manual labeling — will result in proper grouping.
+
+## Mixed Workflows
+
+You can use `docker compose` from the CLI and manage the resulting containers in the Desktop UI. State syncs in real time.
+
+Changes made in the GUI (stopping a single service, for example) are reflected immediately in `docker compose ps`.

@@ -1,0 +1,28 @@
+---
+title: Sandbox Templates
+description: Pre-built sandbox configurations for common development workflows.
+---
+
+## Built-in Templates
+
+ArcBox ships with templates for common development stacks:
+
+| Template | Description | Included Tools |
+|----------|-------------|----------------|
+| **Ubuntu** | General-purpose Linux environment | build-essential, curl, git, vim |
+| **Node.js** | JavaScript/TypeScript development | Node.js LTS, npm, yarn |
+| **Python** | Python development | Python 3, pip, venv |
+| **Go** | Go development | Go toolchain, gopls |
+| **Rust** | Rust development | rustc, cargo, rustfmt, clippy |
+
+Templates are optimized for fast startup. Base layers are cached locally after first use.
+
+## Using a Template
+
+Select a template when creating a new sandbox. ArcBox configures the environment, installs tools, and drops you into a ready-to-use shell.
+
+You can customize the environment after creation — install additional packages, change settings, add files. Changes persist within the sandbox until it is destroyed.
+
+## Custom Templates
+
+Custom template support is planned. In the meantime, you can create a sandbox from any Docker image by selecting **Custom Image** during creation.

@@ -1,0 +1,60 @@
+---
+title: Settings
+description: Configure ArcBox Desktop behavior, Docker socket, CLI tools, DNS, and proxy.
+---
+
+## Accessing Settings
+
+Click the gear icon in the bottom-left of the sidebar, or use `⌘,`.
+
+## General
+
+**Launch at login** — start ArcBox automatically when you log in to your Mac.
+
+**Check for updates** — enable automatic update checks. See [Updates](./updates) for details.
+
+## Docker
+
+<Accordions type="single">
+  <Accordion title="Docker Socket" id="socket">
+    ArcBox creates a Docker socket at `/var/run/docker.sock` by default. This requires the privileged helper.
+
+    If you prefer a user-level socket, switch to `~/.arcbox/docker.sock` and set `DOCKER_HOST` accordingly:
+
+    ```bash
+    export DOCKER_HOST=unix://$HOME/.arcbox/docker.sock
+    ```
+  </Accordion>
+  <Accordion title="CLI Tools" id="cli">
+    Install or remove the `docker` and `arcbox` CLI commands in `/usr/local/bin`. These are symlinks to the tools bundled with ArcBox.
+  </Accordion>
+  <Accordion title="Compose" id="compose">
+    ArcBox bundles `docker compose` (v2). No separate installation is needed.
+  </Accordion>
+</Accordions>
+
+## Network
+
+**DNS resolver** — ArcBox installs a local DNS resolver for `.arcbox` domain resolution. This enables hostname-based access to containers and machines. The resolver is managed by the [privileged helper](./helper).
+
+**Proxy** — configure HTTP/HTTPS proxy for container image pulls and outbound traffic:
+
+```
+HTTP Proxy:   http://proxy.example.com:8080
+HTTPS Proxy:  http://proxy.example.com:8080
+No Proxy:     localhost,127.0.0.1,.example.com
+```
+
+Proxy settings are passed to the container runtime.
+
+## Resources
+
+**Default VM resources** — configure the default CPU, memory, and disk allocation for new machines. These defaults apply when creating a machine without explicit resource settings.
+
+## Advanced
+
+<Callout type="warn">
+  **Reset** resets ArcBox to factory defaults. This stops all containers and machines, removes the runtime VM, and clears configuration. Your images and volumes are preserved.
+</Callout>
+
+**Experimental features** — enable features that are still in development. These may change or be removed in future releases.

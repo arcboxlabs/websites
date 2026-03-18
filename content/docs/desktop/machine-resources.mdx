@@ -1,0 +1,32 @@
+---
+title: Resource Allocation
+description: Configure CPU, memory, and disk for machines.
+---
+
+## Defaults
+
+New machines are created with:
+
+| Resource | Default | Range |
+|----------|---------|-------|
+| CPU | 2 cores | 1–all available |
+| Memory | 2 GB | 512 MB–host limit |
+| Disk | 20 GB | 5 GB–256 GB |
+
+These defaults work well for most development tasks. Adjust only when your workload needs it.
+
+## Changing Resources
+
+Select a machine and open its settings panel. CPU and memory can be adjusted while the machine is stopped. Changes take effect on next start.
+
+Disk size can be increased but not reduced. The filesystem inside the VM expands automatically.
+
+## Resource Sharing
+
+Machines and containers share the host's physical resources. ArcBox does not reserve resources — allocation is an upper limit, not a guarantee.
+
+An idle machine with 4 GB allocated consumes only the memory it actively uses, not the full 4 GB.
+
+## Monitoring
+
+The machine detail view shows live CPU and memory usage. This helps you right-size your allocation based on actual demand.
