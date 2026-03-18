@@ -79,21 +79,21 @@ export function AIIsolationSection() {
 
               {/* Terminal content */}
               <div className="bg-background/50 p-6 font-mono text-sm">
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <p className="text-accent">$ arcbox sandbox create openclaw</p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     Creating isolated Firecracker VM...
                   </p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     ├─ Memory: 2GB allocated
                   </p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     ├─ Network: Isolated bridge
                   </p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     ├─ Filesystem: Read-only rootfs
                   </p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     └─ Security: Full syscall filtering
                   </p>
                   <br />
@@ -104,7 +104,7 @@ export function AIIsolationSection() {
                   <p className="text-accent mb-0">
                     $ arcbox sandbox exec openclaw --prompt "analyze codebase"
                   </p>
-                  <p className="mb-0 text-muted-foreground">
+                  <p className="text-muted-foreground">
                     Running in isolated environment...
                   </p>
                   <p className="animate-pulse text-accent">▊</p>
