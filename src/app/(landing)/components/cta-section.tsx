@@ -105,7 +105,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                       Terminal
                     </span>
                   </div>
-                  <div className="aspect-[4/3] bg-background p-3">
+                  <div className="aspect-[4/3] bg-background p-3 text-left">
                     <div className="font-mono text-[8px] md:text-[10px] text-muted-foreground space-y-1">
                       <p><span className="text-accent">$</span> arcbox run nginx</p>
                       <p className="text-foreground/60">Starting container...</p>

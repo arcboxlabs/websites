@@ -29,7 +29,7 @@ export function OpenSourceSection() {
           {/* Content */}
           <div className="lg:basis-4/7 lg:shrink-0">
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-              Some projects call themselves "open source" while only hosting a
+              Some projects have a GitHub repository while only hosting a
               README, and a few screenshots on GitHub.{' '}
               <span className="text-foreground font-medium">
                 That's not open source—that's a landing page.
@@ -41,8 +41,18 @@ export function OpenSourceSection() {
               <span className="text-foreground font-medium">
                 truly open source
               </span>.
-              {' '}Every line of code, every build script, every test—it's all on
-              GitHub. Fork it, audit it, contribute to it.
+              {' '}
+              <span className="text-foreground font-medium">
+                We open source every line of code
+              </span>,
+              {' '}
+              every build script, every test —
+              {' '}
+              <span className="text-foreground font-medium">
+                it's all on GitHub
+              </span>
+              .{' '}
+              Star it, fork it, audit it, contribute to it.
             </p>
 
             {/* Stats/badges row */}

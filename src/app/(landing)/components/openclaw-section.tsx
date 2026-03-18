@@ -4,12 +4,12 @@ const isolationFeatures = [
   {
     icon: Wifi,
     title: 'Network',
-    desc: 'Zero outbound access. OpenClaw can\'t exfiltrate data or phone home.'
+    desc: 'Isolated outbound access. OpenClaw can\'t exfiltrate data or phone home.'
   },
   {
     icon: HardDrive,
     title: 'Disk',
-    desc: 'A scoped, ephemeral filesystem. Your files are never exposed.'
+    desc: 'A scoped, ephemeral filesystem. Your private files are never exposed.'
   },
   {
     icon: Activity,
@@ -19,7 +19,7 @@ const isolationFeatures = [
   {
     icon: ShieldCheck,
     title: 'Process',
-    desc: 'Full syscall filtering via seccomp. No escape paths.'
+    desc: 'Full syscall filtering with no escape.'
   }
 ];
 
