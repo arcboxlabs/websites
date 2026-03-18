@@ -1,15 +1,9 @@
-import type { ReactNode } from 'react';
+import type { TOCItemType } from './blog-aside-toc';
 import BlogAsideToc from './blog-aside-toc';
 import BlogAsideCopyPostUrl from './blog-aside-copy-post-url';
 
-interface TocItem {
-  url: string,
-  title: ReactNode,
-  depth: number
-}
-
 interface BlogAsideProps {
-  toc: TocItem[],
+  toc: TOCItemType[],
   fullUrl: string
 }
 
