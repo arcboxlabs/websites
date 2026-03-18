@@ -1,5 +1,3 @@
-// import { requestIdleCalback } from 'foxact/request-idle-callback';
-
 const asciiArt = String.raw`
 %c
      ___                 ____                   __           __  
@@ -13,7 +11,7 @@ console.log(
   asciiArt
   + '\n%c We build high-performance container and VM runtime.\n'
   + '\n'
-  + '%c Checkout our GitHub at                         %chttps://github.com/arcboxlabs\n'
+  + '%c Checkout our GitHub at                         %chttps://arcbox.link/github\n'
   + '%c Checkout the source code of ArcBox Desktop at  %chttps://github.com/arcboxlabs/arcbox-desktop\n'
   + '%c Checkout the source code of our core at        %chttps://github.com/arcboxlabs/arcbox\n',
 

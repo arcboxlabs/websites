@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { Download } from 'lucide-react';
-import { Github } from 'lucide-react';
 import HeaderScrollContainer from './header-scroll-container';
 import { lazy, Suspense } from 'react';
 import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
+import { socialLinks } from '@/constants/social-links';
 
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
@@ -58,21 +58,25 @@ export function Header() {
           </nav>
 
           <div className="hidden items-center gap-1 md:flex">
-            <Button
-              size="icon"
-              variant="ghost"
-              asChild
-              className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
-            >
-              <a
-                href="https://github.com/arcboxlabs"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
+
+            {socialLinks.map((social) => (
+              <Button
+                key={social.name}
+                size="icon"
+                variant="ghost"
+                asChild
+                className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
               >
-                <Github className="h-4 w-4" />
-              </a>
-            </Button>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                >
+                  <social.icon className="h-4 w-4" />
+                </a>
+              </Button>
+            ))}
             {/* <Button
               size="icon"
               variant="ghost"
