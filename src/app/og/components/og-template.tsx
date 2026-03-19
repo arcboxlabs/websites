@@ -145,6 +145,7 @@ export function OGImage({
 
           <span
             style={{
+              fontFamily: 'IBM Plex Sans',
               color: 'rgba(255, 255, 255, 0.96)',
               fontSize: '28px',
               fontWeight: '700',
@@ -162,6 +163,7 @@ export function OGImage({
           {sectionLabel && (
             <span
               style={{
+                fontFamily: 'IBM Plex Sans',
                 color: '#e86518',
                 fontSize: '28px',
                 fontWeight: '600'
@@ -204,9 +206,10 @@ export function OGImage({
           >
             <div
               style={{
+                fontFamily: 'IBM Plex Sans',
                 color: '#ffffff',
                 fontSize: titleSize,
-                fontWeight: '800',
+                fontWeight: '700',
                 lineHeight: 1.08,
                 letterSpacing: '-1.5px',
                 display: 'flex',
@@ -219,6 +222,7 @@ export function OGImage({
             {description && (
               <div
                 style={{
+                  fontFamily: 'IBM Plex Sans',
                   color: 'rgba(255, 255, 255, 0.58)',
                   fontSize: '26px',
                   lineHeight: 1.45,
@@ -238,9 +242,10 @@ export function OGImage({
           <div style={{ display: 'flex', marginTop: '36px' }}>
             <span
               style={{
+                fontFamily: 'IBM Plex Mono',
                 color: 'rgba(232, 101, 24, 0.9)',
-                fontSize: '16px',
-                fontWeight: '800',
+                fontSize: '17px',
+                fontWeight: '700',
                 letterSpacing: '1px'
               }}
             >

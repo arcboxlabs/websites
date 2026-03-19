@@ -45,8 +45,12 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 asChild
                 className="h-12 rounded-full px-8 bg-transparent border-border hover:bg-secondary"
               >
-                <Link href="/docs">
-                  Get Started
+                <Link
+                  href="/docs"
+                  // disable prefetch to docs
+                  prefetch={false}
+                >
+                  Learn More
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -57,7 +61,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </p>
 
             {/* Floating Screenshots */}
-            <div className="relative mt-16 h-[350px] md:h-[450px]">
+            <div className="relative mt-16 h-75 sm:h-88 md:h-100">
               {/* Center screenshot - main */}
               <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[65%] z-20">
                 <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">

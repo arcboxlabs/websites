@@ -48,6 +48,7 @@ export function Header() {
                     target={link.external ? '_blank' : undefined}
                     rel={link.external ? 'noopener noreferrer' : undefined}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    // prevent Next.js from scrolling to the "page" top, instead go to document top
                     scroll={false}
                   >
                     {link.label}
@@ -58,14 +59,13 @@ export function Header() {
           </nav>
 
           <div className="hidden items-center gap-1 md:flex">
-
             {socialLinks.map((social) => (
               <Button
                 key={social.name}
                 size="icon"
                 variant="ghost"
                 asChild
-                className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+                className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted font-normal"
               >
                 <a
                   href={social.href}

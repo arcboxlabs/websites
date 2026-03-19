@@ -21,7 +21,7 @@ export default function NotFound() {
 
       <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-7 text-center">
         {/* Error badge */}
-        <div className="inline-flex font-medium items-center gap-2 rounded-full border border-destructive/40 bg-destructive/10 px-4 py-1.5 font-mono text-sm text-destructive uppercase">
+        <div className="inline-flex font-bold items-center gap-2 rounded-full border border-destructive/40 bg-destructive/10 px-4 py-1.5 font-mono text-sm text-destructive uppercase">
           <span>{'>_'}</span>
           <span>Error 404 | Not Found</span>
         </div>
@@ -65,7 +65,7 @@ export default function NotFound() {
         {/* CTA button */}
         <Link
           href="/"
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-accent/90"
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-accent/90"
         >
           <ArrowLeft size={16} />
           Return to Home

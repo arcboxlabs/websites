@@ -105,10 +105,10 @@ export function Hero() {
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-balance text-3xl font-black tracking-tight text-foreground md:text-4xl lg:text-5xl">
+                <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
                   Containers. VMs. Sandboxes.
                   <br />
-                  <span className="text-accent font-black">Without the chaos.</span>
+                  <span className="text-accent font-bold">Without the chaos.</span>
                 </h1>
 
                 {/* Subheadline */}
@@ -143,7 +143,11 @@ export function Hero() {
                     asChild
                     className="h-10 rounded-full px-6 bg-transparent border-border hover:bg-secondary"
                   >
-                    <Link href="/docs">
+                    <Link
+                      href="/docs"
+                      // disable prefetch to docs
+                      prefetch={false}
+                    >
                       Learn More
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>

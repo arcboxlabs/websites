@@ -2,6 +2,7 @@ import { BlogSource, getPostImage } from '@/blog/cms';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { OGImage } from '@/app/og/components/og-template';
+import { loadOGFonts } from '@/app/og/fonts';
 
 export const revalidate = false;
 
@@ -11,6 +12,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const post = BlogSource.getPost(slug.replace(/\.[^.]+$/, ''));
   if (!post) notFound();
 
+  const fonts = await loadOGFonts();
+
   return new ImageResponse(
     <OGImage
       title={post.data.title}
@@ -19,7 +22,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
       siteName="ArcBox"
       section="blog"
     />,
-    { width: 1200, height: 630 }
+    { width: 1200, height: 630, fonts }
   );
 }
 

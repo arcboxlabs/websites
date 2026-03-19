@@ -41,6 +41,8 @@
 }
 
 @theme inline {
+  --breakpoint-xs: 24rem; /* 384px for iPhone SE but not iPhone 12 */
+
   /* --font-sans: var(--font-sans);
   --font-mono: var(--font-mono); */
   --color-background: var(--background);
@@ -87,5 +89,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    width: 0%;
   }
 }
