@@ -12,9 +12,9 @@ export function FeatureCards() {
     <section className="relative py-24 md:py-32 px-4">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+          {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
             <span>Feature Rich</span>
-          </div>
+          </div> */}
           <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl text-balance">
             The superpowers are{' '}
             <span className="text-accent">endless.</span>
@@ -24,7 +24,7 @@ export function FeatureCards() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Large Card - Containers */}
-          <div className="lg:col-span-2 md:row-span-3 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-100 flex flex-col">
+          <div className="lg:col-span-2 md:row-span-3 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-80 flex flex-col">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
               <Box className="h-7 w-7 text-white" />
             </div>

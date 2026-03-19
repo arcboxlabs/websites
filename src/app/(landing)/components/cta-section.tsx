@@ -61,7 +61,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </p>
 
             {/* Floating Screenshots */}
-            <div className="relative mt-16 h-[350px] md:h-[450px]">
+            <div className="relative mt-16 h-75 sm:h-88 md:h-100">
               {/* Center screenshot - main */}
               <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[65%] z-20">
                 <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">

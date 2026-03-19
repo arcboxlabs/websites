@@ -45,15 +45,15 @@ export function SpeedComparison() {
       }
       leftDecoration={
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[4rem_4rem] opacity-20" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-40" />
         </div>
       }
       rightDecoration={
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--border)_1px,transparent_1px)] bg-size-[12px_12px] opacity-30" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--border)_1px,transparent_1px)] bg-size-[16px_16px] opacity-50" />
       }
       footnote={
         <p className="text-center text-xs text-muted-foreground/60">
-          Benchmarks on M3 Max, 36GB RAM
+          Benchmarks on Apple Mac Mini, M4, 36GB RAM, as of Mar, 2026.
         </p>
       }
     />
@@ -87,9 +87,9 @@ export interface FeatureData {
  */
 function getBarDuration(value: number, unit: string): number {
   if (unit === 's') {
-    return Math.min(Math.max(value, 0.2), 4);
+    return Math.min(Math.max(value, 0.2), 30);
   }
-  return Math.min(Math.max(value / 700, 0.3), 3);
+  return Math.min(Math.max(value / 700, 0.3), 6);
 }
 
 function makeFeature(
