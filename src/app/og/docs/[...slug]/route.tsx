@@ -2,6 +2,7 @@ import { getPageImage, source } from '@/docs/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { OGImage } from '@/app/og/components/og-template';
+import { loadOGFonts } from '@/app/og/fonts';
 
 export const dynamic = 'force-static';
 export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...slug]'>) {
@@ -10,6 +11,9 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
   const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(/\.[^.]+$/, '')];
   const page = source.getPage(pageSlugs);
   if (!page) notFound();
+
+  const fonts = await loadOGFonts();
+
   return new ImageResponse(
     <OGImage
       title={page.data.title}
@@ -18,7 +22,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
       siteName="ArcBox"
       section="docs"
     />,
-    { width: 1200, height: 630 }
+    { width: 1200, height: 630, fonts }
   );
 }
 export function generateStaticParams() {

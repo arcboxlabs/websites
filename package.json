@@ -10,6 +10,8 @@
     "lint": "eslint --format=sukka ."
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-sans": "^5.2.8",
     "@gsap/react": "^2.1.2",
     "@icons-pack/react-simple-icons": "^13.13.0",
     "@orama/orama": "^3.1.18",
