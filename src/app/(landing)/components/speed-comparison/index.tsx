@@ -82,7 +82,7 @@ export interface FeatureData {
 
 /**
  * Returns a CSS transition duration for the bar fill.
- * For time-based metrics (unit 's'), uses the actual value (capped at 4s, min 0.2s).
+ * For time-based metrics (unit 's'), uses the actual value (capped at 30s, min 0.2s).
  * For non-time metrics, scales proportionally.
  */
 function getBarDuration(value: number, unit: string): number {
