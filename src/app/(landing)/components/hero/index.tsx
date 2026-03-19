@@ -143,7 +143,11 @@ export function Hero() {
                     asChild
                     className="h-10 rounded-full px-6 bg-transparent border-border hover:bg-secondary"
                   >
-                    <Link href="/docs">
+                    <Link
+                      href="/docs"
+                      // disable prefetch to docs
+                      prefetch={false}
+                    >
                       Learn More
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
