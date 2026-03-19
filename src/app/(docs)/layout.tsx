@@ -6,7 +6,7 @@ import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
 import { clsx } from 'clsx';
 
-const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], weight: 'variable', style: ['normal', 'italic'], variable: '--font-sans' });
+const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], weight: 'variable', style: ['normal'], variable: '--font-sans' });
 const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono' });
 
 // The Root Layout for /docs only.
