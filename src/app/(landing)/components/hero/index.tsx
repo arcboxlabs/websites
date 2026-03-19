@@ -105,10 +105,10 @@ export function Hero() {
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-balance text-3xl font-black tracking-tight text-foreground md:text-4xl lg:text-5xl">
+                <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
                   Containers. VMs. Sandboxes.
                   <br />
-                  <span className="text-accent font-black">Without the chaos.</span>
+                  <span className="text-accent font-bold">Without the chaos.</span>
                 </h1>
 
                 {/* Subheadline */}

@@ -46,7 +46,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 className="h-12 rounded-full px-8 bg-transparent border-border hover:bg-secondary"
               >
                 <Link href="/docs">
-                  Get Started
+                  Learn More
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>

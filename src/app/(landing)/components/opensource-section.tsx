@@ -32,24 +32,24 @@ export function OpenSourceSection() {
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
               Some projects have a GitHub repository while only hosting a
               README, and a few screenshots.{' '}
-              <span className="text-foreground font-medium">
+              <span className="text-foreground font-semibold">
                 That's not open source—that's a landing page.
               </span>
             </p>
 
             <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
               {' '}ArcBox Desktop is{' '}
-              <span className="text-foreground font-medium">
+              <span className="text-foreground font-semibold">
                 truly open source
               </span>.
               {' '}
-              <span className="text-foreground font-medium">
+              <span className="text-foreground font-semibold">
                 We open source every line of code
               </span>,
               {' '}
               every build script, every test —
               {' '}
-              <span className="text-foreground font-medium">
+              <span className="text-foreground font-semibold">
                 it's all on GitHub
               </span>
               .{' '}
@@ -67,14 +67,14 @@ export function OpenSourceSection() {
                 >
                   <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4c5.523 0 10 4.477 10 10 0 2.252-.744 4.33-2 6.004V16c0-4.418-3.582-8-8-8s-8 3.582-8 8v6.004A9.954 9.954 0 016 16c0-5.523 4.477-10 10-10zm0 6a4 4 0 100 8 4 4 0 000-8z" />
                 </svg>
-                <span className="text-foreground font-medium">OSI Approved</span>
+                <span className="text-foreground font-semibold">OSI Approved</span>
               </div>
 
               {/* License badge */}
               {
                 ['MIT', 'Apache 2.0', 'AGPL 3.0'].map((license) => (
                   <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm" key={license}>
-                    <span className="text-foreground font-medium">{license}</span>
+                    <span className="text-foreground font-semibold">{license}</span>
                   </div>
                 ))
               }
@@ -209,32 +209,6 @@ export function OpenSourceSection() {
                     </div>
                   ))}
                 </div>
-
-                {/* Commit activity */}
-                {/* <div className="mt-6 rounded-xl bg-secondary/50 p-4">
-                  <p className="text-sm font-medium text-foreground mb-3">
-                    Recent activity
-                  </p>
-                  <div className="space-y-2">
-                    {[
-                      { msg: 'feat: add network isolation modes', time: '2h ago' },
-                      { msg: 'fix: memory leak in vm cleanup', time: '5h ago' },
-                      { msg: 'docs: update sandbox api reference', time: '1d ago' }
-                    ].map((commit) => (
-                      <div
-                        key={commit.msg + '|' + commit.time}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="text-muted-foreground truncate max-w-[70%]">
-                          {commit.msg}
-                        </span>
-                        <span className="text-xs text-muted-foreground/70">
-                          {commit.time}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
               </div>
             </div>
 
