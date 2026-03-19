@@ -7,7 +7,7 @@ function readFontFile(pkg: string, file: string) {
 }
 
 export const loadOGFonts = once(async () => {
-  const [sansRegular, sansSemiBold, sansBold, monoSemiBold] = await Promise.all([
+  const [sansRegular, sansSemiBold, sansBold, monoBold] = await Promise.all([
     readFontFile('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff'),
     readFontFile('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-600-normal.woff'),
     readFontFile('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-700-normal.woff'),
@@ -18,6 +18,6 @@ export const loadOGFonts = once(async () => {
     { name: 'IBM Plex Sans', data: sansRegular, weight: 400 as const, style: 'normal' as const },
     { name: 'IBM Plex Sans', data: sansSemiBold, weight: 600 as const, style: 'normal' as const },
     { name: 'IBM Plex Sans', data: sansBold, weight: 700 as const, style: 'normal' as const },
-    { name: 'IBM Plex Mono', data: monoSemiBold, weight: 600 as const, style: 'normal' as const }
+    { name: 'IBM Plex Mono', data: monoBold, weight: 700 as const, style: 'normal' as const }
   ];
 });
