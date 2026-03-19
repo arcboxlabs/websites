@@ -4,7 +4,8 @@ import { createFixedArray } from 'foxact/create-fixed-array';
 
 import ImageInfrastructure from '@/images/infrastructure.jpeg';
 import ImageDevelopmentEnvironment from '@/images/development-environment.jpeg';
-import AppleNative from '@/images/apple-native.jpeg';
+import ImageAppleNative from '@/images/apple-native.jpeg';
+import ImageSecurity from '@/images/security.jpeg';
 
 export function FeatureCards() {
   return (
@@ -23,7 +24,7 @@ export function FeatureCards() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Large Card - Containers */}
-          <div className="lg:col-span-2 md:row-span-3 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-[400px] flex flex-col">
+          <div className="lg:col-span-2 md:row-span-3 group relative overflow-hidden rounded-3xl bg-linear-to-br from-amber-500/90 to-orange-600/90 p-8 min-h-100 flex flex-col">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
               <Box className="h-7 w-7 text-white" />
             </div>
@@ -38,7 +39,7 @@ export function FeatureCards() {
             {/* Placeholder for screenshot */}
             <div className="mt-auto pt-8">
               <div className="relative rounded-xl overflow-hidden border border-white/10 bg-black/20 backdrop-blur-sm">
-                <div className="aspect-[16/10] p-4">
+                <div className="aspect-16/10 p-4">
                   <div className="h-full rounded-lg bg-black/30 p-4 flex flex-col gap-2">
                     <div className="flex gap-2">
                       <div className="h-4 w-16 rounded bg-white/20" />
@@ -59,7 +60,7 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Firecracker VMs — with background image */}
-          <div className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
+          <div className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl min-h-50 flex flex-col">
             <Image
               src={ImageInfrastructure}
               alt="Lightweight microVMs"
@@ -94,9 +95,9 @@ export function FeatureCards() {
           </div>
 
           {/* Small Card - Apple Silicon */}
-          <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col">
+          <div className="group relative overflow-hidden rounded-3xl min-h-50 flex flex-col">
             <Image
-              src={AppleNative}
+              src={ImageAppleNative}
               alt="Apple Silicon native"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -116,7 +117,7 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Dev Containers — with background image */}
-          <div className="group relative overflow-hidden rounded-3xl min-h-[200px] flex flex-col lg:col-span-2">
+          <div className="group relative overflow-hidden rounded-3xl min-h-50 flex flex-col lg:col-span-2">
             <Image
               src={ImageDevelopmentEnvironment}
               alt="Development environment"
@@ -138,16 +139,25 @@ export function FeatureCards() {
           </div>
 
           {/* Medium Card - Security */}
-          <div className="group relative overflow-hidden rounded-3xl bg-linear-to-br from-slate-600/90 to-slate-800/90 p-6 min-h-[200px] flex flex-col lg:col-span-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-4">
-              <Lock className="h-6 w-6 text-white" />
+          <div className="group relative overflow-hidden rounded-3xl min-h-50 flex flex-col lg:col-span-2">
+            <Image
+              src={ImageSecurity}
+              alt="Security first"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-linear-to-br from-slate-700/90 to-slate-900/90" />
+            <div className="relative z-10 flex flex-col p-6 h-full">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-4">
+                <Lock className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-1">
+                Security first.
+              </h3>
+              <p className="text-white/80 text-sm">
+                Hardened by default. No network access unless you explicitly allow it.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-white mb-1">
-              Security first.
-            </h3>
-            <p className="text-white/80 text-sm">
-              Hardened by default. No network access unless you explicitly allow it.
-            </p>
           </div>
         </div>
       </div>

@@ -57,9 +57,11 @@ export function SpeedComparison() {
           className="overflow-hidden rounded-2xl border border-border bg-card"
         >
           {/* Header */}
-          <div className="grid grid-cols-3 border-b border-border bg-secondary/30 px-6 py-4 text-sm font-medium">
+          <div className="grid grid-cols-3 border-b border-border bg-secondary/30 px-6 py-4 text-sm font-semibold">
             <span className="text-muted-foreground">Benchmark</span>
-            <span className="text-center text-accent">ArcBox Desktop</span>
+            <span className="text-center text-accent">
+              ArcBox Desktop
+            </span>
             <span className="text-center text-muted-foreground">
               Docker Desktop
             </span>
