@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useState } from 'react';
 import iconSvg from '@/images/hero-shader-icon.svg';
+import { useCallback } from 'foxact/use-typescript-happy-callback';
 
 const ImageDithering = dynamic(
   () => import('@paper-design/shaders-react').then((mod) => mod.ImageDithering),
@@ -17,13 +18,16 @@ export function HeroShader() {
     <>
       {/* Hidden next/image handles optimized loading + preload */}
       <Image
-        ref={setImgEl}
+        onLoad={useCallback((e) => {
+          setImgEl(e.currentTarget);
+        }, [])}
         src={iconSvg}
         alt=""
         aria-hidden
         className="invisible absolute"
         // priority
         decoding="sync"
+        loading="eager"
         preload
       />
       {imgEl && (
