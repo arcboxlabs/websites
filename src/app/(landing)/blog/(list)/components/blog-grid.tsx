@@ -30,7 +30,7 @@ export default function BlogGrid({ category }: BlogGridProps) {
             />
             {/* Category badge overlay */}
             <div className="absolute top-3 left-3">
-              <span className="rounded-full border border-accent/30 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent backdrop-blur-sm">
+              <span className="rounded-full border border-accent/40 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent backdrop-blur-sm">
                 {post.data.category}
               </span>
             </div>

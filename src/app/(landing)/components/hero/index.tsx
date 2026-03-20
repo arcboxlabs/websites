@@ -3,90 +3,21 @@ import { Button } from '@/ui/button';
 import { Download, ArrowRight, Apple } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 import BrewSnippetCopyButton from './brew-command';
+import { HeroShader } from './hero-shader';
 
 const BREW_COMMAND = 'brew install arcbox-desktop';
 
-// Generate dot positions arranged in a semicircle arc (180°), ported from OG template.
-// The arch center sits below-right so:
-//   - smaller rings form readable mini-arches in the right portion
-//   - larger rings extend partially off-canvas, adding depth
-function generateArcDots(): Array<{ x: number, y: number, op: number }> {
-  const W = 480;
-  const H = 240;
-
-  // Center at bottom-right so the left two-thirds of the top half-circle is visible
-  const cx = 400;
-  const cy = 280;
-
-  const RINGS = 10;
-  const R_MIN = 80;
-  const R_MAX = 240;
-  const DOT_SPACING = 12;
-  const A_START = Math.PI;
-  const A_END = 2 * Math.PI;
-
-  const dots: Array<{ x: number, y: number, op: number }> = [];
-
-  for (let ring = 0; ring < RINGS; ring++) {
-    const r = R_MIN + ((R_MAX - R_MIN) * ring) / (RINGS - 1);
-    const arcLength = r * Math.PI;
-    const dotCount = Math.max(6, Math.round(arcLength / DOT_SPACING));
-
-    const ringPhase = ring / (RINGS - 1);
-    const baseOp = 0.08 + 0.34 * Math.sin(ringPhase * Math.PI);
-
-    for (let d = 0; d <= dotCount; d++) {
-      const t = d / dotCount;
-      const angle = A_START + t * (A_END - A_START);
-      const x = cx + r * Math.cos(angle);
-      const y = cy + r * Math.sin(angle);
-
-      if (x >= 0 && x <= W && y >= 0 && y <= H) {
-        dots.push({ x: Math.round(x), y: Math.round(y), op: baseOp });
-      }
-    }
-  }
-
-  return dots;
-}
-
-const ARC_DOTS = generateArcDots();
-
 export function Hero() {
   return (
-    <section className="relative px-4 pt-28 pb-12 md:px-6 md:pt-32 md:pb-16 lg:pt-36">
+    <section className="relative px-4 pt-28 pb-12 md:pt-32 md:pb-16 lg:pt-36">
       <div className="mx-auto max-w-6xl">
         {/* Hero Card Container */}
         <div className="relative overflow-hidden rounded-4xl md:rounded-[2.5rem] border border-border bg-card">
-          {/* Grid texture background */}
-          <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)`,
-              backgroundSize: '40px 40px'
-            }}
-          />
-
-          {/* Decorative arc dots - ported from OG template */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
-            <svg
-              className="absolute top-0 right-0"
-              width="480"
-              height="240"
-              viewBox="0 0 480 240"
-              fill="none"
-            >
-              {ARC_DOTS.map((dot) => (
-                <circle
-                  key={`${dot.x}-${dot.y}`}
-                  cx={dot.x}
-                  cy={dot.y}
-                  r={1.8}
-                  fill={`rgba(220, 105, 30, ${dot.op.toFixed(3)})`}
-                />
-              ))}
-            </svg>
+          {/* Dithered icon shader — replaces arc dots */}
+          <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 overflow-hidden md:left-auto md:translate-x-0 md:right-0
+          w-100 h-64 md:w-lg md:h-90"
+          >
+            <HeroShader />
           </div>
 
           {/* Subtle gradient overlay */}
@@ -99,7 +30,7 @@ export function Hero() {
             <div className="px-6 pt-10 md:px-12 md:pt-14 lg:px-16 lg:pt-16">
               <div className="max-w-2xl">
                 {/* Badge */}
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-sm text-accent">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-sm text-accent">
                   <Apple className="h-4 w-4" />
                   <span>Built for Apple Silicon</span>
                 </div>
@@ -141,7 +72,7 @@ export function Hero() {
                     variant="outline"
                     size="lg"
                     asChild
-                    className="h-10 rounded-full px-6 bg-transparent border-border hover:bg-secondary"
+                    className="h-10 rounded-full px-6 bg-secondary/60 border-border hover:bg-secondary/80"
                   >
                     <Link
                       href="/docs"
@@ -165,14 +96,13 @@ export function Hero() {
 
               {/* Bottom-left: orange accent grid fill */}
               <div className="shrink-0 w-12 md:w-[28%] lg:w-[30%] self-stretch relative overflow-hidden">
-                {/* Orange dot/grid texture */}
                 <div
                   className="absolute inset-0"
                   style={{
-                    backgroundImage: 'radial-gradient(circle, oklch(0.7 0.16 45 / 0.35) 1.5px, transparent 1.5px)',
+                    backgroundImage: 'radial-gradient(circle, oklch(0.7 0.16 45 / 0.45) 1.5px, transparent 1.5px)',
                     backgroundSize: '22px 22px',
-                    maskImage: 'linear-gradient(to top right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to top right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)'
+                    maskImage: 'linear-gradient(to top right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to top right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)'
                   }}
                 />
               </div>
