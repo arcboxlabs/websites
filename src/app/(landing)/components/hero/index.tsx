@@ -30,7 +30,7 @@ export function Hero() {
             <div className="px-6 pt-10 md:px-12 md:pt-14 lg:px-16 lg:pt-16">
               <div className="max-w-2xl">
                 {/* Badge */}
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-sm text-accent">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-sm text-accent">
                   <Apple className="h-4 w-4" />
                   <span>Built for Apple Silicon</span>
                 </div>

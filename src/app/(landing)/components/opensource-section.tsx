@@ -8,7 +8,7 @@ export function OpenSourceSection() {
     <section className="relative px-4 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent">
             <SiOpensourceinitiative className="h-4 w-4" />
             <span>Open Source</span>
           </div>

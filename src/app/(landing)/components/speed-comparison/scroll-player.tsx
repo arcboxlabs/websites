@@ -79,7 +79,7 @@ export function ScrollPlayer({
             className="flex items-center justify-center flex-col relative z-10 w-full lg:min-h-100 lg:max-h-200 h-full"
           >
             <div className="mb-4 px-4 text-center sm:mb-6 lg:mb-8">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent sm:mb-4">
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent sm:mb-4">
                 <Zap className="h-4 w-4" />
                 <span>Performance</span>
               </div>
@@ -185,7 +185,7 @@ export function ScrollPlayer({
                       dockerDuration={activeData.dockerDuration}
                     />
 
-                    <div className="rounded-full border border-accent/30 bg-accent/10 px-4 py-2">
+                    <div className="rounded-full border border-accent/40 bg-accent/10 px-4 py-2">
                       <span className="font-mono text-lg lg:text-xl font-bold text-accent">
                         {activeData.improvement}x
                       </span>

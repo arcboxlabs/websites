@@ -8,7 +8,7 @@ export function AIIsolationSection() {
           {/* Content */}
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent">
                 <ShieldCheckIcon className="h-4 w-4" />
                 <span>AI Agent Runtime</span>
               </div>
@@ -80,33 +80,24 @@ export function AIIsolationSection() {
               {/* Terminal content */}
               <div className="bg-background/50 p-6 font-mono text-sm">
                 <div className="space-y-1">
-                  <p className="text-accent">$ arcbox sandbox create openclaw</p>
+                  <p className="text-accent">$ abctl sandbox create my-ai-agent</p>
                   <p className="text-muted-foreground">
-                    Creating isolated Firecracker VM...
+                    Creating isolated Sandbox...
                   </p>
                   <p className="text-muted-foreground">
-                    ├─ Memory: 2GB allocated
+                    ├─ Memory: 2 GiB allocated
                   </p>
                   <p className="text-muted-foreground">
-                    ├─ Network: Isolated bridge
+                    ├─ Network: bridge
                   </p>
                   <p className="text-muted-foreground">
-                    ├─ Filesystem: Read-only rootfs
-                  </p>
-                  <p className="text-muted-foreground">
-                    └─ Security: Full syscall filtering
+                    └─ Filesystem: Read-only rootfs
                   </p>
                   <br />
                   <p className="text-green-400 mb-0">
-                    ✓ Sandbox ready in 127ms
+                    ✓ Sandbox ready in 114.5ms
                   </p>
                   <br />
-                  <p className="text-accent mb-0">
-                    $ arcbox sandbox exec openclaw --prompt "analyze codebase"
-                  </p>
-                  <p className="text-muted-foreground">
-                    Running in isolated environment...
-                  </p>
                   <p className="animate-pulse text-accent">▊</p>
                 </div>
               </div>
