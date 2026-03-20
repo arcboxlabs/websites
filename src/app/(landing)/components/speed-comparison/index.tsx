@@ -1,4 +1,3 @@
-import { Zap } from 'lucide-react';
 import { ScrollPlayer } from './scroll-player';
 
 const features: FeatureData[] = [
@@ -25,39 +24,7 @@ const features: FeatureData[] = [
 ];
 
 export function SpeedComparison() {
-  return (
-    <ScrollPlayer
-      features={features}
-      header={
-        <div className="mb-4 px-4 text-center sm:mb-6 lg:mb-8">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm text-accent sm:mb-4">
-            <Zap className="h-4 w-4" />
-            <span>Performance</span>
-          </div>
-
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            <span>Ridiculously fast.</span>
-            <span className="hidden sm:inline">{' '}</span>
-            <br className="block sm:hidden" />
-            <span className="text-muted-foreground">By design.</span>
-          </h2>
-        </div>
-      }
-      leftDecoration={
-        <div className="pointer-events-none absolute inset-0 hidden lg:block">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-40" />
-        </div>
-      }
-      rightDecoration={
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--border)_1px,transparent_1px)] bg-size-[16px_16px] opacity-50" />
-      }
-      footnote={
-        <p className="text-center text-xs text-muted-foreground/60">
-          Benchmarks on Apple Mac Mini, M4, 36GB RAM, as of Mar, 2026.
-        </p>
-      }
-    />
-  );
+  return <ScrollPlayer features={features} />;
 }
 
 // ------------------------------------
@@ -74,10 +41,8 @@ export interface FeatureData {
   arcboxDuration: number,
   /** Pre-calculated CSS transition duration (seconds) for docker bar */
   dockerDuration: number,
-  /** Server-rendered metric title */
-  metricTitle: React.ReactNode,
-  /** Server-rendered improvement badge */
-  improvementBadge: React.ReactNode
+  /** Pre-calculated improvement multiplier (docker/arcbox, rounded) */
+  improvement: number
 }
 
 /**
@@ -99,7 +64,6 @@ function makeFeature(
   docker: number,
   unit: string
 ): FeatureData {
-  const improvement = Math.round(docker / arcbox);
   return {
     title,
     description,
@@ -109,23 +73,6 @@ function makeFeature(
     arcboxPct: Math.round((arcbox / docker) * 100),
     arcboxDuration: getBarDuration(arcbox, unit),
     dockerDuration: getBarDuration(docker, unit),
-    metricTitle: (
-      <div className="hidden xs:block text-center">
-        <span className="font-mono text-sm text-muted-foreground">
-          Benchmark
-        </span>
-        <h3 className="mt-1 text-xl font-bold text-foreground lg:text-2xl">
-          {title}
-        </h3>
-      </div>
-    ),
-    improvementBadge: (
-      <div className="rounded-full border border-accent/30 bg-accent/10 px-4 py-2">
-        <span className="font-mono text-lg lg:text-xl font-bold text-accent">
-          {improvement}x
-        </span>
-        <span className="ml-1 text-sm lg:text-base text-accent/80">faster</span>
-      </div>
-    )
+    improvement: Math.round(docker / arcbox)
   };
 }
