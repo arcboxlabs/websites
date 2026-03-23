@@ -24,7 +24,7 @@ export function Hero() {
           <div className="absolute inset-0 bg-linear-to-br from-accent/5 via-transparent to-transparent" />
 
           {/* Content + Screenshot: stacked layout */}
-          <div className="relative z-10 flex flex-col">
+          <div className="relative z-10 flex h-full flex-col">
 
             {/* Top: headline + buttons */}
             <div className="px-4 xs:px-6 md:px-8 lg:px-12 pt-4 xs:pt-6 md:pt-8 lg:pt-12">
@@ -92,10 +92,10 @@ export function Hero() {
             </div>
 
             {/* Bottom: decorative grid left + screenshot right */}
-            <div className="mt-8 flex items-end gap-0">
+            <div className="mt-8 flex flex-1 items-end gap-0">
 
               {/* Bottom-left: orange accent grid fill */}
-              <div className="shrink-0 w-12 md:w-[28%] lg:w-[30%] self-stretch relative overflow-hidden">
+              <div className="shrink-0 w-full md:w-[45%] self-stretch relative overflow-hidden">
                 <div
                   className="absolute inset-0"
                   style={{
