@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight, Apple } from 'lucide-react';
-import BrewSnippetCopyButton from './brew-command';
+// import BrewSnippetCopyButton from './brew-command';
 import { HeroShader } from './hero-shader';
 import HeroPreview from './hero-preview';
 
-const BREW_COMMAND = 'brew install arcbox-desktop';
+// const BREW_COMMAND = 'brew install arcbox-desktop';
 
 export function Hero() {
   return (
@@ -62,11 +62,11 @@ export function Hero() {
                     </Link>
                   </Button>
 
-                  <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
+                  {/* <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
                     <span className="text-muted-foreground select-none">$</span>
                     <code className="text-foreground">{BREW_COMMAND}</code>
                     <BrewSnippetCopyButton brewCommand={BREW_COMMAND} />
-                  </div>
+                  </div> */}
 
                   <Button
                     variant="outline"
