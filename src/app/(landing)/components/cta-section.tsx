@@ -30,11 +30,11 @@ export function CTASection({ className, ...props }: CTASectionProps) {
               Faster and lighter, built for the way you actually work
             </p>
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 xs:gap-3">
               <Button
-                size="lg"
+                size="default"
                 asChild
-                className="h-12 rounded-full bg-accent px-8 text-primary-foreground hover:bg-accent/90"
+                className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
                 <Link href="https://github.com/arcbox/releases" target="_blank">
                   <Download className="mr-2 h-5 w-5" />
@@ -43,9 +43,9 @@ export function CTASection({ className, ...props }: CTASectionProps) {
               </Button>
               <Button
                 variant="outline"
-                size="lg"
+                size="default"
                 asChild
-                className="h-12 rounded-full px-8 bg-transparent border-border hover:bg-secondary"
+                className="rounded-full bg-secondary/60 border-border hover:bg-secondary/80 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
                 <Link
                   href="/docs"
@@ -53,7 +53,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                   prefetch={false}
                 >
                   Learn More
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="hidden xs:block h-4 w-4" />
                 </Link>
               </Button>
             </div>
