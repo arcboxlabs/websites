@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Image from 'next/image';
-import ImageHeroPreview from '@/images/hero-preview.webp';
+import ImageHeroPreview from '@/images/hero-preview.png';
 import { cn } from '@/lib/utils';
 
 export default function HeroPreview() {
@@ -11,7 +11,7 @@ export default function HeroPreview() {
 
   return (
     <div
-      className="absolute left-[10%] sm:left-[20%] max-w-300 rounded-xl border-2 top-105 sm:top-100"
+      className="absolute left-[10%] sm:left-[20%] max-w-300 rounded-md border-3 top-105 sm:top-100"
       style={{
         backgroundImage: `url(${ImageHeroPreview.blurDataURL})`,
         backgroundSize: 'cover',
@@ -23,7 +23,7 @@ export default function HeroPreview() {
         src={ImageHeroPreview}
         alt="hero-image"
         className={cn(
-          'rounded-xl transition-opacity duration-200',
+          'rounded-md transition-opacity duration-200',
           loaded ? 'opacity-100' : 'opacity-0'
         )}
         onLoad={onLoad}

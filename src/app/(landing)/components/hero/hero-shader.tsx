@@ -32,7 +32,7 @@ export function HeroShader() {
       />
       {imgEl && (
         <ImageDithering
-          className="absolute inset-0 size-full animate-in fade-in duration-500 opacity-15"
+          className="absolute inset-0 size-full animate-in fade-in duration-500 opacity-10 lg:opacity-20"
           image={imgEl}
           colorBack="#00000000"
           colorFront="#c06a20"
