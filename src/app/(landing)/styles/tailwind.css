@@ -41,7 +41,7 @@
 }
 
 @theme inline {
-  --breakpoint-xs: 24rem; /* 384px for iPhone SE but not iPhone 12 */
+  --breakpoint-xs: 25rem; /* 400px for iPhone SE, iPhone 12 Pro */
 
   /* --font-sans: var(--font-sans);
   --font-mono: var(--font-mono); */
