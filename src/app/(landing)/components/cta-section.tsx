@@ -76,7 +76,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
               </div>
 
               {/* Left screenshot - tilted */}
-              <div className="absolute left-0 md:left-[5%] top-16 md:top-24 w-[45%] md:w-[35%] z-10 -rotate-6 opacity-80">
+              <div className="absolute left-0 top-16 md:top-24 w-[60%] md:w-[45%] z-10 -rotate-6 opacity-80">
                 <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                   <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-3 py-2">
                     <div className="h-2 w-2 rounded-full bg-[#ff5f57]" />
@@ -86,7 +86,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                       Terminal
                     </span>
                   </div>
-                  <div className="aspect-[4/3] bg-background p-3 text-left overflow-hidden">
+                  <div className="aspect-[4/3] md:aspect-[16/10] bg-background p-3 text-left overflow-hidden">
                     <div className="font-mono text-[6px] md:text-[8px] text-muted-foreground space-y-0.5">
                       <p><span className="text-accent">$</span> <span className="text-accent">docker-compose up -d</span></p>
                       <br />
