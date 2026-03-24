@@ -37,7 +37,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 asChild
                 className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
-                <a href={downloadLinks.mac.arm64} target="_blank">
+                <a href={downloadLinks.mac.arm64} target="_blank" rel="noopener noreferrer">
                   <Download className="h-5 w-5" />
                   Download for macOS
                 </a>
