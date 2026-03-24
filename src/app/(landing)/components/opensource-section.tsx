@@ -134,7 +134,7 @@ export function OpenSourceSection() {
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <SiGithub className="mr-2 h-4 w-4" />
+                  <SiGithub className="h-4 w-4" />
                   arcboxlabs/arcbox-desktop
                 </a>
               </Button>
@@ -148,7 +148,7 @@ export function OpenSourceSection() {
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <SiGithub className="mr-2 h-4 w-4" />
+                  <SiGithub className="h-4 w-4" />
                   arcboxlabs/arcbox
                 </a>
               </Button>

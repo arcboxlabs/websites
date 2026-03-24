@@ -37,7 +37,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
                 <Link href="https://github.com/arcbox/releases" target="_blank">
-                  <Download className="mr-2 h-5 w-5" />
+                  <Download className="h-5 w-5" />
                   Download for macOS
                 </Link>
               </Button>

@@ -8,3 +8,9 @@ export const socialLinks = [
   { name: 'GitHub', href: 'https://arcbox.link/github', icon: SiGithub },
   { name: 'Discord', href: 'https://arcbox.link/discord', icon: SiDiscord }
 ];
+
+export const downloadLinks = {
+  mac: {
+    arm64: 'https://arcbox.link/dld-arm64'
+  }
+};

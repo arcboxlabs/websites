@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
-import { Download, Loader2, ArrowRight, Apple } from 'lucide-react';
+import { Download, ArrowRight, Apple } from 'lucide-react';
 // import BrewSnippetCopyButton from './brew-command';
 import { HeroShader } from './hero-shader';
 import HeroPreview from './hero-preview';
-import { DownloadButton } from '@/components/download-button';
+import { downloadLinks } from '@/constants/links';
 
 // const BREW_COMMAND = 'brew install arcbox-desktop';
 
@@ -57,12 +57,10 @@ export function Hero() {
                     asChild
                     className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
                   >
-                    <DownloadButton
-                      icon={<Download className="hidden xs:block h-4 w-4" />}
-                      loadingIcon={<Loader2 className="hidden xs:block h-4 w-4 animate-spin" />}
-                    >
+                    <a href={downloadLinks.mac.arm64} target="_blank" rel="noopener noreferrer">
+                      <Download className="hidden xs:block h-4 w-4" />
                       Download for macOS
-                    </DownloadButton>
+                    </a>
                   </Button>
 
                   {/* <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
