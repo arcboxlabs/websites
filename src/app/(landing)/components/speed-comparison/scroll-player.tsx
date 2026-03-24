@@ -4,20 +4,26 @@ import { useGSAP } from '@gsap/react';
 import _gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Zap } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { ComparisonBars } from './comparison-bars';
+import ComparisonBars from './comparison-bars';
 import type { FeatureData } from './index';
 
 _gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
+export interface ScrollPlayerProps {
+  features: FeatureData[],
+  header: React.ReactNode,
+  fullBleedTexture: React.ReactNode
+}
+
 export function ScrollPlayer({
-  features
-}: {
-  features: FeatureData[]
-}) {
+  features,
+  header,
+  fullBleedTexture
+}: ScrollPlayerProps) {
   const [activeFeature, setActiveFeature] = useState(0);
+  const [pinSpacerReady, setPinSpacerReady] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
@@ -50,6 +56,7 @@ export function ScrollPlayer({
       // pin-spacer, preventing browser scroll restoration from clamping.
       // Now that the pin-spacer provides the real height, remove min-height.
       triggerRef.current.style.minHeight = '';
+      setPinSpacerReady(true);
     },
     { scope: triggerRef }
   );
@@ -83,40 +90,19 @@ export function ScrollPlayer({
       // has the correct height before JS hydrates. This prevents the browser
       // from clamping the restored scroll position to a shorter document.
       // pin-spacer height = section (100dvh) + scroll distance (n * 75dvh).
-      style={{ minHeight: `${100 + features.length * 75}dvh` }}
+      style={pinSpacerReady ? undefined : { minHeight: `${100 + features.length * 75}dvh` }}
     >
       <div ref={sectionRef}>
         <div className="h-dvh pt-22.5">
           <div
             className="flex items-center justify-center flex-col relative z-10 w-full lg:min-h-100 lg:max-h-200 h-full"
           >
-            <div className="mb-4 px-4 text-center sm:mb-6 lg:mb-8">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent sm:mb-4">
-                <Zap className="h-4 w-4" />
-                <span>Performance</span>
-              </div>
-
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                <span>Ridiculously fast.</span>
-                <span className="hidden sm:inline">{' '}</span>
-                <br className="block sm:hidden" />
-                <span className="text-muted-foreground">By design.</span>
-              </h2>
-            </div>
+            {header}
 
             {/* Full-width wrapper: textures behind, content centered */}
             <div className="relative w-full lg:h-[calc(100%-16rem)] lg:flex-row">
               {/* Full-bleed texture layers */}
-              <div className="pointer-events-none absolute inset-0 lg:flex">
-                <div className="relative hidden shrink-0 lg:block lg:w-[45%]">
-                  <div className="pointer-events-none absolute inset-0 hidden lg:block">
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-40" />
-                  </div>
-                </div>
-                <div className="relative hidden grow lg:block">
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--border)_1px,transparent_1px)] bg-size-[16px_16px] opacity-50" />
-                </div>
-              </div>
+              {fullBleedTexture}
 
               {/* Centered content */}
               <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col border-border lg:flex-row">

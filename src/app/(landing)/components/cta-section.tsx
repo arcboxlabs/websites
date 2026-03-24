@@ -65,7 +65,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             {/* Floating Screenshots */}
             <div className="relative mt-16 h-56 xs:h-64 sm:h-72 md:h-100 lg:h-112">
               {/* Center screenshot - main */}
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[65%] z-20">
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[75%] z-20">
                 <Image
                   src={heroPreview}
                   alt="ArcBox Desktop screenshot"
