@@ -1,33 +1,28 @@
-import { BlogSource } from '@/blog/cms';
 import { Calendar } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AuthorAvatars } from './author-avatars';
-import { notFound } from 'next/navigation';
+import type { BlogPage } from '@/blog/cms';
 
 export interface BlogGridProps {
-  category?: string
+  posts: BlogPage[]
 }
 
-export default function BlogGrid({ category }: BlogGridProps) {
-  const posts = BlogSource.getPosts({ category });
-
-  if (!posts.length) {
-    notFound();
-  }
-
+export default function BlogGrid({ posts }: BlogGridProps) {
   return (
     <>
       {posts.map((post) => (
         <Link href={`/blog/${post.slugs[0]}`} key={post.path} className="group flex flex-col">
           {/* Thumbnail */}
           <div className="relative aspect-16/10 overflow-hidden rounded-xl border border-border">
-            <Image
-              src={post.data.cover!}
-              alt={post.data.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            {post.data.cover && (
+              <Image
+                src={post.data.cover}
+                alt={post.data.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            )}
             {/* Category badge overlay */}
             <div className="absolute top-3 left-3">
               <span className="rounded-full border border-accent/40 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent backdrop-blur-sm">
