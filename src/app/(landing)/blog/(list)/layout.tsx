@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 export default function BlogListLayout({ children }: React.PropsWithChildren) {
   const categories = BlogSource.getCategories();
 
-  const featured = BlogSource.getPosts()[0];
+  const posts = BlogSource.getPosts();
+  const featured = posts[0];
 
   return (
     <div className="px-4">
@@ -33,8 +34,8 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
         {/* Radial fade out */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,transparent_60%,var(--background)_100%)]" />
         <div className="relative mx-auto max-w-6xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs text-accent">
-            Updates, deep dives & releases
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent">
+            Announcements, updates & deep dives
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl text-balance">
             The ArcBox Blog<span className="text-accent">.</span>
@@ -89,21 +90,28 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
         </Link>
       </section>
 
-      {/* All posts + filter */}
-      <section className="mx-auto max-w-6xl pb-24">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            All Posts<span className="text-accent">.</span>
-          </h2>
+      {/**
+        * All posts + filter
+        *
+        * There is no point of showing "All posts" section if we only have 1 post (the featured one). In that case, we can just show the featured post and skip the rest of the section.
+        */}
+      {posts.length > 1 && (
+        <section className="mx-auto max-w-6xl pb-24">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              All Posts<span className="text-accent">.</span>
+            </h2>
 
-          <CategoryFilter categories={categories} />
-        </div>
+            {/* there is no point of category filter if we don't have enough posts */}
+            {posts.length > 5 && <CategoryFilter categories={categories} />}
+          </div>
 
-        {/* Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {children}
-        </div>
-      </section>
+          {/* Grid */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {children}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
