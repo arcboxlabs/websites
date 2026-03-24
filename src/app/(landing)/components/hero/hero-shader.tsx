@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { useState } from 'react';
 
 const ImageDithering = dynamic(
@@ -19,8 +18,7 @@ export function HeroShader() {
 
   return (
     <>
-      {/* Hidden next/image handles optimized loading + preload */}
-      <Image
+      <img
         ref={setImgEl}
         src={ICON_SVG}
         width={ICON_WIDTH}
@@ -28,10 +26,9 @@ export function HeroShader() {
         alt=""
         aria-hidden
         className="invisible absolute"
-        // priority
         decoding="sync"
         loading="eager"
-        preload
+        fetchPriority="high"
       />
       {imgEl && (
         <ImageDithering
