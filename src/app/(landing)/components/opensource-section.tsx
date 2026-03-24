@@ -30,15 +30,15 @@ export function OpenSourceSection() {
           {/* Content */}
           <div className="lg:basis-4/7 lg:shrink-0">
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-              Some projects have a GitHub repository while only hosting a
-              README, and a few screenshots.{' '}
+              Some projects have GitHub repositories, host a README, and include a few screenshots.
+              {' '}
               <span className="text-foreground font-semibold">
-                That's not open source—that's a landing page.
-              </span>
+                ArcBox Desktop is different
+              </span>.
             </p>
 
             <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
-              {' '}ArcBox Desktop is{' '}
+              We are committed to being {' '}
               <span className="text-foreground font-semibold">
                 truly open source
               </span>.
@@ -134,7 +134,7 @@ export function OpenSourceSection() {
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <SiGithub className="mr-2 h-4 w-4" />
+                  <SiGithub className="h-4 w-4" />
                   arcboxlabs/arcbox-desktop
                 </a>
               </Button>
@@ -148,7 +148,7 @@ export function OpenSourceSection() {
                   target="_blank"
                   rel="noopener noreferrer external"
                 >
-                  <SiGithub className="mr-2 h-4 w-4" />
+                  <SiGithub className="h-4 w-4" />
                   arcboxlabs/arcbox
                 </a>
               </Button>

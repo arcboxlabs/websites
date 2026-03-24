@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import BlogGrid from './components/blog-grid';
 import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { BlogSource } from '@/blog/cms';
 
 export default function BlogHomePage() {
-  return <BlogGrid />;
+  const posts = BlogSource.getPosts();
+
+  return <BlogGrid posts={posts.slice(1)} />;
 }
 
 export function generateMetadata() {

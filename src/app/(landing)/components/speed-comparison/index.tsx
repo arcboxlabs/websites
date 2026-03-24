@@ -1,3 +1,4 @@
+import { ZapIcon } from 'lucide-react';
 import { ScrollPlayer } from './scroll-player';
 
 const features: FeatureData[] = [
@@ -24,7 +25,38 @@ const features: FeatureData[] = [
 ];
 
 export function SpeedComparison() {
-  return <ScrollPlayer features={features} />;
+  return (
+    <ScrollPlayer
+      features={features}
+      header={
+        <div className="mb-4 px-4 text-center sm:mb-6 lg:mb-8">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-sm text-accent sm:mb-4">
+            <ZapIcon className="h-4 w-4" />
+            <span>Performance</span>
+          </div>
+
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+            <span>Ridiculously fast.</span>
+            <span className="hidden sm:inline">{' '}</span>
+            <br className="block sm:hidden" />
+            <span className="text-muted-foreground">By design.</span>
+          </h2>
+        </div>
+      }
+      fullBleedTexture={
+        <div className="pointer-events-none absolute inset-0 lg:flex">
+          <div className="relative hidden shrink-0 lg:block lg:w-[45%]">
+            <div className="pointer-events-none absolute inset-0 hidden lg:block">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-40" />
+            </div>
+          </div>
+          <div className="relative hidden grow lg:block">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--border)_1px,transparent_1px)] bg-size-[16px_16px] opacity-50" />
+          </div>
+        </div>
+      }
+    />
+  );
 }
 
 // ------------------------------------

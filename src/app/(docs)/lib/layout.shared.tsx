@@ -1,6 +1,6 @@
 import type { BaseLayoutProps, LinkItemType } from 'fumadocs-ui/layouts/shared';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
-import { socialLinks } from '@/constants/social-links';
+import { socialLinks } from '@/constants/links';
 
 export const gitConfig = {
   user: 'arcboxlabs',

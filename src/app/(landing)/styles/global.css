@@ -3,3 +3,8 @@
   min-width: 0 !important;
   max-width: none !important;
 }
+
+/* landing page fixed navbar */
+html {
+  scroll-padding-top: 5.625rem;
+}

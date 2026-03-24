@@ -1,8 +1,11 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { Download, ArrowRight } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 import { cn } from '@/lib/utils';
+import heroPreview from '@/images/hero-preview.png';
+import { downloadLinks } from '@/constants/links';
 
 export interface CTASectionProps extends Omit<React.ComponentProps<'section'>, 'children'> {}
 
@@ -14,7 +17,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
           {/* Subtle gradient overlay */}
           <div className="absolute inset-0 bg-linear-to-br from-accent/5 via-transparent to-accent/5" />
 
-          <div className="relative px-8 pt-16 pb-8 text-center md:px-16 md:pt-20">
+          <div className="relative text-center px-4 sm:px-8 md:px-16 pt-8 sm:pt-16 md:pt-20 pb-8">
             <p className="text-sm text-muted-foreground mb-3">
               That's all. Except not.
             </p>
@@ -28,22 +31,22 @@ export function CTASection({ className, ...props }: CTASectionProps) {
               Faster and lighter, built for the way you actually work
             </p>
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 xs:gap-3">
               <Button
-                size="lg"
+                size="default"
                 asChild
-                className="h-12 rounded-full bg-accent px-8 text-primary-foreground hover:bg-accent/90"
+                className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
-                <Link href="https://github.com/arcbox/releases" target="_blank">
-                  <Download className="mr-2 h-5 w-5" />
+                <a href={downloadLinks.mac.arm64} target="_blank" rel="noopener noreferrer">
+                  <Download className="h-5 w-5" />
                   Download for macOS
-                </Link>
+                </a>
               </Button>
               <Button
                 variant="outline"
-                size="lg"
+                size="default"
                 asChild
-                className="h-12 rounded-full px-8 bg-transparent border-border hover:bg-secondary"
+                className="rounded-full bg-secondary/60 border-border hover:bg-secondary/80 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
                 <Link
                   href="/docs"
@@ -51,7 +54,7 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                   prefetch={false}
                 >
                   Learn More
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="hidden xs:block h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -61,45 +64,20 @@ export function CTASection({ className, ...props }: CTASectionProps) {
             </p>
 
             {/* Floating Screenshots */}
-            <div className="relative mt-16 h-75 sm:h-88 md:h-100">
+            <div className="relative mt-16 h-56 xs:h-64 sm:h-72 md:h-100 lg:h-112">
               {/* Center screenshot - main */}
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[65%] z-20">
-                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
-                  <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-3 py-2">
-                    <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-                    <span className="ml-3 text-xs text-muted-foreground">
-                      ArcBox - Containers
-                    </span>
-                  </div>
-                  <div className="aspect-[16/10] bg-linear-to-br from-background via-secondary to-background p-4">
-                    <div className="flex h-full gap-3">
-                      <div className="w-40 rounded-lg bg-muted/30 p-3">
-                        <div className="h-5 w-full rounded bg-accent/20 mb-2" />
-                        <div className="space-y-1.5">
-                          {createFixedArray(4).map((i) => (
-                            <div key={i} className="h-4 w-full rounded bg-muted/50" />
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex-1 rounded-lg bg-muted/30 p-3">
-                        <div className="grid grid-cols-3 gap-2">
-                          {createFixedArray(6).map((i) => (
-                            <div key={i} className="aspect-square rounded-lg bg-muted/50 p-2">
-                              <div className="h-4 w-4 rounded bg-accent/30 mb-1" />
-                              <div className="h-2 w-3/4 rounded bg-muted/60" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[85%] md:w-[75%] z-20">
+                <Image
+                  src={heroPreview}
+                  alt="ArcBox Desktop screenshot"
+                  className="w-full rounded-md border-3 border-border shadow-2xl"
+                  placeholder="blur"
+                  priority={false}
+                />
               </div>
 
               {/* Left screenshot - tilted */}
-              <div className="absolute left-0 md:left-[5%] top-16 md:top-24 w-[45%] md:w-[35%] z-10 -rotate-6 opacity-80">
+              <div className="absolute left-0 top-16 md:top-24 w-[60%] md:w-[45%] z-10 -rotate-6 opacity-80">
                 <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                   <div className="flex items-center gap-2 border-b border-border bg-secondary/80 px-3 py-2">
                     <div className="h-2 w-2 rounded-full bg-[#ff5f57]" />
@@ -109,11 +87,20 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                       Terminal
                     </span>
                   </div>
-                  <div className="aspect-[4/3] bg-background p-3 text-left">
-                    <div className="font-mono text-[8px] md:text-[10px] text-muted-foreground space-y-1">
-                      <p><span className="text-accent">$</span> arcbox run nginx</p>
-                      <p className="text-foreground/60">Starting container...</p>
-                      <p className="text-foreground/60">Ready in 47ms</p>
+                  <div className="aspect-[4/3] md:aspect-[16/10] bg-background p-3 text-left overflow-hidden">
+                    <div className="font-mono text-[6px] md:text-[8px] text-muted-foreground space-y-0.5">
+                      <p><span className="text-accent">$</span> <span className="text-accent">docker-compose up -d</span></p>
+                      <br />
+                      <p className="text-blue-400">[+] Running 9/9</p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-rabbitmq</span>    <span className="text-green-400">Started</span>  <span className="text-blue-400">1.7s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-clickhouse</span>  <span className="text-green-400">Started</span>  <span className="text-blue-400">1.1s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-minio</span>       <span className="text-green-400">Healthy</span> <span className="text-blue-400">12.1s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-postgres</span>    <span className="text-green-400">Started</span>  <span className="text-blue-400">1.9s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-redis</span>       <span className="text-green-400">Started</span>  <span className="text-blue-400">1.3s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-minio-init</span>  <span className="text-green-400">Started</span> <span className="text-blue-400">12.6s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-grafana</span>     <span className="text-green-400">Started</span>  <span className="text-blue-400">2.2s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-nginx</span>       <span className="text-green-400">Started</span>  <span className="text-blue-400">3.1s</span></p>
+                      <p><span className="text-green-400"> ✔</span> <span>Container</span> <span className="text-semibold">arcbox-envoy</span>       <span className="text-green-400">Started</span>  <span className="text-blue-400">3.8s</span></p>
                     </div>
                   </div>
                 </div>

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
-import { Download } from 'lucide-react';
+import { DownloadIcon } from 'lucide-react';
 import HeaderScrollContainer from './header-scroll-container';
 import { lazy, Suspense } from 'react';
 import NavbarMobileMenuTrigger from './navbar-mobile-menu-trigger';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
-import { socialLinks } from '@/constants/social-links';
+import { downloadLinks, socialLinks } from '@/constants/links';
 
 const NavbarMobileMenu = lazy(() => import('./navbar-mobile-menu'));
 
@@ -97,16 +97,16 @@ export function Header() {
               asChild
               className="h-9 rounded-full bg-accent px-5 text-primary-foreground hover:bg-accent/90"
             >
-              <Link href="#download">
-                <Download className="mr-2 h-4 w-4" />
+              <a href={downloadLinks.mac.arm64} target="_blank" rel="noopener noreferrer">
+                <DownloadIcon className="h-4 w-4" />
                 Download
-              </Link>
+              </a>
             </Button>
           </div>
 
           <div className="md:hidden navbar-dropdown-container">
             <Suspense fallback={<NavbarMobileMenuTrigger isOpen={false} />}>
-              <NavbarMobileMenu links={DEFAULT_LINKS} />
+              <NavbarMobileMenu links={DEFAULT_LINKS} downloadLink={downloadLinks.mac.arm64} />
             </Suspense>
           </div>
         </div>

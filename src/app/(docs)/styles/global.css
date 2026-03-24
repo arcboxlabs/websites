@@ -3,7 +3,7 @@
 @import 'fumadocs-ui/css/preset.css';
 
 @theme inline {
-  --breakpoint-xs: 24rem; /* 384px for iPhone SE but not iPhone 12 */
+  --breakpoint-xs: 25rem; /* 400px for iPhone SE, iPhone 12 Pro */
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);

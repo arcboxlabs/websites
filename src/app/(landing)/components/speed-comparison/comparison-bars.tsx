@@ -2,6 +2,7 @@
 
 import { clsx } from 'clsx';
 import { useIntersection } from 'foxact/use-intersection';
+import { memo } from 'react';
 
 export interface ComparisonBarsProps {
   arcbox: number,
@@ -12,7 +13,7 @@ export interface ComparisonBarsProps {
   dockerDuration: number
 }
 
-export function ComparisonBars({
+export default memo(function ComparisonBars({
   arcbox,
   docker,
   unit,
@@ -48,7 +49,7 @@ export function ComparisonBars({
       />
     </div>
   );
-}
+});
 
 interface BarProps {
   label: string,

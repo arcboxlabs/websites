@@ -2,11 +2,19 @@ import { BlogSource } from '@/blog/cms';
 import BlogGrid from '../../components/blog-grid';
 import type { Metadata } from 'next';
 import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { notFound } from 'next/navigation';
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
 
-  return <BlogGrid category={category} />;
+  const featuredPost = BlogSource.getPosts()[0];
+  const posts = BlogSource.getPosts({ category }).filter((post) => post.absolutePath !== featuredPost.absolutePath);
+
+  if (!posts.length) {
+    notFound();
+  }
+
+  return <BlogGrid posts={posts} />;
 }
 
 export function generateStaticParams() {

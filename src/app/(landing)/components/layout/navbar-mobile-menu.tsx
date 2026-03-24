@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Download } from 'lucide-react';
+import { DownloadIcon } from 'lucide-react';
 import { Button } from '@/ui/button';
 import {
   Root as DropdownMenuRoot,
@@ -20,10 +20,11 @@ interface NavbarMobileMenuProps {
     href: string,
     label: string,
     external?: boolean
-  }>
+  }>,
+  downloadLink: string
 }
 
-export default function NavbarMobileMenu({ links }: NavbarMobileMenuProps) {
+export default function NavbarMobileMenu({ links, downloadLink }: NavbarMobileMenuProps) {
   const [isOpen, props] = useRadixOpen();
 
   const portalTarget = useNavbarMobileMenuPortal();
@@ -63,10 +64,10 @@ export default function NavbarMobileMenu({ links }: NavbarMobileMenuProps) {
                 asChild
                 className="h-10 rounded-full bg-accent text-primary-foreground hover:bg-accent/90 cursor-pointer"
               >
-                <Link href="#download">
-                  <Download className="mr-2 h-4 w-4" />
+                <a href={downloadLink} target="_blank" rel="noopener noreferrer">
+                  <DownloadIcon className="h-4 w-4" />
                   Download
-                </Link>
+                </a>
               </Button>
             </DropdownMenuItem>
           </nav>
