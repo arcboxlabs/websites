@@ -12,7 +12,7 @@ import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { BlogRssCTA } from '../components/blog-rss-cta';
-import { Heading } from './components/mdx/headding';
+import { Heading } from './components/mdx/heading';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
