@@ -4,10 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AuthorAvatars } from './components/author-avatars';
 import { CategoryFilter } from '../components/category-filter';
+import { BlogRssCTA } from '../components/blog-rss-cta';
 import type { Metadata } from 'next';
+import { blogAlternates } from '@/lib/metadata';
 
 export const metadata: Metadata = {
-  title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' }
+  title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' },
+  description: 'Engineering deep dives, product releases, and security research from the team building ArcBox.',
+  alternates: blogAlternates()
 };
 
 export default function BlogListLayout({ children }: React.PropsWithChildren) {
@@ -19,7 +23,7 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
   return (
     <div className="px-4">
       {/* Hero header */}
-      <section className="relative overflow-hidden pt-32 pb-16">
+      <section className="relative overflow-hidden pt-32 pb-12 md:pb-16">
         {/* Grid texture */}
         <div
           className="pointer-events-none absolute inset-0"
@@ -47,7 +51,7 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
       </section>
 
       {/* Featured post */}
-      <section className="mx-auto max-w-6xl pb-16">
+      <section className="mx-auto max-w-6xl pb-12 md:pb-16">
         <Link href={`/blog/${featured.slugs[0]}`} className="group block">
           <div className="grid md:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-accent/40">
             {/* Thumbnail */}
@@ -96,9 +100,9 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
         * There is no point of showing "All posts" section if we only have 1 post (the featured one). In that case, we can just show the featured post and skip the rest of the section.
         */}
       {posts.length > 1 && (
-        <section className="mx-auto max-w-6xl pb-24">
+        <section className="mx-auto max-w-6xl pb-12 md:pb-16">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
               All Posts<span className="text-accent">.</span>
             </h2>
 
@@ -112,6 +116,11 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
           </div>
         </section>
       )}
+
+      {/* RSS CTA */}
+      <section className="mx-auto max-w-6xl pb-16">
+        <BlogRssCTA />
+      </section>
     </div>
   );
 }

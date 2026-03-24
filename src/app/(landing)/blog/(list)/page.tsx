@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import BlogGrid from './components/blog-grid';
-import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { BlogSource } from '@/blog/cms';
 
 export default function BlogHomePage() {
@@ -14,7 +14,7 @@ export function generateMetadata() {
   return {
     title: { absolute: 'ArcBox Blog' }, // bypasses template — "ArcBox Blog" not "ArcBox Blog | ArcBox Blog"
     description,
-    alternates: { canonical: '/blog' },
+    alternates: blogAlternates({ canonical: '/blog' }),
     openGraph: blogOpenGraph({ title: 'ArcBox Blog', description, type: 'website', url: '/blog' }),
     twitter: createTwitter({ title: 'ArcBox Blog', description })
   } satisfies Metadata;
