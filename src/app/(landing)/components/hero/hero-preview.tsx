@@ -11,7 +11,7 @@ export default function HeroPreview() {
 
   return (
     <div
-      className="absolute left-[10%] sm:left-[20%] max-w-300 rounded-md border-3 top-105 sm:top-100"
+      className="absolute left-[10%] sm:left-[20%] max-w-300 rounded-md border-3 border-border top-105 sm:top-100"
       style={{
         backgroundImage: `url(${ImageHeroPreview.blurDataURL})`,
         backgroundSize: 'cover',
