@@ -21,7 +21,7 @@ export default function HeroPreview() {
     >
       <Image
         src={ImageHeroPreview}
-        alt="hero-image"
+        alt="Screenshot of ArcBox Desktop as the hero image"
         className={cn(
           'rounded-md transition-opacity duration-200',
           loaded ? 'opacity-100' : 'opacity-0'
