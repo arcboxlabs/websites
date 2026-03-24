@@ -18,7 +18,7 @@ export function getRssFeedInstance() {
     },
     feedLinks: {
       rss2: 'https://arcbox.dev/rss.xml',
-      json: 'https://arcbox.dev/feed.json',
+      json: 'https://arcbox.dev/rss.json',
       atom: 'https://arcbox.dev/atom.xml'
     }
   });

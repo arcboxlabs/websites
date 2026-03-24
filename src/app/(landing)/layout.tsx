@@ -15,7 +15,7 @@ const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '700'], 
 
 export const metadata: Metadata = {
   title: {
-    default: 'ArcBox — The fully-opensource blazing-fast, open-sourced Docker Desktop Alternative for Apple Silicon',
+    default: 'ArcBox — The fully open-source blazing-fast, open-sourced Docker Desktop Alternative for Apple Silicon',
     template: '%s | ArcBox'
   },
   description: ARCBOX_DESKTOP_DESCRIPTION,

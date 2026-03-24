@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const ARCBOX_DESKTOP_DESCRIPTION = 'The fully-opensource Docker Desktop alternative built natively for Apple Silicon with blazing-fast performance. Run containers, Kubernetes, Firecracker VMs, and sandboxed AI agents at lightning speed.';
+export const ARCBOX_DESKTOP_DESCRIPTION = 'The fully open source Docker Desktop alternative built natively for Apple Silicon with blazing-fast performance. Run containers, Kubernetes, Firecracker VMs, and sandboxed AI agents at lightning speed.';
 
 export const TWITTER_HANDLE = '@arcboxdev';
 
@@ -25,7 +25,7 @@ export function blogAlternates(
       }],
       'application/feed+json': [{
         title: 'ArcBox Blog JSON Feed',
-        url: 'https://arcbox.dev/feed.json'
+        url: 'https://arcbox.dev/rss.json'
       }],
       ...fields?.types
     }
