@@ -45,6 +45,11 @@ export function ScrollPlayer({
           setActiveFeature(newIndex);
         }
       });
+
+      // The CSS min-height on triggerRef reserved space matching the
+      // pin-spacer, preventing browser scroll restoration from clamping.
+      // Now that the pin-spacer provides the real height, remove min-height.
+      triggerRef.current.style.minHeight = '';
     },
     { scope: triggerRef }
   );
@@ -72,7 +77,14 @@ export function ScrollPlayer({
   };
 
   return (
-    <div ref={triggerRef}>
+    <div
+      ref={triggerRef}
+      // Reserve space matching the GSAP pin-spacer height so the document
+      // has the correct height before JS hydrates. This prevents the browser
+      // from clamping the restored scroll position to a shorter document.
+      // pin-spacer height = section (100dvh) + scroll distance (n * 75dvh).
+      style={{ minHeight: `${100 + features.length * 75}dvh` }}
+    >
       <div ref={sectionRef}>
         <div className="h-dvh pt-22.5">
           <div
