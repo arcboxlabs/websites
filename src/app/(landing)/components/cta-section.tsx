@@ -5,6 +5,7 @@ import { Download, ArrowRight } from 'lucide-react';
 import { createFixedArray } from 'foxact/create-fixed-array';
 import { cn } from '@/lib/utils';
 import heroPreview from '@/images/hero-preview.png';
+import { downloadLinks } from '@/constants/links';
 
 export interface CTASectionProps extends Omit<React.ComponentProps<'section'>, 'children'> {}
 
@@ -36,10 +37,10 @@ export function CTASection({ className, ...props }: CTASectionProps) {
                 asChild
                 className="rounded-full bg-accent border-border hover:bg-accent/90 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
               >
-                <Link href="https://github.com/arcbox/releases" target="_blank">
+                <a href={downloadLinks.mac.arm64} target="_blank">
                   <Download className="h-5 w-5" />
                   Download for macOS
-                </Link>
+                </a>
               </Button>
               <Button
                 variant="outline"
