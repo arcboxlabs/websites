@@ -6,12 +6,13 @@ import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
 import { BlogAside } from './components/blog-aside';
-import { CTASection } from '../../components/cta-section';
 import type { Metadata } from 'next';
 import { isNonNullish } from 'foxts/guard';
 import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { BlogRssCTA } from '../components/blog-rss-cta';
+import { Heading } from './components/mdx/headding';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -62,80 +63,103 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       )}
 
       {/* Main layout */}
-      <div className="mx-auto max-w-6xl px-4">
-        {/* Header block — sits above two columns */}
-        <div className="border-b border-border py-8 md:py-10">
-          {/* Category */}
-          {post.data.category && (
-            <Link href={`/blog/category/${post.data.category}`} className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-accent">
-              [{post.data.category}]
-            </Link>
-          )}
-
-          {/* Title */}
-          <h1 className="max-w-3xl text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-            {post.data.title}
-          </h1>
-
-          {/* Date + read time */}
-          <p className="mt-3 text-sm text-muted-foreground">
-            {post.data.date}
-          </p>
-
-          {/* Authors */}
-          {postAuthors.length > 0 && (
-            <div className="mt-5 flex flex-wrap items-center gap-4">
-              {postAuthors.map((author) => (
-                <div key={author.id} className="flex items-center gap-3">
-                  <Image
-                    src={author.avatar}
-                    alt={author.name}
-                    width={38}
-                    height={38}
-                    className="rounded-full ring-2 ring-border"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{author.name}</p>
-                    <p className="text-xs text-muted-foreground">{post.data.category}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Two-column: content + sidebar */}
-        <div className="mt-10 flex gap-16">
-          {/* Main content */}
-          <article className="min-w-0 flex-1">
-            <div className="prose prose-invert max-w-none">
-              <MDXContent
-                components={getMDXComponents({
-                  // this allows you to link to other pages with relative file paths
-                  a: createRelativeLink(BlogSource.source, post)
-                })}
-              />
-            </div>
-
-            {/* Back link at bottom */}
-            <div className="mt-16 border-t border-border pt-8">
-              <Link
-                href="/blog"
-                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to all posts
+      <div className="px-4">
+        <div className="mx-auto max-w-6xl md:pb-12 pb-16">
+          {/* Header block — sits above two columns */}
+          <div className="border-b border-border py-8 md:py-10">
+            {/* Category */}
+            {post.data.category && (
+              <Link href={`/blog/category/${post.data.category}`} className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-accent">
+                [{post.data.category}]
               </Link>
-            </div>
-          </article>
-          <BlogAside
-            toc={post.data.toc.filter((item) => item.depth <= 2)}
-            fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
-          />
+            )}
+
+            {/* Title */}
+            <h1 className="text-balance font-bold tracking-tight text-foreground text-2xl md:text-3xl lg:text-4xl">
+              {post.data.title}
+            </h1>
+
+            {/* Date + read time */}
+            <p className="mt-3 text-sm text-muted-foreground">
+              {post.data.date}
+            </p>
+
+            {/* Authors */}
+            {postAuthors.length > 0 && (
+              <div className="mt-5 flex flex-wrap items-center gap-4">
+                {postAuthors.map((author) => (
+                  <div key={author.id} className="flex items-center gap-3">
+                    <Image
+                      src={author.avatar}
+                      alt={author.name}
+                      width={38}
+                      height={38}
+                      className="rounded-full ring-2 ring-border"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{author.name}</p>
+                      <p className="text-xs text-muted-foreground">{post.data.category}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Two-column: content + sidebar */}
+          <div className="mt-10 flex gap-16">
+            {/* Main content */}
+            <article className="min-w-0 flex-1">
+              <div className="prose prose-invert max-w-none">
+                <MDXContent
+                  components={getMDXComponents({
+                    // this allows you to link to other pages with relative file paths
+                    a: createRelativeLink(BlogSource.source, post),
+                    h1({ children, ...props }) {
+                      return <Heading asChild {...props}><h1 className="mb-8 scroll-m-8 text-3xl">{children}</h1></Heading>;
+                    },
+                    h2({ children, ...props }) {
+                      return <Heading asChild {...props}><h2 className="mb-8 scroll-m-8 text-[28px]">{children}</h2></Heading>;
+                    },
+                    h3({ children, ...props }) {
+                      return <Heading asChild {...props}><h3 className="mb-6 scroll-m-6 text-2xl">{children}</h3></Heading>;
+                    },
+                    h4({ children, ...props }) {
+                      return <Heading asChild {...props}><h4 className="mb-4 scroll-m-4 text-xl">{children}</h4></Heading>;
+                    },
+                    h5({ children, ...props }) {
+                      return <Heading asChild {...props}><h5 className="mb-2 scroll-m-2 text-base">{children}</h5></Heading>;
+                    },
+                    h6({ children, ...props }) {
+                      return <Heading asChild {...props}><h6 className="mb-1 scroll-m-1 text-sm">{children}</h6></Heading>;
+                    }
+                  })}
+                />
+              </div>
+
+              {/* Back link at bottom */}
+              <div className="mt-16 border-t border-border pt-8">
+                <Link
+                  href="/blog"
+                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to all posts
+                </Link>
+              </div>
+            </article>
+            <BlogAside
+              toc={post.data.toc.filter((item) => item.depth <= 2)}
+              fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
+            />
+          </div>
         </div>
+        {/** CTA */}
+        <section className="mx-auto max-w-6xl pb-16">
+          <BlogRssCTA />
+        </section>
+        {/* <CTASection className="pt-12" /> */}
       </div>
-      {/** CTA */}
-      <CTASection className="pt-12" />
     </>
   );
 }

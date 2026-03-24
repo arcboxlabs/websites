@@ -45,12 +45,12 @@ export default function BlogGrid({ posts }: BlogGridProps) {
           </div>
 
           {/* Title */}
-          <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground text-balance group-hover:text-accent transition-colors">
+          <h3 className="mt-2 text-lg font-semibold leading-snug text-foreground text-balance group-hover:text-accent transition-colors">
             {post.data.title}
           </h3>
 
           {/* Excerpt */}
-          <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground line-clamp-2 text-pretty">
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2 text-pretty">
             {post.data.description}
           </p>
 
