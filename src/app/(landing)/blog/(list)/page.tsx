@@ -6,7 +6,7 @@ import { BlogSource } from '@/blog/cms';
 export default function BlogHomePage() {
   const posts = BlogSource.getPosts();
 
-  return <BlogGrid posts={posts} />;
+  return <BlogGrid posts={posts.slice(1)} />;
 }
 
 export function generateMetadata() {
