@@ -49,6 +49,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en">
+      <head>
+        {/* Next.js metadata doesn't support sitemap, so we add static tag here */}
+        <link rel="sitemap" type="application/xml" title="ArcBox Site Map" href="https://arcbox.dev/sitemap.xml" />
+      </head>
       <body
         suppressHydrationWarning={process.env.NODE_ENV !== 'production'}
         className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}

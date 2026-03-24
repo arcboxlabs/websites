@@ -18,6 +18,10 @@ export default function DocsLayout({ children }: React.PropsWithChildren) {
       // next-themes
       suppressHydrationWarning
     >
+      <head>
+        {/* Next.js metadata doesn't support sitemap, so we add static tag here */}
+        <link rel="sitemap" type="application/xml" title="ArcBox Site Map" href="https://arcbox.dev/sitemap.xml" />
+      </head>
       <body className="flex flex-col min-h-screen" suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
         <Provider>{children}</Provider>
       </body>
