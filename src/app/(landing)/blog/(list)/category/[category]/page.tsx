@@ -1,7 +1,7 @@
 import { BlogSource } from '@/blog/cms';
 import BlogGrid from '../../components/blog-grid';
 import type { Metadata } from 'next';
-import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { notFound } from 'next/navigation';
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   return {
     title,
     description,
-    alternates: { canonical: `/blog/category/${category}` },
+    alternates: blogAlternates({ canonical: `/blog/category/${category}` }),
     openGraph: blogOpenGraph({
       title: ogTitle,
       description,

@@ -10,7 +10,7 @@ export const TWITTER_HANDLE = '@arcboxdev';
 // inject the context-specific defaults (mainly RSS) so callers only
 // need to provide the page-specific fields.
 export function blogAlternates(
-  fields: Metadata['alternates']
+  fields?: Metadata['alternates']
 ): NonNullable<Metadata['alternates']> {
   return {
     ...fields,
@@ -45,13 +45,13 @@ export function landingOpenGraph(
 }
 
 export function blogOpenGraph(
-  fields: NonNullable<Metadata['openGraph']>
+  fields?: Metadata['openGraph']
 ): NonNullable<Metadata['openGraph']> {
   return { siteName: 'ArcBox Blog', locale: 'en_US', ...fields };
 }
 
 export function docsOpenGraph(
-  fields: NonNullable<Metadata['openGraph']>
+  fields?: Metadata['openGraph']
 ): NonNullable<Metadata['openGraph']> {
   return { siteName: 'ArcBox Docs', locale: 'en_US', ...fields };
 }
@@ -59,7 +59,7 @@ export function docsOpenGraph(
 // ---------- Twitter helper
 
 export function createTwitter(
-  fields: NonNullable<Metadata['twitter']>
+  fields?: Metadata['twitter']
 ): NonNullable<Metadata['twitter']> {
   return {
     card: 'summary_large_image',

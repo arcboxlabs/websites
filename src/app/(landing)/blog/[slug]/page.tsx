@@ -9,7 +9,7 @@ import { BlogAside } from './components/blog-aside';
 import { CTASection } from '../../components/cta-section';
 import type { Metadata } from 'next';
 import { isNonNullish } from 'foxts/guard';
-import { blogOpenGraph, createTwitter } from '@/lib/metadata';
+import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 
@@ -171,9 +171,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         }
         return acc;
       }, []),
-    alternates: {
-      canonical: post.url
-    },
+    alternates: blogAlternates({ canonical: post.url }),
     openGraph: blogOpenGraph({
       type: 'article',
       title: post.data.title,

@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { AuthorAvatars } from './components/author-avatars';
 import { CategoryFilter } from '../components/category-filter';
 import type { Metadata } from 'next';
+import { blogAlternates } from '@/lib/metadata';
 
 export const metadata: Metadata = {
   title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' },
-  description: 'Engineering deep dives, product releases, and security research from the team building ArcBox.'
+  description: 'Engineering deep dives, product releases, and security research from the team building ArcBox.',
+  alternates: blogAlternates()
 };
 
 export default function BlogListLayout({ children }: React.PropsWithChildren) {
