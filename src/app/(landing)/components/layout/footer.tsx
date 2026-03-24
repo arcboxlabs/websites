@@ -9,8 +9,8 @@ const footerLinks = [
       // { name: 'Features', href: '#features' },
       // { name: 'Performance', href: '#speed' },
       { name: 'ArcBox Desktop', href: '/' },
-      { name: 'Download', href: downloadLinks.mac.arm64 },
-      { name: 'Changelog', href: 'https://github.com/arcboxlabs/arcbox-desktop/releases' }
+      { name: 'Download', href: downloadLinks.mac.arm64, external: true },
+      { name: 'Changelog', href: 'https://github.com/arcboxlabs/arcbox-desktop/releases', external: true }
     ]
   },
   {

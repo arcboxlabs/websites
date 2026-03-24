@@ -21,9 +21,6 @@ export function HeroShader() {
     <>
       {/* Hidden next/image handles optimized loading + preload */}
       <Image
-        // onLoad={useCallback((e) => {
-        //   setImgEl(e.currentTarget);
-        // }, [])}
         ref={setImgEl}
         src={ICON_SVG}
         width={ICON_WIDTH}
