@@ -2,9 +2,10 @@
 
 - [x] Blog Content Pages
 - [x] Styles Polish
-- [ ] Fill in real Images, Screenshots, and Real GitHub Repo information
+- [x] Fill in real Images, Screenshots, and Real GitHub Repo information
 - [x] Text, Slogan adjustments
 - [x] SEO
   - Add metadata to all pages and blog pages
 - [ ] More Blog Content
 - [ ] Real Benchmark Result
+- [ ] Homebrew Command
