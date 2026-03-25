@@ -12,7 +12,7 @@ console.log(
   + '\n%c We build high-performance container and VM runtime.\n'
   + '\n'
   + '%c Our GitHub                     https://arcbox.link/github\n'
-  + '%c Source code of this website    https://github.com/arcboxlabs/arcbox-landing\n'
+  + '%c Source code of this website    https://github.com/arcboxlabs/websites\n'
   + '%c Source code of ArcBox core     https://github.com/arcboxlabs/arcbox\n'
   + '%c Source code of ArcBox Desktop  https://github.com/arcboxlabs/arcbox-desktop\n',
 
