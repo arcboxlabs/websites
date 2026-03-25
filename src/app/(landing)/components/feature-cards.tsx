@@ -129,11 +129,16 @@ export function FeatureCards() {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm mb-4">
                 <Layers className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">
-                Dev Containers support.
-              </h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-bold text-white">
+                  Dev Containers.
+                </h3>
+                <span className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-2.5 py-0.5 text-xs font-medium text-white">
+                  Coming Soon
+                </span>
+              </div>
               <p className="text-white/80 text-sm">
-                Full devcontainer.json support for reproducible dev environments.
+                devcontainer.json support for reproducible dev environments is on the way.
               </p>
             </div>
           </div>
