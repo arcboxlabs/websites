@@ -24,15 +24,15 @@ We also want to build VM-isolated sandboxes for running untrusted code. That req
 
 The runtime is about 115,000 lines of Rust across 26 crates. Here's what's in there and why.
 
-**Virtualization.framework bindings.** macOS has a hypervisor API, but there are no production-ready Rust bindings for it. We wrote our own: raw Objective-C FFI through `objc2`, covering VM configuration, device attachment, memory mapping, and the run loop.
+**Virtualization.framework bindings.** macOS has a hypervisor API, but there are no production-ready Rust bindings for it. We wrote our own: hand-rolled `objc_msgSend` calls using `objc2` for runtime primitives, covering VM configuration, device attachment, memory mapping, and the run loop.
 
 **Custom VirtIO devices.** We implemented virtio-net, virtio-blk, virtio-fs, virtio-console, and virtio-vsock from the spec. Virtqueue batching and interrupt coalescing matter because each extra VM exit is measurable latency.
 
 **Custom VirtioFS.** File sharing between macOS and the Linux VM is what makes bind mounts work. When you mount your project directory into a container, every file read and write crosses this layer. We wrote a FUSE passthrough filesystem with metadata caching and concurrent request dispatch (via rayon for parallel processing of the virtqueue). This is the single component we've spent the most time on.
 
-**Custom NAT stack.** Userspace NAT engine with connection tracking, header translation, checksum offload, and a timer wheel for flow expiry. Our own DHCP and DNS servers. The network datapath uses a lock-free MPMC ring buffer (a Vyukov bounded queue) to move packets between the VM and the host.
+**Custom NAT stack.** Userspace NAT engine with connection tracking, in-place packet translation, and a timer wheel for flow expiry. Our own DHCP and DNS servers. The network datapath uses a lock-free SPSC ring buffer to move packets between the VM and the host without contention.
 
-**Guest agent.** A small Rust binary cross-compiled for Linux that runs inside the VM. It handles container lifecycle and PTY management, communicating with the host daemon over vsock + gRPC.
+**Guest agent.** A small Rust binary cross-compiled for Linux that runs inside the VM. It handles container lifecycle and PTY management, communicating with the host daemon over vsock with length-prefixed protobuf messages.
 
 ## Docker compatibility
 
