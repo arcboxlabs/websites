@@ -1,6 +1,6 @@
 ---
 title: "ArcBox Desktop public beta: a Docker Desktop alternative, written in Rust"
-description: "ArcBox is a container runtime and desktop app for macOS. We wrote everything from scratch in Rust. VirtIO devices, VirtioFS, the NAT stack, all of it. It's open source and free."
+description: "ArcBox is a container runtime and desktop app for macOS. We wrote everything from scratch in Rust: VirtIO devices, VirtioFS, the NAT stack, all of it. Open source and free."
 date: "2026-03-27"
 category: "Releases"
 author: ["Xuan"]
@@ -18,7 +18,7 @@ Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop altern
 
 OrbStack proved that Docker Desktop on macOS can be much faster and lighter. But OrbStack is closed-source and requires a paid license for commercial use. We wanted something with the same ambition that's open source and free to use at work.
 
-We also want to build VM-isolated sandboxes for running untrusted code. That requires a hypervisor layer, VirtIO devices, filesystem sharing, networking. A full runtime. And a runtime that can spin up Linux VMs on a Mac is most of what a container tool needs. So the first product is a Docker Desktop alternative, and the sandbox work builds on the same foundation.
+We also want to build VM-isolated sandboxes for running untrusted code. That requires a hypervisor layer, VirtIO devices, filesystem sharing, networking, essentially a full runtime. And a runtime that can spin up Linux VMs on a Mac is most of what a container tool needs. So the first product is a Docker Desktop alternative, and the sandbox work builds on the same foundation.
 
 ## What we actually built
 
@@ -26,7 +26,7 @@ The runtime is about 115,000 lines of Rust across 26 crates. Here's what's in th
 
 **Virtualization.framework bindings.** macOS has a hypervisor API, but there are no production-ready Rust bindings for it. We wrote our own: raw Objective-C FFI through `objc2`, covering VM configuration, device attachment, memory mapping, and the run loop.
 
-**Custom VirtIO devices.** We implemented virtio-net, virtio-blk, virtio-fs, virtio-console, and virtio-vsock from the spec. Virtqueue batching and interrupt coalescing matter here because each extra VM exit is measurable latency.
+**Custom VirtIO devices.** We implemented virtio-net, virtio-blk, virtio-fs, virtio-console, and virtio-vsock from the spec. Virtqueue batching and interrupt coalescing matter because each extra VM exit is measurable latency.
 
 **Custom VirtioFS.** File sharing between macOS and the Linux VM determines how fast `npm install` or `cargo build` feels inside a container. We wrote a FUSE passthrough filesystem with metadata caching and concurrent request dispatch (via rayon for parallel processing of the virtqueue). This is the single component we've spent the most time on.
 
@@ -61,7 +61,7 @@ Right now it covers the Docker side: containers, images, volumes, and networks. 
 
 ## Performance
 
-We're not matching OrbStack on every metric yet. We are ahead of Docker Desktop on engine startup and file-heavy workloads. We don't want to publish numbers we can't back up with a reproducible benchmark suite yet. Try it with your own workloads and see.
+We're not matching OrbStack on every metric yet, but we are ahead of Docker Desktop on engine startup and file-heavy workloads. We don't want to publish numbers without a reproducible benchmark suite to back them up. Try it with your own workloads and see.
 
 ## Open source
 
@@ -71,13 +71,13 @@ We're a commercial company. Local use is free and stays free, no artificial limi
 
 ## What's coming
 
-The sandbox runtime is under active development. VM-isolated microVMs for running untrusted code. Local sandboxes first, then a cloud API for running them on remote infrastructure. If you've used E2B, that's the direction, except you develop locally and deploy the same workloads to the cloud.
+The sandbox runtime is under active development: VM-isolated microVMs for running untrusted code. Local sandboxes first, then a cloud API for running them on remote infrastructure. If you've used E2B, that's the direction, except you develop locally and deploy the same workloads to the cloud.
 
 We're also working on Linux support (KVM backend) and Rosetta for x86 image emulation.
 
 ## Try it
 
-The runtime is v0.3, the desktop app is v1.16. This is a beta. Expect rough edges.
+The runtime is v0.3, the desktop app is v1.16. Still a beta, so expect rough edges.
 
 ```bash
 brew tap arcboxlabs/tap
