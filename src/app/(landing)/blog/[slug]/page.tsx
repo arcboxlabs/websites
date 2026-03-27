@@ -12,6 +12,7 @@ import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { BlogRssCTA } from '../components/blog-rss-cta';
+
 import { Heading } from './components/mdx/heading';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -109,33 +110,33 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {/* Two-column: content + sidebar */}
           <div className="mt-10 flex gap-16">
             {/* Main content */}
-            <article className="min-w-0 flex-1">
-              <div className="prose prose-invert max-w-none">
+            <div className="min-w-0 flex-1">
+              <article className="dark prose prose-invert max-w-none">
                 <MDXContent
                   components={getMDXComponents({
                     // this allows you to link to other pages with relative file paths
                     a: createRelativeLink(BlogSource.source, post),
                     h1({ children, ...props }) {
-                      return <Heading asChild {...props}><h1 className="mb-8 scroll-m-8 text-3xl">{children}</h1></Heading>;
+                      return <Heading className="mt-12 mb-8" asChild {...props}><h1 className="mt-0 mb-0 scroll-m-8 text-3xl peer">{children}</h1></Heading>;
                     },
                     h2({ children, ...props }) {
-                      return <Heading asChild {...props}><h2 className="mb-8 scroll-m-8 text-[28px]">{children}</h2></Heading>;
+                      return <Heading className="mt-12 mb-8" asChild {...props}><h2 className="mt-0 mb-0 scroll-m-8 text-[28px] peer">{children}</h2></Heading>;
                     },
                     h3({ children, ...props }) {
-                      return <Heading asChild {...props}><h3 className="mb-6 scroll-m-6 text-2xl">{children}</h3></Heading>;
+                      return <Heading className="mt-8 mb-6" asChild {...props}><h3 className="mt-0 mb-0 scroll-m-6 text-2xl peer">{children}</h3></Heading>;
                     },
                     h4({ children, ...props }) {
-                      return <Heading asChild {...props}><h4 className="mb-4 scroll-m-4 text-xl">{children}</h4></Heading>;
+                      return <Heading className="mt-6 mb-4" asChild {...props}><h4 className="mt-0 mb-0 scroll-m-4 text-xl peer">{children}</h4></Heading>;
                     },
                     h5({ children, ...props }) {
-                      return <Heading asChild {...props}><h5 className="mb-2 scroll-m-2 text-base">{children}</h5></Heading>;
+                      return <Heading className="mt-4 mb-2" asChild {...props}><h5 className="mt-0 mb-0 scroll-m-2 text-base peer">{children}</h5></Heading>;
                     },
                     h6({ children, ...props }) {
-                      return <Heading asChild {...props}><h6 className="mb-1 scroll-m-1 text-sm">{children}</h6></Heading>;
+                      return <Heading className="mt-2 mb-1" asChild {...props}><h6 className="mt-0 mb-0 scroll-m-1 text-sm peer">{children}</h6></Heading>;
                     }
                   })}
                 />
-              </div>
+              </article>
 
               {/* Back link at bottom */}
               <div className="mt-16 border-t border-border pt-8">
@@ -147,7 +148,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   Back to all posts
                 </Link>
               </div>
-            </article>
+            </div>
             <BlogAside
               toc={post.data.toc.filter((item) => item.depth <= 2)}
               fullUrl={`https://arcbox.dev/blog/${post.slugs[0]}`}
