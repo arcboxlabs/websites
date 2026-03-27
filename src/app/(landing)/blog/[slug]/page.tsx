@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mt-10 flex gap-16">
             {/* Main content */}
             <article className="min-w-0 flex-1">
-              <div className="prose prose-invert max-w-none">
+              <div className="dark prose prose-invert max-w-none">
                 <MDXContent
                   components={getMDXComponents({
                     // this allows you to link to other pages with relative file paths
@@ -133,6 +133,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     h6({ children, ...props }) {
                       return <Heading asChild {...props}><h6 className="mb-1 scroll-m-1 text-sm">{children}</h6></Heading>;
                     }
+                    // CodeBlock -- ensure Tailwind classes are geneerated from this
+                    // text-[0.8125rem] py-3.5 overflow-auto max-h-[600px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring
+                    // min-w-full w-max *:flex *:flex-col
+                    // empty:hidden absolute top-3 right-2 z-2 backdrop-blur-lg rounded-lg text-fd-muted-foreground
                   })}
                 />
               </div>
