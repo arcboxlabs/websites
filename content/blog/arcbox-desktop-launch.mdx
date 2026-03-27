@@ -1,0 +1,165 @@
+---
+title: "Introducing ArcBox Desktop: Local Sandboxes, Containers, and VMs for macOS"
+description: "ArcBox Desktop is a native macOS app for running VM-isolated sandboxes, Docker containers, and Linux VMs. The local runtime is open source and free forever."
+date: "2026-03-26"
+category: "Releases"
+author: ["Xuan"]
+cover: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80"
+published: false
+featured: true
+keywords: ["release", "arcbox", "sandbox", "docker", "container runtime", "apple silicon", "rust", "ai agent", "microvm"]
+---
+
+## The Problem
+
+AI agents need to execute code somewhere safe. CI pipelines need isolation that containers can't provide. Developers need a fast way to run Linux on macOS without draining their battery.
+
+These are different problems, but they share a constraint: containers are fast but share the host kernel — one exploit and the boundary is gone. Full VMs are safe but take seconds to boot and hundreds of megabytes to sit idle. You shouldn't have to choose between speed and isolation.
+
+ArcBox Desktop is a native macOS app that gives you both — along with full Docker and Kubernetes support — in one interface.
+
+## Local Sandbox
+
+This is the feature we built ArcBox around.
+
+A sandbox is a [Firecracker](https://firecracker-microvm.github.io/) microVM. Not a container with namespace tricks — a lightweight virtual machine running its own Linux kernel, its own filesystem, its own network stack. The hypervisor enforces the boundary. A kernel exploit inside the sandbox stays inside the sandbox.
+
+```bash
+# Create a sandbox, run a command, tear it down
+arcbox sandbox create --cpus 2 --memory 512
+arcbox sandbox run sb-3fa91 -- npm audit --audit-level=critical
+arcbox sandbox stop sb-3fa91
+```
+
+**Boot time under 200ms.** A cold sandbox starts faster than most HTTP requests complete. With checkpoint/restore, warm sandboxes resume in under 50ms — you snapshot a pre-configured environment once, then clone it as many times as you need.
+
+```bash
+# Snapshot a sandbox with your tools pre-installed
+arcbox sandbox checkpoint sb-3fa91
+
+# Restore in <50ms — clean state, ready to go
+arcbox sandbox restore snap-a1b2c3
+```
+
+Each sandbox is disposable by design. Spin up, let it work, tear it down. No state leaks between sessions. Set a TTL if you want auto-cleanup.
+
+### Why This Matters for AI Agents
+
+Computer Use is the next step for AI — agents that write files, run code, install packages, and operate a real machine. But giving an agent a full computer means giving it a full attack surface.
+
+Containers share the host kernel. A single exploit and the agent is out. That's not a theoretical risk — it's a design limitation of namespace-based isolation.
+
+ArcBox sandboxes give agents a real environment (real filesystem, real networking, real process tree) with VM-level isolation. The agent can `apt-get install`, write to disk, open network connections — inside a boundary that the hypervisor enforces, not the kernel.
+
+The gRPC API makes integration straightforward. Point your agent orchestrator at the ArcBox daemon, create sandboxes on demand, stream execution output, tear down when done.
+
+### Three Isolation Levels
+
+You pick the tradeoff based on what you're running:
+
+| Mode | Isolation | Startup | Use case |
+|---|---|---|---|
+| **Container** | Linux namespaces | ~50 ms | Your app, your compose stack |
+| **Sandbox** | MicroVM, separate kernel | &lt;200 ms | Untrusted code, CI jobs, agent tasks |
+| **Machine** | Full Linux VM | &lt;500 ms | systemd, full distro, persistent dev environment |
+
+Same tool, same CLI, same desktop app. The isolation level is a flag, not a different product.
+
+## Docker and Kubernetes
+
+ArcBox is also a drop-in Docker replacement. Point your existing Docker CLI at ArcBox and your workflows work unchanged.
+
+```bash
+arcbox docker enable   # redirect docker CLI to ArcBox
+docker compose up      # just works
+docker run -p 8080:80 nginx
+```
+
+Full container lifecycle — start, stop, restart, exec, logs. Port forwarding, bind mounts, named volumes, inter-container DNS. 40+ Docker Engine API endpoints implemented. Your `docker-compose.yml` files don't need to change.
+
+Kubernetes is supported too. ArcBox Desktop visualizes pods and services running in your local cluster, with status indicators and resource details.
+
+## The Desktop App
+
+ArcBox Desktop is a native SwiftUI application, not an Electron wrapper. It communicates with the Rust daemon over gRPC — the UI is a display layer, not the runtime.
+
+The interface is a three-column layout:
+
+- **Sidebar** — navigate between Containers, Images, Volumes, Networks, Pods, Services, Machines, and Sandboxes
+- **List** — browse resources with search, filtering, and "In Use / Unused" grouping
+- **Detail** — inspect, manage, and interact with the selected resource
+
+For containers, that means real-time log streaming with stdout/stderr filtering, an interactive terminal (shell into any running container), and a file browser for the container's rootfs. For sandboxes, you get lifecycle controls, resource allocation, template management, and a monitoring dashboard showing concurrent sandbox counts and start rates.
+
+Changes made via the CLI, Docker, or any external tool are reflected in the app immediately — ArcBox Desktop streams Docker engine events and updates the UI in real time.
+
+## The Engine
+
+The runtime that powers all of this is written in Rust — from `Virtualization.framework` bindings down to the CLI. 24 crates, one language for the full stack.
+
+A few numbers, measured on an M4 MacBook Pro (benchmark suite is in the repo):
+
+| Metric | ArcBox | Docker Desktop |
+|---|---|---|
+| Cold start | **1.2 s** | 20–30 s |
+| Idle memory | **130 MB** | ~2 GB |
+| Idle CPU | **&lt;0.05%** | 1–5% |
+| File I/O (% of native) | **92%** | 20–30% |
+| Network throughput | **52 Gbps** | ~10 Gbps |
+
+File I/O matters the most in daily work. When `npm install` or `cargo build` inside a container feels sluggish, that's the filesystem layer. We built a custom VirtioFS implementation with adaptive caching, batched metadata operations, and zero-copy host-guest memory sharing.
+
+The engine is open source under MIT/Apache-2.0. Read it, audit it, fork it.
+
+## Where We're Going
+
+Local sandboxes are the foundation. The bigger goal is a cloud sandbox platform.
+
+Same isolation model, same API, but running on remote infrastructure. Horizontally scalable. The use case: you're building an AI agent platform and need to spin up hundreds of isolated environments on demand. Or you're running CI and want each job in its own microVM, not a shared-kernel container.
+
+Local-first means you can develop and test sandbox workflows on your Mac. Cloud means you can deploy them at scale without changing your code.
+
+We're not there yet — cloud is what we're building toward. But the architecture is designed for it: the daemon speaks gRPC, sandboxes are stateless and disposable, and nothing in the sandbox layer is tied to a specific host.
+
+## What's Free
+
+Local capabilities are **free forever**, for any purpose, commercial or personal. This includes:
+
+- Containers, sandboxes, and VMs
+- Docker and Kubernetes support
+- The CLI and the desktop app
+- File sharing, networking, port forwarding
+- All three isolation levels
+
+This is not a stripped-down free tier. It's the full local product.
+
+**ArcBox Cloud** (coming later) and enterprise features — SSO, audit logs, managed infrastructure — are how we build a business. The core runtime and local experience stay open source and free.
+
+## Current Status
+
+ArcBox is in active development. The core runtime is at v0.3, and ArcBox Desktop is at v1.16. The local sandbox, container, and VM workflows are functional. We're iterating fast — expect rough edges and breaking changes.
+
+What's not shipping yet:
+
+- `docker build` — use `docker buildx` or pre-built images for now
+- x86/amd64 images — ARM64 only, Rosetta support is planned
+- Linux host — macOS first, KVM backend is in progress
+
+## What's Next
+
+- **ArcBox Cloud** — Managed cloud sandboxes with the same API
+- **Linux support** — KVM backend, targeting later this year
+- **GPU passthrough** — For ML workloads that need hardware acceleration
+- **DevContainer support** — VS Code and JetBrains integration
+
+## Get Started
+
+```bash
+brew install arcbox
+```
+
+- Code: [github.com/arcboxd/arcbox](https://github.com/arcboxd/arcbox)
+- Docs: [arcbox.dev/docs](https://arcbox.dev/docs)
+- Discord: [discord.gg/arcbox](https://discord.gg/arcbox)
+
+File an issue if something's broken. Open a PR if you can fix it.
