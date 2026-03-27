@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ensure Tailwind classes are generated for fumadocs powered code blocks in blog */
-@source inline('text-[0.8125rem] py-3.5 overflow-auto max-h-[600px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring min-w-full w-max *:flex *:flex-col');
+@source inline('text-[0.8125rem] py-3.5 overflow-auto max-h-[600px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring min-w-full w-max *:flex *:flex-col empty:hidden absolute top-3 right-2 z-2 backdrop-blur-lg rounded-lg text-fd-muted-foreground');
 
 :root {
   --background: oklch(0.08 0 0);
