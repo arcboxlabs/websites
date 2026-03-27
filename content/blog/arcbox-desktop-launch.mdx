@@ -39,7 +39,7 @@ The runtime is about 115,000 lines of Rust across 26 crates. Here's what's in th
 ArcBox proxies the Docker Engine API to a dockerd instance running inside the VM.
 
 ```bash
-arcbox docker enable   # symlinks docker CLI to ArcBox
+arcbox docker enable   # points docker.sock to ArcBox
 docker compose up      # works
 docker build -t myapp .
 docker run -p 8080:80 nginx
