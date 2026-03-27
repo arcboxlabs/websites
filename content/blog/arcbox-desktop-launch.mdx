@@ -12,7 +12,7 @@ keywords: ["release", "arcbox", "docker", "container runtime", "apple silicon", 
 
 Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS, built from scratch in Rust. It runs on Apple Silicon, it's open source (MIT/Apache-2.0), and local use is free.
 
-{/* TODO: screenshot of ArcBox Desktop main window */}
+![ArcBox Desktop running an nginx container with a terminal session](/blog/nginx-terminal.png)
 
 ## Why we built this
 
@@ -52,8 +52,6 @@ What doesn't work yet: x86/amd64 image emulation (ARM64 only for now), and some 
 ArcBox also ships with native k3s support for local Kubernetes clusters.
 
 ## The desktop app
-
-{/* TODO: screenshot of container detail view with logs/terminal/files tabs */}
 
 ArcBox Desktop is a native SwiftUI app that talks to the Rust daemon over gRPC.
 
