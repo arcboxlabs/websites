@@ -28,7 +28,7 @@ The runtime is about 115,000 lines of Rust across 26 crates. Here's what's in th
 
 **Custom VirtIO devices.** We implemented virtio-net, virtio-blk, virtio-fs, virtio-console, and virtio-vsock from the spec. Virtqueue batching and interrupt coalescing matter because each extra VM exit is measurable latency.
 
-**Custom VirtioFS.** File sharing between macOS and the Linux VM determines how fast `npm install` or `cargo build` feels inside a container. We wrote a FUSE passthrough filesystem with metadata caching and concurrent request dispatch (via rayon for parallel processing of the virtqueue). This is the single component we've spent the most time on.
+**Custom VirtioFS.** File sharing between macOS and the Linux VM is what makes bind mounts work. When you mount your project directory into a container, every file read and write crosses this layer. We wrote a FUSE passthrough filesystem with metadata caching and concurrent request dispatch (via rayon for parallel processing of the virtqueue). This is the single component we've spent the most time on.
 
 **Custom NAT stack.** Userspace NAT engine with connection tracking, header translation, checksum offload, and a timer wheel for flow expiry. Our own DHCP and DNS servers. The network datapath uses a lock-free MPMC ring buffer (a Vyukov bounded queue) to move packets between the VM and the host.
 
