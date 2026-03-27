@@ -1,4 +1,4 @@
-# ArcBox Website & Docs (`arcbox.de`)
+# ArcBox Website & Docs (`arcbox.dev`)
 
 This repository contains the source code for the ArcBox website and documentation.
 
