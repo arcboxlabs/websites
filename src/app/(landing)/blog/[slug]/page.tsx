@@ -115,8 +115,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   <Image
                     src={post.data.cover}
                     alt={post.data.title}
-                    // width={1200}
-                    // height={630}
                     priority
                     className="h-full w-full object-cover"
                     fill
