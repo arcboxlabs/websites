@@ -10,7 +10,7 @@ featured: true
 keywords: ["release", "arcbox", "docker", "container runtime", "apple silicon", "rust", "open source"]
 ---
 
-Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS. The runtime is written in Rust. The desktop app is native SwiftUI. The code is open source under MIT/Apache-2.0.
+Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS. The runtime is written in Rust. The desktop app is native SwiftUI. The code is open source under MIT/Apache-2.0. Commercial use is free.
 
 ![ArcBox Desktop running an nginx container with a terminal session](/blog/nginx-terminal.png)
 
@@ -79,7 +79,12 @@ We're also continuing the Linux/KVM side of the runtime and wiring up Rosetta-ba
 
 ## Try it
 
-This is a public beta, so expect rough edges. But the code is open, and we'd love you to try it.
+This is a public beta, so expect rough edges. But the code is open, and you can try it right now.
+
+```bash
+brew tap arcboxlabs/tap
+brew install arcbox
+```
 
 If you want to follow along, start with the docs and source:
 
