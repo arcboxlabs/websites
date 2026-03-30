@@ -49,25 +49,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
       </div> */}
 
-      {/* Hero image — full width */}
-      {post.data.cover && (
-        <div className="relative h-85 w-full overflow-hidden md:h-105 lg:h-125 xl:h-140">
-          <Image
-            src={post.data.cover}
-            alt={post.data.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-background via-background/30 to-transparent" />
-        </div>
-      )}
-
       {/* Main layout */}
-      <div className="px-4">
+      <div className="px-4 pt-28 md:pt-32 lg:pt-36">
         <div className="mx-auto max-w-6xl md:pb-12 pb-16">
           {/* Header block — sits above two columns */}
-          <div className="border-b border-border py-8 md:py-10">
+          <div className="border-b border-border pb-8 md:pb-10">
             {/* Category */}
             {post.data.category && (
               <Link href={`/blog/category/${post.data.category}`} className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-accent">
@@ -111,6 +97,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mt-10 flex gap-16">
             {/* Main content */}
             <div className="min-w-0 flex-1">
+              {/* Cover image — after header, before content */}
+              {post.data.cover && (
+                <div className="relative w-full aspect-9/5 overflow-hidden rounded-xl">
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    // width={1200}
+                    // height={630}
+                    priority
+                    className="h-full w-full object-cover"
+                    fill
+                  />
+                </div>
+              )}
+
               <article className="dark prose prose-invert max-w-none">
                 <MDXContent
                   components={getMDXComponents({

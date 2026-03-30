@@ -21,9 +21,9 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
   const featured = posts[0];
 
   return (
-    <div className="px-4">
+    <div className="px-4 pt-28 md:pt-32 lg:pt-36">
       {/* Hero header */}
-      <section className="relative overflow-hidden pt-32 pb-12 md:pb-16">
+      <section className="relative overflow-hidden pb-12 md:pb-16">
         {/* Grid texture */}
         <div
           className="pointer-events-none absolute inset-0"
