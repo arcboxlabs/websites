@@ -10,7 +10,7 @@ featured: true
 keywords: ["release", "arcbox", "docker", "container runtime", "apple silicon", "rust", "open source"]
 ---
 
-Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS. The runtime is written in Rust. The desktop app is native SwiftUI. The code is open source under MIT/Apache-2.0. Personal use is and will be free forever. Commercial use is free during public beta while we figure out our ideal pricing model.
+Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS with free commercial use. The runtime is written in Rust. The desktop app is native SwiftUI. The code is open source under MIT/Apache-2.0.
 
 ![ArcBox Desktop running an nginx container with a terminal session](/blog/nginx-terminal.png)
 
@@ -18,21 +18,21 @@ Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop altern
 
 Docker Desktop is the incumbent. OrbStack is the bar.
 
-OrbStack showed that this category can be much faster and lighter on macOS. But it's closed-source and paid for business and commercial use. We wanted something in the same class that teams can use at work without asking permission or buying seats.
+OrbStack showed that running Docker on Mac can be much faster and lighter. But it's closed-source and paid for business and commercial use.
 
 We also want to build VM-isolated sandboxes for running untrusted code. That means a real VM runtime: hypervisor integration, shared filesystems, networking, guest services, and lifecycle management. Most of that work also matters for a container desktop, so we started here.
 
 ## What we actually built
 
-ArcBox is not a skin over Docker Desktop. We built our own runtime.
+We built our own runtime.
 
-The runtime is about 116,000 lines of Rust across 26 crates. On macOS, the launch path combines our own systems code with Apple's Virtualization.framework. The repo also contains the lower-level pieces we're using for Linux/KVM and the next stage of ArcBox.
+The runtime is about 116,000 lines of Rust across 26 crates. On macOS, the launch path combines our own systems code with Apple's Virtualization.framework. The repo also contains lower-level pieces for Linux/KVM and the sandbox runtime.
 
-**Virtualization.framework bindings.** We wrote our own Rust bindings around Virtualization.framework: `objc2`-based wrappers plus low-level Objective-C messaging for VM configuration, shared directories, networking attachments, vsock, and VM lifecycle.
+**Virtualization.framework bindings.** We wrote our own Rust bindings around Virtualization.framework: `objc2`-based wrappers plus hand-rolled `objc_msgSend` calls for VM configuration, shared directories, networking attachments, vsock, and VM lifecycle.
 
-**Custom macOS networking datapath.** On macOS, ArcBox sets up a socketpair-backed `VZFileHandleNetworkDeviceAttachment`, then runs a Rust datapath task that handles DHCP, DNS forwarding, TCP via `smoltcp`, inbound port relay, and host socket proxying.
+**Custom macOS networking datapath.** On macOS, ArcBox sets up a socketpair-backed `VZFileHandleNetworkDeviceAttachment`, then runs a Rust datapath task that handles DHCP, DNS forwarding, TCP via `smoltcp`, inbound port relay, and host socket proxying, without falling back to `pf` NAT or a `utun` device.
 
-**Runtime foundations.** The runtime also includes custom `virtio`, filesystem, and networking crates: `virtio-net`, `virtio-blk`, `virtio-fs`, `virtio-console`, `virtio-vsock`, a VirtioFS/FUSE server for the Linux/KVM side, and batching and lock-free datapath primitives for packet processing.
+**Runtime foundations.** The runtime also includes custom `virtio-net`, `virtio-blk`, `virtio-fs`, `virtio-console`, and `virtio-vsock` crates, plus a VirtioFS/FUSE stack with parallel dispatch via `rayon` on the Linux/KVM side and lock-free SPSC packet queues in the networking stack.
 
 **Guest agent.** A Rust guest agent runs inside the VM and talks to the host over vsock with protobuf messages. It mounts shared directories, reports runtime readiness, and exposes guest-side Docker and Kubernetes API proxies.
 
@@ -47,7 +47,7 @@ docker build -t myapp .
 docker run -p 8080:80 nginx
 ```
 
-Today, ArcBox covers the core workflows people expect from a Docker Desktop replacement: Docker CLI integration, Compose-compatible workflows, port forwarding, bind mounts, named volumes, and interactive exec and terminal flows.
+In practice, the basics are there: Docker CLI integration, Compose, port forwarding, bind mounts, named volumes, and interactive exec and terminal flows.
 
 The main missing piece right now is x86/amd64 image emulation. This beta is ARM64-first, and some less common API corners still need work. If you hit something broken, file an issue.
 
@@ -69,7 +69,11 @@ Until then, the real test is your workload: builds, bind mounts, Compose project
 
 ## Open source
 
-The runtime is at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox). The desktop app is at [github.com/arcboxlabs/arcbox-desktop](https://github.com/arcboxlabs/arcbox-desktop). Both are MIT/Apache-2.0, free for any use.
+The runtime is at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox). The desktop app is at [github.com/arcboxlabs/arcbox-desktop](https://github.com/arcboxlabs/arcbox-desktop). Both are MIT/Apache-2.0.
+
+## Pricing
+
+Personal use is and will be free forever. Commercial use is free during public beta while we figure out our ideal pricing model.
 
 ## What's coming
 
@@ -82,11 +86,8 @@ We're also continuing the Linux/KVM side of the runtime and wiring up Rosetta-ba
 This is a public beta, so expect rough edges. But the code is open, and you can try it right now.
 
 ```bash
-brew tap arcboxlabs/tap
-brew install arcbox
+brew install --cask arcboxlabs/tap/arcbox
 ```
-
-If you want to follow along, start with the docs and source:
 
 - Docs: [arcbox.dev/docs](https://arcbox.dev/docs)
 - Runtime: [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox)
