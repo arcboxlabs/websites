@@ -217,12 +217,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: post.url,
       publishedTime: post.data.date,
       tags: keywords,
-      images: getPostImage(post).url
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
     }),
     twitter: createTwitter({
       title: post.data.title,
       description: post.data.description,
-      images: getPostImage(post).url
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
     })
   };
 }

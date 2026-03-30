@@ -13,6 +13,7 @@ export const blog = defineDocs({
       keywords: z.array(z.string()).optional(),
       author: z.array(z.string().optional()),
       cover: z.string().optional(),
+      cover_as_og_image: z.boolean().optional().default(false),
       hero: z.string().optional(),
       date: z.union([z.string(), z.date()]).transform((val) => {
         if (val instanceof Date) {
