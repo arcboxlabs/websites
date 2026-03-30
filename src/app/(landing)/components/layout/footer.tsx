@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
 import { downloadLinks, socialLinks } from '@/constants/links';
+import { CurrentYear } from 'foxact/current-year';
 
 const footerLinks = [
   {
@@ -97,7 +98,11 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ArcBox. All rights reserved.
+            &copy;
+            {' '}
+            <CurrentYear defaultYear={2026} />
+            {' '}
+            ArcBox Labs. All rights reserved.
           </p>
           {/* <div className="flex items-center gap-6">
             <Link
