@@ -8,7 +8,7 @@ const WORDS_PER_MINUTE = 238;
 const transform: Transformer<Root, Root> = (tree, file) => {
   const text = toString(tree);
   const words = countWords(text);
-  file.data.readingTime = Math.round(words / WORDS_PER_MINUTE);
+  file.data.readingTime = Math.ceil(words / WORDS_PER_MINUTE);
 };
 
 export function remarkReadingTime(): Transformer<Root> {
