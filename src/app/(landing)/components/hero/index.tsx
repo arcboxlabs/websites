@@ -5,8 +5,9 @@ import { Download, ArrowRight, Apple } from 'lucide-react';
 import { HeroShader } from './hero-shader';
 import HeroPreview from './hero-preview';
 import { downloadLinks } from '@/constants/links';
+import BrewSnippetCopyButton from './brew-command';
 
-// const BREW_COMMAND = 'brew install arcbox-desktop';
+const BREW_COMMAND = 'brew install --cask arcboxlabs/tap/arcbox';
 
 export function Hero() {
   return (
@@ -49,7 +50,8 @@ export function Hero() {
                   lightning speed, spin up Firecracker VMs, and sandbox AI
                   agents—all in complete isolation.
                 </p>
-
+              </div>
+              <div className="max-w-4xl">
                 {/* CTA Buttons */}
                 <div className="mt-6 flex flex-wrap items-center gap-1.5 xs:gap-3">
                   <Button
@@ -63,11 +65,11 @@ export function Hero() {
                     </a>
                   </Button>
 
-                  {/* <div className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
+                  <div className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-4 py-2 font-mono text-sm">
                     <span className="text-muted-foreground select-none">$</span>
                     <code className="text-foreground">{BREW_COMMAND}</code>
                     <BrewSnippetCopyButton brewCommand={BREW_COMMAND} />
-                  </div> */}
+                  </div>
 
                   <Button
                     variant="outline"
