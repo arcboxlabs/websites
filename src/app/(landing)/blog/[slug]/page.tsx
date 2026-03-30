@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, ClockIcon } from 'lucide-react';
 import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
@@ -49,25 +49,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
       </div> */}
 
-      {/* Hero image — full width */}
-      {post.data.cover && (
-        <div className="relative h-85 w-full overflow-hidden md:h-105 lg:h-125 xl:h-140">
-          <Image
-            src={post.data.cover}
-            alt={post.data.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-background via-background/30 to-transparent" />
-        </div>
-      )}
-
       {/* Main layout */}
-      <div className="px-4">
+      <div className="px-4 pt-28 md:pt-32 lg:pt-36">
         <div className="mx-auto max-w-6xl md:pb-12 pb-16">
           {/* Header block — sits above two columns */}
-          <div className="border-b border-border py-8 md:py-10">
+          <div className="border-b border-border pb-8 md:pb-10">
             {/* Category */}
             {post.data.category && (
               <Link href={`/blog/category/${post.data.category}`} className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-accent">
@@ -81,9 +67,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </h1>
 
             {/* Date + read time */}
-            <p className="mt-3 text-sm text-muted-foreground">
-              {post.data.date}
-            </p>
+            <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <CalendarIcon className="h-3 w-3" />
+                {post.data.date}
+              </span>
+              {typeof post.data._exports.readingTime === 'number' && post.data._exports.readingTime > 0 && (
+                <>
+                  <span className="h-3 w-px bg-border" />
+                  <span className="flex items-center gap-1">
+                    <ClockIcon className="h-3 w-3" />
+                    {post.data._exports.readingTime} min read
+                  </span>
+                </>
+              )}
+            </div>
 
             {/* Authors */}
             {postAuthors.length > 0 && (
@@ -111,6 +109,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mt-10 flex gap-16">
             {/* Main content */}
             <div className="min-w-0 flex-1">
+              {/* Cover image — after header, before content */}
+              {post.data.cover && (
+                <div className="relative w-full aspect-9/5 overflow-hidden rounded-xl">
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    priority
+                    className="h-full w-full object-cover"
+                    fill
+                  />
+                </div>
+              )}
+
               <article className="dark prose prose-invert max-w-none">
                 <MDXContent
                   components={getMDXComponents({
@@ -204,12 +215,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: post.url,
       publishedTime: post.data.date,
       tags: keywords,
-      images: getPostImage(post).url
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
     }),
     twitter: createTwitter({
       title: post.data.title,
       description: post.data.description,
-      images: getPostImage(post).url
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
     })
   };
 }

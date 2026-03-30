@@ -1,4 +1,4 @@
-import { Calendar } from 'lucide-react';
+import { Calendar, ClockIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AuthorAvatars } from './author-avatars';
@@ -14,7 +14,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
       {posts.map((post) => (
         <Link href={`/blog/${post.slugs[0]}`} key={post.path} className="group flex flex-col">
           {/* Thumbnail */}
-          <div className="relative aspect-16/10 overflow-hidden rounded-xl border border-border">
+          <div className="relative aspect-9/5 overflow-hidden rounded-xl border border-border">
             {post.data.cover && (
               <Image
                 src={post.data.cover}
@@ -37,11 +37,15 @@ export default function BlogGrid({ posts }: BlogGridProps) {
               <Calendar className="h-3 w-3" />
               {post.data.date}
             </span>
-            {/* <span className="h-3 w-px bg-border" />
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {post.data.readTime}
-            </span> */}
+            {typeof post.data._exports.readingTime === 'number' && post.data._exports.readingTime > 0 && (
+              <>
+                <span className="h-3 w-px bg-border" />
+                <span className="flex items-center gap-1">
+                  <ClockIcon className="h-3 w-3" />
+                  {post.data._exports.readingTime} min read
+                </span>
+              </>
+            )}
           </div>
 
           {/* Title */}

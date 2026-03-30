@@ -1,5 +1,5 @@
 import { BlogSource } from '@/blog/cms';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, CalendarIcon, ClockIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AuthorAvatars } from './components/author-avatars';
@@ -21,9 +21,9 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
   const featured = posts[0];
 
   return (
-    <div className="px-4">
+    <div className="px-4 pt-28 md:pt-32 lg:pt-36">
       {/* Hero header */}
-      <section className="relative overflow-hidden pt-32 pb-12 md:pb-16">
+      <section className="relative overflow-hidden pb-12 md:pb-16">
         {/* Grid texture */}
         <div
           className="pointer-events-none absolute inset-0"
@@ -82,7 +82,22 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
                     <p className="text-xs font-medium text-foreground">
                       {featured.data.author.join(', ')}
                     </p>
-                    <p className="text-xs text-muted-foreground">{featured.data.date}</p>
+
+                    <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <CalendarIcon className="h-3 w-3" />
+                        {featured.data.date}
+                      </span>
+                      {typeof featured.data._exports.readingTime === 'number' && featured.data._exports.readingTime > 0 && (
+                        <>
+                          <span className="h-3 w-px bg-border" />
+                          <span className="flex items-center gap-1">
+                            <ClockIcon className="h-3 w-3" />
+                            {featured.data._exports.readingTime} min read
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary transition-colors group-hover:border-accent group-hover:bg-accent/10">

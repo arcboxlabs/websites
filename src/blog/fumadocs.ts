@@ -1,5 +1,6 @@
 import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid, remarkGfm } from 'fumadocs-core/mdx-plugins';
 import { applyMdxPreset, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
+import { remarkReadingTime } from './remark-reading-time';
 
 import { z } from 'zod';
 
@@ -12,6 +13,7 @@ export const blog = defineDocs({
       keywords: z.array(z.string()).optional(),
       author: z.array(z.string().optional()),
       cover: z.string().optional(),
+      cover_as_og_image: z.boolean().optional().default(false),
       hero: z.string().optional(),
       date: z.union([z.string(), z.date()]).transform((val) => {
         if (val instanceof Date) {
@@ -21,10 +23,11 @@ export const blog = defineDocs({
       })
     }),
     postprocess: {
-      includeProcessedMarkdown: true
+      includeProcessedMarkdown: true,
+      valueToExport: ['readingTime']
     },
     mdxOptions: applyMdxPreset({
-      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
+      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, remarkReadingTime, [remarkImage, { useImport: false }]],
       rehypePlugins: [rehypeToc]
     })
   },
