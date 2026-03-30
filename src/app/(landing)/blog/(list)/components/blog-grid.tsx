@@ -14,7 +14,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
       {posts.map((post) => (
         <Link href={`/blog/${post.slugs[0]}`} key={post.path} className="group flex flex-col">
           {/* Thumbnail */}
-          <div className="relative aspect-16/10 overflow-hidden rounded-xl border border-border">
+          <div className="relative aspect-9/5 overflow-hidden rounded-xl border border-border">
             {post.data.cover && (
               <Image
                 src={post.data.cover}
