@@ -20,7 +20,7 @@ export const authors: Record<string, Author> = {
   },
   Zichen: {
     id: 'zichen',
-    name: 'Zichen',
+    name: 'Zichen Yang',
     avatar: 'https://avatars.githubusercontent.com/u/18367871?v=4',
     github: 'PeronGH'
   }
