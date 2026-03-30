@@ -31,6 +31,7 @@ export function getRssFeedInstance() {
 
   BlogSource.getPosts().forEach(post => {
     const url = `https://arcbox.dev/blog/${post.slugs[0]}`;
+    const cover = post.data.cover ? new URL(post.data.cover, 'https://arcbox.dev').href : undefined;
 
     feed.addItem({
       title: post.data.title,
@@ -38,9 +39,9 @@ export function getRssFeedInstance() {
       link: url,
       description: post.data.description,
       // RSS readers typically show description, so we can duplicate it here. Full content is not included in RSS for simplicity.
-      content: html`<p>${post.data.description}</p>${post.data.cover ? html`<img src="${post.data.cover}" alt="${post.data.title}" />` : ''}<br /><p><a href="${url}">Read more</a></p>`,
+      content: html`<p>${post.data.description}</p>${cover ? html`<img src="${cover}" alt="${post.data.title}" />` : ''}<br /><p><a href="${url}">Read more</a></p>`,
       date: new Date(post.data.date),
-      image: post.data.cover,
+      image: cover,
       category: post.data.category ? [{ name: post.data.category }] : undefined
     });
   });
