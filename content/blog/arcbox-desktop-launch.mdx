@@ -1,6 +1,6 @@
 ---
-title: "ArcBox Desktop public beta: a Docker Desktop alternative, written in Rust"
-description: "ArcBox is a container runtime and desktop app for macOS. We wrote everything from scratch in Rust: VirtIO devices, VirtioFS, the NAT stack, all of it. Open source and free."
+title: "ArcBox Desktop public beta: a Docker Desktop alternative for macOS"
+description: "ArcBox Desktop pairs a Rust runtime with a native SwiftUI app for macOS. Open source, Docker-compatible, and built on a custom VM runtime."
 date: "2026-03-27"
 category: "Releases"
 author: ["Xuan"]
@@ -10,56 +10,58 @@ featured: true
 keywords: ["release", "arcbox", "docker", "container runtime", "apple silicon", "rust", "open source"]
 ---
 
-Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS, built from scratch in Rust. It runs on Apple Silicon, it's open source (MIT/Apache-2.0), and local use is free.
+Today we're releasing the public beta of ArcBox Desktop, a Docker Desktop alternative for macOS. The runtime is written in Rust, the desktop app is native SwiftUI, and the whole stack is open source under MIT/Apache-2.0.
 
 ![ArcBox Desktop running an nginx container with a terminal session](/blog/nginx-terminal.png)
 
 ## Why we built this
 
-OrbStack proved that Docker Desktop on macOS can be much faster and lighter. But OrbStack is closed-source and requires a paid license for commercial use. We wanted something with the same ambition that's open source and free to use at work.
+If Docker Desktop is the incumbent, OrbStack is the product we most directly compete with. It proved there was room for a much faster, lighter container experience on macOS.
 
-We also want to build VM-isolated sandboxes for running untrusted code. That requires a hypervisor layer, VirtIO devices, filesystem sharing, networking, essentially a full runtime. And a runtime that can spin up Linux VMs on a Mac is most of what a container tool needs. So the first product is a Docker Desktop alternative, and the sandbox work builds on the same foundation.
+OrbStack is also paid for business and commercial use. We wanted an open-source alternative that teams can use for free at work.
+
+We also want to build VM-isolated sandboxes for running untrusted code. That means a real hypervisor layer, shared filesystems, networking, guest services, and VM lifecycle management. A runtime that can spin up Linux VMs on a Mac is already most of what a container tool needs, so the first product is a Docker Desktop alternative and the sandbox work builds on the same foundation.
 
 ## What we actually built
 
-The runtime is about 115,000 lines of Rust across 26 crates. Here's what's in there and why.
+The runtime is about 116,000 lines of Rust across 26 crates. On macOS, the shipping path combines custom Rust systems code with Apple's Virtualization.framework, and the same codebase also includes the lower-level building blocks we're using for Linux/KVM and future work.
 
-**Virtualization.framework bindings.** macOS has a hypervisor API, but there are no production-ready Rust bindings for it. We wrote our own: hand-rolled `objc_msgSend` calls using `objc2` for runtime primitives, covering VM configuration, device attachment, memory mapping, and the run loop.
+**Virtualization.framework bindings.** We wrote our own Rust bindings around Virtualization.framework: `objc2`-based wrappers plus low-level Objective-C messaging for VM configuration, shared directories, networking attachments, vsock, and VM lifecycle.
 
-**Custom VirtIO devices.** We implemented virtio-net, virtio-blk, virtio-fs, virtio-console, and virtio-vsock from the spec. Virtqueue batching and interrupt coalescing matter because each extra VM exit is measurable latency.
+**Custom macOS networking datapath.** On macOS, ArcBox sets up a socketpair-backed `VZFileHandleNetworkDeviceAttachment`, then runs a Rust datapath task that handles DHCP, DNS forwarding, TCP via `smoltcp`, inbound port relay, and host socket proxying.
 
-**Custom VirtioFS.** File sharing between macOS and the Linux VM is what makes bind mounts work. When you mount your project directory into a container, every file read and write crosses this layer. We wrote a FUSE passthrough filesystem with metadata caching and concurrent request dispatch (via rayon for parallel processing of the virtqueue). This is the single component we've spent the most time on.
+**Runtime foundations.** The broader runtime also includes custom `virtio`, filesystem, and networking crates: `virtio-net`, `virtio-blk`, `virtio-fs`, `virtio-console`, `virtio-vsock`, a VirtioFS/FUSE server used mainly for Linux/KVM paths, and batching/lock-free datapath primitives for packet processing. That's the foundation the macOS product grows out of, even when the Darwin launch path uses framework-backed devices.
 
-**Custom NAT stack.** Userspace NAT engine with connection tracking, in-place packet translation, and a timer wheel for flow expiry. Our own DHCP and DNS servers. The network datapath uses a lock-free SPSC ring buffer to move packets between the VM and the host without contention.
-
-**Guest agent.** A small Rust binary cross-compiled for Linux that runs inside the VM. It handles container lifecycle and PTY management, communicating with the host daemon over vsock with length-prefixed protobuf messages.
+**Guest agent.** A Rust guest agent runs inside the VM and talks to the host over vsock with protobuf messages. It mounts shared directories, reports runtime readiness, and exposes guest-side Docker and Kubernetes API proxies.
 
 ## Docker compatibility
 
-ArcBox proxies the Docker Engine API to a dockerd instance running inside the VM.
+ArcBox exposes a Docker-compatible socket on the host and proxies requests to a guest `dockerd` inside the VM.
 
 ```bash
-arcbox docker enable   # points docker.sock to ArcBox
+arcbox docker enable   # creates and activates the "arcbox" Docker context
 docker compose up      # works
 docker build -t myapp .
 docker run -p 8080:80 nginx
 ```
 
-We estimate 95%+ of common use cases work: `docker build`, `docker compose`, port forwarding, bind mounts, named volumes, inter-container networking, `docker exec`. Some complex Compose projects run without changes.
+The source today covers the core workflows people expect from a Docker Desktop replacement: Docker CLI integration, Compose-compatible workflows, port forwarding, bind mounts, named volumes, and interactive exec/terminal flows.
 
-What doesn't work yet: x86/amd64 image emulation (ARM64 only for now), and some less common API endpoints. If you hit something broken, file an issue.
+Some less common API corners still need work, and x86/amd64 image emulation is not launch-ready yet. If you hit something broken, file an issue.
 
-ArcBox also ships with native k3s support for local Kubernetes clusters.
+ArcBox also includes native `k3s` lifecycle support for local Kubernetes clusters.
 
 ## The desktop app
 
-ArcBox Desktop is a native SwiftUI app that talks to the Rust daemon over gRPC.
+ArcBox Desktop is a native SwiftUI app. It talks to the ArcBox daemon over gRPC for ArcBox-specific operations and uses the Docker-compatible API for Docker resources.
 
-It covers Docker (containers, images, volumes, networks) and Kubernetes (pods, services). For containers, you get real-time log streaming with filtering, an interactive terminal, and a file browser for the container's rootfs. Linux machines and sandboxes are in the sidebar but not yet functional.
+At launch it covers Docker (containers, images, volumes, networks) and Kubernetes (pods, services). For Docker workloads, you get real-time log streaming with search and stdout/stderr filtering, an interactive terminal backed by `docker exec -it` and `docker run -it`, and local rootfs browsing when the app has a mount path it can resolve.
+
+Machines and sandboxes share the same runtime foundation, but they are not part of this beta launch.
 
 ## Performance
 
-We're not matching OrbStack on every metric yet, but we are ahead of Docker Desktop on engine startup and file-heavy workloads. We don't want to publish numbers without a reproducible benchmark suite to back them up. Try it with your own workloads and see.
+There is already a boot-time benchmark harness in the repo, but we don't want to publish headline numbers until the broader benchmark suite and methodology are public and reproducible. For now, the right test is your own workload: builds, bind mounts, Compose projects, and everyday `docker` usage on your Mac.
 
 ## Open source
 
@@ -67,20 +69,16 @@ The runtime is at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/a
 
 ## What's coming
 
-The sandbox runtime is under active development: VM-isolated microVMs for running untrusted code. Local sandboxes first, then a cloud API for running them on remote infrastructure. If you've used E2B, that's the direction, except you develop locally and deploy the same workloads to the cloud.
+The same runtime also powers our sandbox work: VM-isolated environments for running untrusted workloads on the same foundation. If you've used E2B, that's the category we're aiming at on the sandbox side of ArcBox.
 
-We're also working on Linux support (KVM backend) and Rosetta for x86 image emulation.
+We're also continuing to expand the Linux/KVM side of the runtime and wire up Rosetta-backed x86 support that already has foundations in the codebase.
 
 ## Try it
 
-The runtime is v0.3, the desktop app is v1.16. Still a beta, so expect rough edges.
+Public beta means rough edges. If you want to follow along, start with the docs and source:
 
-```bash
-brew tap arcboxlabs/tap
-brew install arcbox
-```
-
-- Source: [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox)
 - Docs: [arcbox.dev/docs](https://arcbox.dev/docs)
+- Runtime: [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox)
+- Desktop app: [github.com/arcboxlabs/arcbox-desktop](https://github.com/arcboxlabs/arcbox-desktop)
 
 If something breaks, open an issue. If you can fix it, open a PR.
