@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, ClockIcon } from 'lucide-react';
 import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
@@ -67,9 +67,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </h1>
 
             {/* Date + read time */}
-            <p className="mt-3 text-sm text-muted-foreground">
-              {post.data.date}
-            </p>
+            <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <CalendarIcon className="h-3 w-3" />
+                {post.data.date}
+              </span>
+              {typeof post.data._exports.readingTime === 'number' && post.data._exports.readingTime > 0 && (
+                <>
+                  <span className="h-3 w-px bg-border" />
+                  <span className="flex items-center gap-1">
+                    <ClockIcon className="h-3 w-3" />
+                    {post.data._exports.readingTime} min read
+                  </span>
+                </>
+              )}
+            </div>
 
             {/* Authors */}
             {postAuthors.length > 0 && (

@@ -1,5 +1,6 @@
 import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid, remarkGfm } from 'fumadocs-core/mdx-plugins';
 import { applyMdxPreset, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
+import { remarkReadingTime } from './remark-reading-time';
 
 import { z } from 'zod';
 
@@ -21,10 +22,11 @@ export const blog = defineDocs({
       })
     }),
     postprocess: {
-      includeProcessedMarkdown: true
+      includeProcessedMarkdown: true,
+      valueToExport: ['readingTime']
     },
     mdxOptions: applyMdxPreset({
-      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, [remarkImage, { useImport: false }]],
+      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, remarkReadingTime, [remarkImage, { useImport: false }]],
       rehypePlugins: [rehypeToc]
     })
   },

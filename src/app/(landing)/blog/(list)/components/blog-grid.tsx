@@ -1,4 +1,4 @@
-import { Calendar } from 'lucide-react';
+import { Calendar, ClockIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AuthorAvatars } from './author-avatars';
@@ -37,11 +37,15 @@ export default function BlogGrid({ posts }: BlogGridProps) {
               <Calendar className="h-3 w-3" />
               {post.data.date}
             </span>
-            {/* <span className="h-3 w-px bg-border" />
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {post.data.readTime}
-            </span> */}
+            {typeof post.data._exports.readingTime === 'number' && post.data._exports.readingTime > 0 && (
+              <>
+                <span className="h-3 w-px bg-border" />
+                <span className="flex items-center gap-1">
+                  <ClockIcon className="h-3 w-3" />
+                  {post.data._exports.readingTime} min read
+                </span>
+              </>
+            )}
           </div>
 
           {/* Title */}
