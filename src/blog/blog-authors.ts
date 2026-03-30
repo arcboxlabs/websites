@@ -17,6 +17,12 @@ export const authors: Record<string, Author> = {
     twitter: '@aprilnea',
     github: 'aprilnea',
     website: 'https://aprilnea.me'
+  },
+  Zichen: {
+    id: 'zichen',
+    name: 'Zichen',
+    avatar: 'https://avatars.githubusercontent.com/u/18367871?v=4',
+    github: 'PeronGH'
   }
 };
 
