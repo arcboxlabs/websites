@@ -7,6 +7,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { LLMCopyButton, ViewOptions } from '@docs/components/ai/page-actions';
 import { gitConfig } from '@/app/(docs)/lib/layout.shared';
+import { fastStringArrayJoin } from 'foxts/fast-string-array-join';
 
 export default async function Page(props: PageProps<'/docs/[...slug]'>) {
   const params = await props.params;
@@ -14,7 +15,7 @@ export default async function Page(props: PageProps<'/docs/[...slug]'>) {
   if (!page) notFound();
 
   const MDX = page.data.body;
-  const markdownUrl = `/docs/llms/${page.slugs.join('/')}.txt`;
+  const markdownUrl = `/docs/llms/${fastStringArrayJoin(page.slugs, '/')}.txt`;
 
   return (
     <DocsPage
