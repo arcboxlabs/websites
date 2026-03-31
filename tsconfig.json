@@ -10,6 +10,7 @@
       "@/*": ["./src/*"],
       "@landing/*": ["./src/app/(landing)/*"],
       "@docs/*": ["./src/app/(docs)/*"],
+      "@public/*": ["./public/*"],
       "fumadocs-mdx-collections/*": ["./.source/*"]
     },
     "resolveJsonModule": true,

@@ -10,9 +10,6 @@ export type BlogThumbnailProps = Omit<React.ComponentProps<typeof Image>, 'src'>
   src: string
 };
 
-const PUBLIC_DIR = path.join(process.cwd(), 'public');
-const BLOG_COVER_DIR = path.join(PUBLIC_DIR, 'blog', 'cover');
-
 export default async function BlogThumbnail({ src, alt, placeholder, ...restProps }: BlogThumbnailProps) {
   if (hasProtocol(src)) {
     if (placeholder === 'blur') {
@@ -23,23 +20,19 @@ export default async function BlogThumbnail({ src, alt, placeholder, ...restProp
     return <Image src={src} alt={alt} placeholder={placeholder} {...restProps} />;
   }
 
-  // The static prefix '../../../../../public/' is a compile-time constant so Turbopack can
-  // build a module context for the directory.
+  // The static prefix '../../../../../public/' or '@public/' is a compile-time constant so Turbopack
+  // can build a module context for the directory.
   //
   // The dynamic bit is calculated dynamically from front-matter at server runtime, computed
   // via path.relative for portability.
   //
-  // Also, due to the limitation of template literal import (whatever bundler), bundler can't static
+  // due to the limitation of template literal import (whatever bundler), bundler can't static
   // analyze and tree shake usage, thus can only import everything under the folder.
-  // So we limit the scope to `public/blog/cover` to avoid importing unnecessary files.
-  const targetPath = path.join(PUBLIC_DIR, src);
-  if (!targetPath.startsWith(`${BLOG_COVER_DIR}${path.sep}`)) {
-    throw new Error(`[BlogThumbnail] Invalid src path outside /blog/cover: ${src}`);
-  }
-  const dynamicBit = path.relative(BLOG_COVER_DIR, targetPath);
-  // Ensure static prefix
-  let imgData = await import(`../../../../../public/blog/cover/${dynamicBit}`) as StaticImport;
+  //
+  // By limiting the scope to `public/blog/cover` we can avoid importing unnecessary files.
+  const srcRelativeToCoverDir = path.relative('/blog/cover', src);
 
+  let imgData = await import(`@public/blog/cover/${srcRelativeToCoverDir}`) as StaticImport;
   // interop default. this is to workaround the following warning:
   // > Only plain objects can be passed to Client Components from Server Components. Module objects are not supported.
   if ('default' in imgData && typeof imgData.default === 'object' && 'src' in imgData.default) {
