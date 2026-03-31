@@ -264,8 +264,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: createTwitter({
       title: post.data.title,
       description: post.data.description,
-      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url,
-      card: 'summary_large_image'
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
     })
   };
 }
