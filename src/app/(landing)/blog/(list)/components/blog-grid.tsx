@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { AuthorAvatars } from './author-avatars';
 import type { BlogPage } from '@/blog/cms';
+import AuthorNames from './author-names';
 
 export interface BlogGridProps {
   posts: BlogPage[]
@@ -62,7 +63,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
           <div className="mt-4 flex items-center gap-2">
             <AuthorAvatars authors={post.data.author} size={22} />
             <span className="text-xs text-muted-foreground">
-              {post.data.author.join(', ')}
+              <AuthorNames authorIds={post.data.author} />
             </span>
           </div>
         </Link>

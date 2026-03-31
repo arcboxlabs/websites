@@ -7,6 +7,7 @@ import { CategoryFilter } from '../components/category-filter';
 import { BlogRssCTA } from '../components/blog-rss-cta';
 import type { Metadata } from 'next';
 import { blogAlternates } from '@/lib/metadata';
+import AuthorNames from './components/author-names';
 
 export const metadata: Metadata = {
   title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' },
@@ -79,8 +80,8 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
                 <div className="flex items-center gap-2.5">
                   <AuthorAvatars authors={featured.data.author} />
                   <div>
-                    <p className="text-xs font-medium text-foreground">
-                      {featured.data.author.join(', ')}
+                    <p className="text-sm font-medium text-foreground">
+                      <AuthorNames authorIds={featured.data.author} />
                     </p>
 
                     <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
