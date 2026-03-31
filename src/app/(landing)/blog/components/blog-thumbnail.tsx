@@ -32,7 +32,12 @@ export default async function BlogThumbnail({ src, alt, placeholder, ...restProp
   // Also, due to the limitation of template literal import (whatever bundler), bundler can't static
   // analyze and tree shake usage, thus can only import everything under the folder.
   // So we limit the scope to `public/blog/cover` to avoid importing unnecessary files.
-  const dynamicBit = path.relative(BLOG_COVER_DIR, path.join(PUBLIC_DIR, src)).replaceAll(path.sep, '/');
+  const targetPath = path.join(PUBLIC_DIR, src);
+  if (!targetPath.startsWith(`${BLOG_COVER_DIR}${path.sep}`)) {
+    throw new Error(`[BlogThumbnail] Invalid src path outside /blog/cover: ${src}`);
+  }
+  const dynamicBit = path.relative(BLOG_COVER_DIR, targetPath);
+  // Ensure static prefix
   let imgData = await import(`../../../../../public/blog/cover/${dynamicBit}`) as StaticImport;
 
   // interop default. this is to workaround the following warning:
