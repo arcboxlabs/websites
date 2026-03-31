@@ -2,6 +2,7 @@ import { docs } from 'fumadocs-mdx-collections/server';
 import { loader } from 'fumadocs-core/source';
 import type { InferPageType } from 'fumadocs-core/source';
 import { createElement } from 'react';
+import { fastStringArrayJoin } from 'foxts/fast-string-array-join';
 
 import { icons } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export function getPageImage(page: InferPageType<typeof source>) {
 
   return {
     segments,
-    url: `/og/docs/${segments.join('/')}`
+    url: `/og/docs/${fastStringArrayJoin(segments, '/')}`
   };
 }
 

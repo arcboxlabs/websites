@@ -3,7 +3,7 @@ export interface Author {
   name: string,
   avatar: string,
   bio?: string,
-  twitter?: string,
+  twitter?: `@${string}`,
   github?: string,
   website?: string
 }
@@ -26,6 +26,7 @@ export const authors: Record<string, Author> = {
   }
 };
 
-export function getAuthor(id: string): Author | undefined {
+export function getAuthor(id: string | undefined): Author | undefined {
+  if (!id) return;
   return authors[id];
 }

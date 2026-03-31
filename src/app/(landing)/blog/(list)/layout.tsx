@@ -1,12 +1,13 @@
 import { BlogSource } from '@/blog/cms';
 import { ArrowUpRight, CalendarIcon, ClockIcon } from 'lucide-react';
-import Image from 'next/image';
+import BlogThumbnail from '../components/blog-thumbnail';
 import Link from 'next/link';
 import { AuthorAvatars } from './components/author-avatars';
 import { CategoryFilter } from '../components/category-filter';
 import { BlogRssCTA } from '../components/blog-rss-cta';
 import type { Metadata } from 'next';
 import { blogAlternates } from '@/lib/metadata';
+import AuthorNames from './components/author-names';
 
 export const metadata: Metadata = {
   title: { default: 'ArcBox Blog', template: '%s | ArcBox Blog' },
@@ -53,14 +54,17 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
       {/* Featured post */}
       <section className="mx-auto max-w-6xl pb-12 md:pb-16">
         <Link href={`/blog/${featured.slugs[0]}`} className="group block">
-          <div className="grid md:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-accent/40">
+          <div className="grid lg:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-accent/40">
             {/* Thumbnail */}
-            <div className="relative aspect-4/3 md:aspect-auto overflow-hidden">
-              <Image
+            <div className="relative w-full aspect-9/5 overflow-hidden">
+              <BlogThumbnail
                 src={featured.data.cover!}
                 alt={featured.data.title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                placeholder="blur"
+                preload
+                loading="eager"
+                className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-linear-to-r from-transparent to-card/30" />
             </div>
@@ -79,8 +83,8 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
                 <div className="flex items-center gap-2.5">
                   <AuthorAvatars authors={featured.data.author} />
                   <div>
-                    <p className="text-xs font-medium text-foreground">
-                      {featured.data.author.join(', ')}
+                    <p className="text-sm font-medium text-foreground">
+                      <AuthorNames authorIds={featured.data.author} />
                     </p>
 
                     <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">

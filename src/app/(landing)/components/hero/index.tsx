@@ -78,7 +78,7 @@ export function Hero() {
                     className="rounded-full bg-secondary/60 border-border hover:bg-secondary/80 h-8 gap-1.5 px-2.5 md:h-10 md:px-4"
                   >
                     <Link
-                      href="/docs"
+                      href="/docs/desktop"
                       // disable prefetch to docs
                       prefetch={false}
                     >

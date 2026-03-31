@@ -1,8 +1,9 @@
 import { Calendar, ClockIcon } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import BlogThumbnail from '../../components/blog-thumbnail';
 import { AuthorAvatars } from './author-avatars';
 import type { BlogPage } from '@/blog/cms';
+import AuthorNames from './author-names';
 
 export interface BlogGridProps {
   posts: BlogPage[]
@@ -16,10 +17,11 @@ export default function BlogGrid({ posts }: BlogGridProps) {
           {/* Thumbnail */}
           <div className="relative aspect-9/5 overflow-hidden rounded-xl border border-border">
             {post.data.cover && (
-              <Image
+              <BlogThumbnail
                 src={post.data.cover}
                 alt={post.data.title}
                 fill
+                placeholder="blur"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             )}
@@ -62,7 +64,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
           <div className="mt-4 flex items-center gap-2">
             <AuthorAvatars authors={post.data.author} size={22} />
             <span className="text-xs text-muted-foreground">
-              {post.data.author.join(', ')}
+              <AuthorNames authorIds={post.data.author} />
             </span>
           </div>
         </Link>

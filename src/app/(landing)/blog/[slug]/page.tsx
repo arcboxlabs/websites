@@ -1,12 +1,15 @@
 import Image from 'next/image';
+import BlogThumbnail from '../components/blog-thumbnail';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarIcon, ClockIcon } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, ClockIcon, Globe } from 'lucide-react';
 import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
 import { BlogAside } from './components/blog-aside';
 import type { Metadata } from 'next';
+import type { Author as NextMetadataAuthor } from 'next/dist/lib/metadata/types/metadata-types';
+
 import { isNonNullish } from 'foxts/guard';
 import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
@@ -14,6 +17,8 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { BlogRssCTA } from '../components/blog-rss-cta';
 
 import { Heading } from './components/mdx/heading';
+import { SiGithub } from '@icons-pack/react-simple-icons';
+import TwitterIcon from '@/components/icon-twitter';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -97,7 +102,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     />
                     <div>
                       <p className="text-sm font-medium text-foreground">{author.name}</p>
-                      <p className="text-xs text-muted-foreground">{post.data.category}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {author.twitter && (
+                          <a
+                            href={`https://twitter.com/${author.twitter.replace('@', '')}`}
+                            target="_blank"
+                            rel="nofollow noreferrer noopener"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={`${author.name} on Twitter`}
+                          >
+                            <TwitterIcon className="size-3" />
+                          </a>
+                        )}
+                        {author.github && (
+                          <a
+                            href={`https://github.com/${author.github}`}
+                            target="_blank"
+                            rel="nofollow noreferrer noopener"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={`${author.name} on GitHub`}
+                          >
+                            <SiGithub className="size-3" />
+                          </a>
+                        )}
+                        {author.website && (
+                          <a href={author.website} target="_blank" rel="nofollow noreferrer noopener" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={`${author.name}'s website`}>
+                            <Globe className="size-3" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -111,10 +144,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="min-w-0 flex-1">
               {/* Cover image — after header, before content */}
               {post.data.cover && (
-                <div className="relative w-full aspect-9/5 overflow-hidden rounded-x border-border border-2 rounded-xl mb-10">
-                  <Image
+                <div className="relative w-full aspect-9/5 overflow-hidden border-border border rounded-lg mb-10">
+                  <BlogThumbnail
                     src={post.data.cover}
                     alt={post.data.title}
+                    placeholder="blur"
                     priority
                     className="h-full w-full object-cover"
                     fill
@@ -201,9 +235,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.data.description,
     keywords,
     authors: post.data.author
-      .reduce<Array<{ name: string }>>((acc: Array<{ name: string }>, author) => {
+      .reduce<NextMetadataAuthor[]>((acc, authorId) => {
+        const author = getAuthor(authorId);
         if (author) {
-          acc.push({ name: author });
+          let url: string | undefined;
+          if (author.website) {
+            url = author.website;
+          } else if (author.twitter) {
+            url = `https://twitter.com/${author.twitter.replace('@', '')}`;
+          } else if (author.github) {
+            url = `https://github.com/${author.github}`;
+          }
+
+          acc.push({ name: author.name, url });
         }
         return acc;
       }, []),
