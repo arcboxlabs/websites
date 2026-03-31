@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import BlogThumbnail from '../components/blog-thumbnail';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, CalendarIcon, ClockIcon, Globe } from 'lucide-react';
@@ -7,6 +8,8 @@ import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
 import { BlogAside } from './components/blog-aside';
 import type { Metadata } from 'next';
+import type { Author as NextMetadataAuthor } from 'next/dist/lib/metadata/types/metadata-types';
+
 import { isNonNullish } from 'foxts/guard';
 import { blogAlternates, blogOpenGraph, createTwitter } from '@/lib/metadata';
 import { getMDXComponents } from '@/mdx-components';
@@ -141,10 +144,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="min-w-0 flex-1">
               {/* Cover image — after header, before content */}
               {post.data.cover && (
-                <div className="relative w-full aspect-9/5 overflow-hidden rounded-x border-border border-2 rounded-xl mb-10">
-                  <Image
+                <div className="relative w-full aspect-9/5 overflow-hidden border-border border rounded-lg mb-10">
+                  <BlogThumbnail
                     src={post.data.cover}
                     alt={post.data.title}
+                    placeholder="blur"
                     priority
                     className="h-full w-full object-cover"
                     fill
@@ -231,9 +235,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.data.description,
     keywords,
     authors: post.data.author
-      .reduce<Array<{ name: string }>>((acc: Array<{ name: string }>, author) => {
+      .reduce<NextMetadataAuthor[]>((acc, authorId) => {
+        const author = getAuthor(authorId);
         if (author) {
-          acc.push({ name: author });
+          let url: string | undefined;
+          if (author.website) {
+            url = author.website;
+          } else if (author.twitter) {
+            url = `https://twitter.com/${author.twitter.replace('@', '')}`;
+          } else if (author.github) {
+            url = `https://github.com/${author.github}`;
+          }
+
+          acc.push({ name: author.name, url });
         }
         return acc;
       }, []),
@@ -250,7 +264,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: createTwitter({
       title: post.data.title,
       description: post.data.description,
-      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url
+      images: post.data.cover_as_og_image ? (post.data.cover || getPostImage(post).url) : getPostImage(post).url,
+      card: 'summary_large_image'
     })
   };
 }

@@ -26,6 +26,7 @@ export const authors: Record<string, Author> = {
   }
 };
 
-export function getAuthor(id: string): Author | undefined {
+export function getAuthor(id: string | undefined): Author | undefined {
+  if (!id) return;
   return authors[id];
 }
