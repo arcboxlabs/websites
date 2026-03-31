@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarIcon, ClockIcon } from 'lucide-react';
+import { ArrowLeft, CalendarIcon, ClockIcon, Globe } from 'lucide-react';
 import { BlogSource, getPostImage } from '@/blog/cms';
 import { getAuthor } from '@/blog/blog-authors';
 import type { Author } from '@/blog/blog-authors';
@@ -14,6 +14,8 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { BlogRssCTA } from '../components/blog-rss-cta';
 
 import { Heading } from './components/mdx/heading';
+import { SiGithub } from '@icons-pack/react-simple-icons';
+import TwitterIcon from '@/components/icon-twitter';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -97,7 +99,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     />
                     <div>
                       <p className="text-sm font-medium text-foreground">{author.name}</p>
-                      <p className="text-xs text-muted-foreground">{post.data.category}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {author.twitter && (
+                          <a
+                            href={`https://twitter.com/${author.twitter.replace('@', '')}`}
+                            target="_blank"
+                            rel="nofollow noreferrer noopener"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={`${author.name} on Twitter`}
+                          >
+                            <TwitterIcon className="size-3" />
+                          </a>
+                        )}
+                        {author.github && (
+                          <a
+                            href={`https://github.com/${author.github}`}
+                            target="_blank"
+                            rel="nofollow noreferrer noopener"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label={`${author.name} on GitHub`}
+                          >
+                            <SiGithub className="size-3" />
+                          </a>
+                        )}
+                        {author.website && (
+                          <a href={author.website} target="_blank" rel="nofollow noreferrer noopener" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={`${author.name}'s website`}>
+                            <Globe className="size-3" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}

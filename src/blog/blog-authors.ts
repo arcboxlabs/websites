@@ -3,7 +3,7 @@ export interface Author {
   name: string,
   avatar: string,
   bio?: string,
-  twitter?: string,
+  twitter?: `@${string}`,
   github?: string,
   website?: string
 }
