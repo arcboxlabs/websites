@@ -27,7 +27,7 @@ export const blog = defineDocs({
       valueToExport: ['readingTime']
     },
     mdxOptions: applyMdxPreset({
-      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, remarkReadingTime, [remarkImage, { useImport: false }]],
+      remarkPlugins: [remarkMdxMermaid, remarkGfm, remarkHeading, remarkReadingTime, [remarkImage, { useImport: true, placeholder: 'none' }]],
       rehypePlugins: [rehypeToc]
     })
   },
