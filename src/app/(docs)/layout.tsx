@@ -1,6 +1,7 @@
 import './styles/global.css';
 
 import { Provider } from './components/provider';
+import { PostHogProvider } from '@/components/posthog-provider';
 import type { Metadata } from 'next';
 import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
@@ -23,7 +24,9 @@ export default function DocsLayout({ children }: React.PropsWithChildren) {
         <link rel="sitemap" type="application/xml" title="ArcBox Site Map" href="https://arcbox.dev/sitemap.xml" />
       </head>
       <body className="flex flex-col min-h-screen" suppressHydrationWarning={process.env.NODE_ENV !== 'production'}>
-        <Provider>{children}</Provider>
+        <PostHogProvider>
+          <Provider>{children}</Provider>
+        </PostHogProvider>
       </body>
     </html>
   );
