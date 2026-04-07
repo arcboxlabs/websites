@@ -5,7 +5,6 @@ import '@landing/styles/tailwind.css';
 import '@landing/styles/global.css';
 import Layout from './components/layout';
 import { NavbarMobileMenuPortalProvider } from './contexts/navbar-mobile-menu-portal';
-import { PostHogProvider } from '@/components/posthog-provider';
 import { landingOpenGraph, createTwitter, ARCBOX_DESKTOP_DESCRIPTION } from '@/lib/metadata';
 import { clsx } from 'clsx';
 // import 'stylex-webpack/stylex.css';
@@ -58,13 +57,11 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         suppressHydrationWarning={process.env.NODE_ENV !== 'production'}
         className={clsx(ibmPlexSans.variable, ibmPlexMono.variable, 'font-sans')}
       >
-        <PostHogProvider>
-          <NavbarMobileMenuPortalProvider id="global-navbar-mobile-menu-portal">
-            <Layout>
-              {children}
-            </Layout>
-          </NavbarMobileMenuPortalProvider>
-        </PostHogProvider>
+        <NavbarMobileMenuPortalProvider id="global-navbar-mobile-menu-portal">
+          <Layout>
+            {children}
+          </Layout>
+        </NavbarMobileMenuPortalProvider>
       </body>
     </html>
   );

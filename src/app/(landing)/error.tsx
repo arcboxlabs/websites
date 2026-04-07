@@ -9,7 +9,7 @@ export default function ErrorBoundary({
   error,
   reset
 }: {
-  error: Error & { digest?: string }
+  error: Error & { digest?: string },
   reset: () => void
 }) {
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function ErrorBoundary({
 
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={reset}
             className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-secondary px-4 text-sm font-semibold transition-colors hover:bg-secondary/80"
           >
