@@ -1,6 +1,6 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 import { useMemo, useTransition } from 'react';
 import { Check, ChevronDown, Copy, ExternalLinkIcon, TextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -36,7 +36,7 @@ export function LLMCopyButton({
           })
         ]);
       } catch (err) {
-        Sentry.captureException(err);
+        captureException(err);
       }
     });
   });
