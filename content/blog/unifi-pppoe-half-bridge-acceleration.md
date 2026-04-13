@@ -13,6 +13,8 @@ keywords: ["UniFi", "PPPoE", "OpenWrt", "half-bridge", "acceleration", "networki
 
 ## Prologue
 
+We are [ArcBox Labs](https://arcbox.dev). Our office has a 4 Gbps PPPoE connection behind a UniFi gateway, and we could never get anywhere close to that speed. So we built a custom, open-source solution.
+
 The overwhelming majority of UniFi gateways, from the UDM Pro/SE/Pro Max and UXG Pro to the EFG, ship with CPUs that support neither PPPoE nor NAT hardware acceleration. As a result, whenever you put a PPPoE-based ISP connection behind one of these gateways, throughput takes a serious hit and never comes close to the rated line speed. This has been well-documented in the UniFi community:
 
 - https://community.ui.com/questions/What-is-the-max-performance-for-PPPOE-on-UDM-Pro-With-Solution/67057f47-509e-4f8b-8edd-5dc29f380759
@@ -74,7 +76,3 @@ You can find the full configuration and usage example from the `EXAMPLE.md` file
 ----
 
 > The Simplified Chinese version of this post is available at [Sukka's Blog](https://blog.skk.moe/): [https://blog.skk.moe/post/unifi-pppoe](https://blog.skk.moe/post/unifi-pppoe)
-
-## Who We Are
-
-We are ArcBox Labs. TODO.
