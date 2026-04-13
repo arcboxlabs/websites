@@ -23,6 +23,14 @@ export const authors: Record<string, Author> = {
     name: 'Peron',
     avatar: 'https://avatars.githubusercontent.com/u/18367871?v=4',
     github: 'PeronGH'
+  },
+  sukka: {
+    id: 'sukka',
+    name: 'Sukka',
+    avatar: 'https://avatars.githubusercontent.com/u/40715044?v=4',
+    twitter: '@isukkaw',
+    github: 'sukkaw',
+    website: 'https://skk.moe'
   }
 };
 
