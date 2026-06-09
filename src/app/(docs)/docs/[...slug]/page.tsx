@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { docsOpenGraph, createTwitter } from '@/lib/metadata';
 import { LLMCopyButton, ViewOptions } from '@docs/components/ai/page-actions';
-import { gitConfig } from '@/app/(docs)/lib/layout.shared';
+import { getDocsSourceGitHubUrl } from '@/app/(docs)/lib/layout.shared';
 import { fastStringArrayJoin } from 'foxts/fast-string-array-join';
 
 export default async function Page(props: PageProps<'/docs/[...slug]'>) {
@@ -33,7 +33,7 @@ export default async function Page(props: PageProps<'/docs/[...slug]'>) {
         <LLMCopyButton markdownUrl={markdownUrl} />
         <ViewOptions
           markdownUrl={markdownUrl}
-          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
+          githubUrl={getDocsSourceGitHubUrl(page.path)}
         />
       </div>
       <DocsBody>
