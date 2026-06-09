@@ -43,3 +43,14 @@ next-env.d.ts
 # fumadocs
 # https://www.fumadocs.dev/blog/mdx-v10-summary#:~:text=You%20can%20add%20it%20to%20.gitignore
 .source
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

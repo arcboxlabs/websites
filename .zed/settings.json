@@ -1,0 +1,56 @@
+{
+  "load_direnv": "direct",
+  "format_on_save": "on",
+  "formatter": "language_server",
+  "tab_size": 2,
+  "languages": {
+    "JavaScript": {
+      "language_servers": [
+        "typescript-language-server",
+        "eslint",
+        "..."
+      ]
+    },
+    "TypeScript": {
+      "language_servers": [
+        "typescript-language-server",
+        "eslint",
+        "..."
+      ]
+    },
+    "TSX": {
+      "language_servers": [
+        "typescript-language-server",
+        "eslint",
+        "..."
+      ]
+    }
+  },
+  "lsp": {
+    "typescript-language-server": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative",
+            "jsxAttributeCompletionStyle": "auto"
+          }
+        },
+        "javascript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative",
+            "jsxAttributeCompletionStyle": "auto"
+          }
+        }
+      }
+    },
+    "eslint": {
+      "settings": {
+        "workingDirectories": [
+          {
+            "mode": "auto"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -13,8 +13,4 @@
   languages.typescript.enable = true;
 
   processes.dev.exec = "pnpm dev";
-
-  enterTest = ''
-    pnpm build
-  '';
 }
