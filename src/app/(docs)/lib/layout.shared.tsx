@@ -2,11 +2,27 @@ import type { BaseLayoutProps, LinkItemType } from 'fumadocs-ui/layouts/shared';
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
 import { socialLinks } from '@/constants/links';
 
-export const gitConfig = {
-  user: 'arcboxlabs',
-  repo: 'websites',
-  branch: 'master'
+const defaultDocsGitHubUrl = 'https://github.com/arcboxlabs';
+const docsSourceGitHubUrl = 'https://github.com/arcboxlabs/websites/blob/master/content/docs';
+
+const docsGitHubUrls: Record<string, string> = {
+  desktop: 'https://github.com/arcboxlabs/arcbox-desktop',
+  platform: 'https://github.com/arcboxlabs/arcbox'
 };
+
+export function getDocsGitHubUrl(slugs?: readonly string[]) {
+  const section = slugs?.[0];
+
+  if (!section) {
+    return defaultDocsGitHubUrl;
+  }
+
+  return docsGitHubUrls[section] ?? defaultDocsGitHubUrl;
+}
+
+export function getDocsSourceGitHubUrl(path: string) {
+  return `${docsSourceGitHubUrl}/${path}`;
+}
 
 export const baseOptions: BaseLayoutProps = {
   nav: {
@@ -45,5 +61,5 @@ export const baseOptions: BaseLayoutProps = {
     //   url: '/blog'
     // }
   ],
-  githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`
+  githubUrl: defaultDocsGitHubUrl
 };
