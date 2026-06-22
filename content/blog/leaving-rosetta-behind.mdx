@@ -29,9 +29,13 @@ Same fork in the road, opposite choice. OrbStack stayed on Virtualization.framew
 
 ## Picking an emulator
 
-The open-source options were box64, QEMU's user-mode, and FEX.
+To run an x86-64 binary on an ARM64 CPU, something has to translate the machine code as it runs. On Linux we had three open-source options to weigh against Rosetta: box64, QEMU's user-mode, and FEX.
 
-We ruled out [box86/box64](https://github.com/ptitSeb/box64) on design, before benchmarking anything. box64's signature feature is [library wrapping](https://box86.org/2021/08/a-deep-dive-into-library-wrapping/): instead of emulating x86 system libraries, it bounces calls out to the host's *native* ARM64 libraries like libc, libm, SDL, and OpenGL. On an ARM Linux desktop that's a real win. In a container it's the wrong model, because an x86 image ships x86 libraries and there are no native ARM64 libraries to wrap against. You'd turn wrapping off, and a box64 with wrapping off has nothing left over FEX, since wrapping *was* the advantage. FEX treats pure emulation as a first-class path. So the real contest was FEX vs QEMU vs Rosetta.
+We ruled out [box86/box64](https://github.com/ptitSeb/box64) on design, before benchmarking anything. box64's signature feature is [library wrapping](https://box86.org/2021/08/a-deep-dive-into-library-wrapping/): instead of emulating x86 system libraries, it bounces calls out to the host's *native* ARM64 libraries like libc, libm, SDL, and OpenGL. On an ARM Linux desktop that's a real win. In a container it's the wrong model, because an x86 image ships x86 libraries and there are no native ARM64 libraries to wrap against. You'd turn wrapping off, and a box64 with wrapping off has nothing left over FEX, since wrapping *was* the advantage.
+
+That left QEMU and FEX. QEMU's user-mode is the established answer: it translates foreign-architecture binaries as it runs them, and it's bundled almost everywhere, including in Docker Desktop, to run x86 containers on ARM. Proven and trivial to deploy, but slow. FEX is the newer contender, an open-source JIT that recompiles x86-64 into ARM64 in blocks and caches the result, which makes it far faster than QEMU's lighter-weight translation. It's what Fedora's Asahi Remix uses to run x86 apps on Apple Silicon Linux.
+
+So the contest was FEX vs QEMU vs Rosetta.
 
 To decide, we ran a quick evaluation on the same single-threaded workloads.[^eval]
 
@@ -45,7 +49,7 @@ QEMU was never close. FEX and Rosetta traded the lead, and FEX stayed within ~25
 
 ## "You can't use FEX as a drop-in"
 
-There's already a proven, universal way to run foreign-architecture binaries: `qemu-user-static`, QEMU's user-mode packaged as a single static binary you register with `binfmt_misc`. It's how most tools, Docker Desktop included, run x86 containers on ARM, and it's trivial to deploy. It's also the slow option from the table above. FEX is the fast one. So what we wanted was `qemu-user-static`'s drop-in simplicity with FEX's speed.
+QEMU had one more thing going for it: it's trivial to deploy. `qemu-user-static` is its user-mode packaged as a single static binary you register with `binfmt_misc`, nothing else. We wanted that same drop-in simplicity, but with FEX's speed.
 
 Here's the catch. Ask anyone who's worked with FEX whether you can deploy it that simply, one binary registered with `binfmt_misc` and done, and they'll say no. About the defaults, they're right, for three reasons:
 
