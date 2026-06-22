@@ -51,7 +51,9 @@ QEMU was never close. FEX and Rosetta traded the lead, and FEX stayed within ~25
 
 ## "You can't use FEX as a drop-in"
 
-Here's the catch. Ask anyone who's worked with FEX whether you can drop it in like `qemu-user-static` (one binary, register it with `binfmt_misc`, done), and they'll say no. About the defaults, they're right, for three reasons:
+There's already a proven, universal way to run foreign-architecture binaries: `qemu-user-static`, QEMU's user-mode packaged as a single static binary you register with `binfmt_misc`. It's how most tools, Docker Desktop included, run x86 containers on ARM, and it's trivial to deploy. It's also the slow option from the table above. FEX is the fast one. So what we wanted was `qemu-user-static`'s drop-in simplicity with FEX's speed.
+
+Here's the catch. Ask anyone who's worked with FEX whether you can deploy it that simply, one binary registered with `binfmt_misc` and done, and they'll say no. About the defaults, they're right, for three reasons:
 
 1. FEX is dynamically linked against arm64 glibc. Drop it into an x86 container and it can't even load, because there's no arm64 glibc there.
 2. FEX expects a FEXServer daemon running alongside it.
