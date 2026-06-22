@@ -11,17 +11,11 @@ keywords: ["fex", "rosetta", "x86 emulation", "apple silicon", "hypervisor frame
 
 We run `linux/amd64` containers on Apple Silicon without Rosetta. The x86 translation layer is [FEX](https://github.com/FEX-Emu/FEX), an open-source emulator that translates x86-64 to ARM64 on the fly, running inside our own arm64 VM, with no QEMU, no second VM, and nothing to configure. Getting there took more work than that sentence suggests. Here's the path.
 
-## We started on Virtualization.framework
+## From Virtualization.framework to our own VMM
 
-Like most projects in this space, we began on Apple's Virtualization.framework. It's the high-level, managed path: you describe a VM, the framework runs it, and you get virtio devices, a working console, and Rosetta for free. Apple ships a Linux build of Rosetta and exposes it to guests through `VZLinuxRosettaDirectoryShare`. You mount it into the VM, register it with `binfmt_misc` (the Linux kernel feature that hands a foreign-architecture binary off to a chosen interpreter), and x86 binaries just run. Fast and easy.
+Like most projects in this space, we began on Apple's Virtualization.framework. It's the high-level, managed path: you describe a VM, the framework runs it, and you get virtio devices, a working console, and Rosetta for free. Apple ships a Linux build of Rosetta and exposes it to guests through `VZLinuxRosettaDirectoryShare`; you register it with `binfmt_misc` (the Linux kernel feature that hands a foreign-architecture binary off to a chosen interpreter) and x86 binaries just run. Fast and easy. It's also a black box.
 
-It's also a black box.
-
-## Then we built our own VMM
-
-For the control we wanted over performance and behavior, we moved to our own virtual machine monitor, built directly on the lower-level Hypervisor.framework. Virtualization.framework manages the I/O datapath for you: virtqueues, interrupt injection, device state. That convenience is the price. With our own VMM we own all of it: the low-level plumbing the framework otherwise hides, like a custom virtio-net datapath with segmentation offload, VirtioFS cache policy, a zero-copy vsock path over mapped guest memory, and our own interrupt coalescing. That control is the whole point of our runtime, and a managed framework doesn't give it back.
-
-Leaving Virtualization.framework had a cost we knew was coming.
+For the control we wanted over performance and behavior, we moved to our own virtual machine monitor, built directly on the lower-level Hypervisor.framework. The framework manages the I/O datapath for you; we wanted to own it, down to networking, filesystem sharing, and interrupt handling. How we built that is a story of its own, and one we'll cover in a later series. What matters here is the consequence: leaving Virtualization.framework had a cost we knew was coming.
 
 ## Rosetta was the blocker
 
