@@ -79,9 +79,7 @@ Compare that to the only prior attempt to run FEX for containers on Apple Silico
 
 ## Why it ran everywhere but our VM
 
-Getting FEX to *deploy* cleanly was the easy part. Getting it to *run* cost us days. The same static binary worked on a real ARM64 Linux box and inside a UTM arm64 VM, but in our own runtime it crashed non-deterministically, with FEX bailing out at "Failed to map VMA region." An occasional SIGILL on the side sent us chasing a phantom CPU-feature bug first, which turned out to be a red herring.
-
-The cause wasn't FEX or the binary. It was our guest kernel. To keep it minimal we'd left `CONFIG_COMPAT_BRK` enabled, which forces `kernel.randomize_va_space=1` at boot: a weaker ASLR mode that stock distributions don't use. FEX's x86-64 allocator needs to reserve a large, specific virtual-address layout, and under `=1` it couldn't place it reliably, so it failed. The tell came from the competition. OrbStack ran the exact same FEX binary cleanly, because its guest boots `randomize_va_space=2`, like every normal Linux system. Flipping the sysctl confirmed it: `1` crashed, `2` ran clean, every time, on both 48-bit and 52-bit kernels. The fix was one line in our kernel config, dropping `COMPAT_BRK` so the guest boots `=2`.
+The same static binary ran on a real ARM64 Linux box and in a UTM arm64 VM, but crashed non-deterministically in ours, FEX bailing at "Failed to map VMA region." The binary was fine; our kernel wasn't. To stay minimal it shipped `CONFIG_COMPAT_BRK`, which boots `randomize_va_space=1`, an ASLR mode FEX's x86-64 allocator can't lay itself out under. OrbStack ran the same binary cleanly at `randomize_va_space=2`; flipping that sysctl confirmed it, and the fix was one line of kernel config.
 
 ## Does it hold up?
 
