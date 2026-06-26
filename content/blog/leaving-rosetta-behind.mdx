@@ -1,0 +1,129 @@
+---
+title: "Leaving Rosetta behind: open-source x86 on Apple Silicon"
+description: "Why ArcBox replaced Rosetta with FEX for amd64 containers: an open-source JIT on our own Hypervisor.framework VMM, made into a true qemu-user-static drop-in."
+date: "2026-06-22"
+category: "Engineering"
+author: ["peron"]
+published: true
+featured: false
+keywords: ["fex", "rosetta", "x86 emulation", "apple silicon", "hypervisor framework", "containers", "arm64", "open source"]
+---
+
+We run `linux/amd64` containers on Apple Silicon without Rosetta. The x86 translation layer is [FEX](https://github.com/FEX-Emu/FEX), an open-source emulator that translates x86-64 to ARM64 on the fly, running inside our own arm64 VM, with no QEMU, no second VM, and nothing to configure. Getting there took more work than that sentence suggests. Here's the path.
+
+## From Virtualization.framework to our own VMM
+
+Like most projects in this space, we began on Apple's Virtualization.framework. It's the high-level, managed path: you describe a VM, the framework runs it, and you get virtio devices, a working console, and Rosetta for free. Apple ships a Linux build of Rosetta and exposes it to guests through `VZLinuxRosettaDirectoryShare`; you register it with `binfmt_misc` (the Linux kernel feature that hands a foreign-architecture binary off to a chosen interpreter) and x86 binaries just run. Fast and easy. It's also a black box.
+
+For the control we wanted over performance and behavior, we moved to our own virtual machine monitor, built directly on the lower-level Hypervisor.framework. The framework manages the I/O datapath for you; we wanted to own it, down to networking, filesystem sharing, and interrupt handling. How we built that is a story of its own, and one we'll cover in a later series. What matters here is the consequence: leaving Virtualization.framework had a cost we knew was coming.
+
+## Rosetta was the blocker
+
+Rosetta for Linux only exists inside Virtualization.framework. Apple doesn't hand it to custom VMMs on Hypervisor.framework, and won't let a third-party hypervisor set the CPU flags Rosetta depends on. The moment we left the managed path, Rosetta went with it.
+
+We weren't the first to hit this wall. OrbStack's creator [prototyped a custom VMM and walked back from it](https://news.ycombinator.com/item?id=36189550) for exactly this reason:
+
+> I spent a day prototyping a custom VMM […] There's a lot of other things I could do better (faster, simpler, more reliable) with a custom, tightly-integrated replacement. But unfortunately, that's not an option. Apple doesn't allow third-party VMMs to set the necessary CPU flags for Rosetta. […] So yes, I still use Virtualization.framework, but only because I have no choice.
+
+Same fork in the road, opposite choice. OrbStack stayed on Virtualization.framework to keep Rosetta. We kept our VMM and replaced Rosetta.
+
+## Picking an emulator
+
+To run an x86-64 binary on an ARM64 CPU, something has to translate the machine code as it runs. On Linux we had three open-source options to weigh against Rosetta: box64, QEMU's user-mode, and FEX.
+
+We ruled out [box86/box64](https://github.com/ptitSeb/box64) on design, before benchmarking anything. box64's signature feature is [library wrapping](https://box86.org/2021/08/a-deep-dive-into-library-wrapping/): instead of emulating x86 system libraries, it bounces calls out to the host's *native* ARM64 libraries like libc, libm, SDL, and OpenGL. On an ARM Linux desktop that's a real win. In a container it's the wrong model, because an x86 image ships x86 libraries and there are no native ARM64 libraries to wrap against. You'd turn wrapping off, and a box64 with wrapping off has nothing left over FEX, since wrapping *was* the advantage.
+
+That left QEMU and FEX. QEMU's user-mode is the established answer: it translates foreign-architecture binaries as it runs them, and it's bundled almost everywhere, including in Docker Desktop, to run x86 containers on ARM. Proven and trivial to deploy, but slow. FEX is the newer contender, an open-source JIT that recompiles x86-64 into ARM64 in blocks and caches the result, which makes it far faster than QEMU's lighter-weight translation. It's what Fedora's Asahi Remix uses to run x86 apps on Apple Silicon Linux.
+
+So the contest was FEX vs QEMU vs Rosetta.
+
+To decide, we ran a quick evaluation on the same single-threaded workloads.[^eval]
+
+| Workload | native arm64 | FEX | Rosetta | QEMU |
+| --- | --- | --- | --- | --- |
+| sha256 (64 MB) | 0.19 s | **0.24 s** | 0.27 s | 0.64 s |
+| gzip -9 (64 MB) | 1.15 s | **1.36 s** | 1.31 s | 3.97 s |
+| awk loop (20 M) | 8.75 s | **11.0 s** | 15.9 s | 112 s |
+
+QEMU was never close. FEX and Rosetta traded the lead, and FEX stayed within ~25% of native. That was enough. We committed to FEX.
+
+## "You can't use FEX as a drop-in"
+
+QEMU had one more thing going for it: it's trivial to deploy. `qemu-user-static` is its user-mode packaged as a single static binary you register with `binfmt_misc`, nothing else. We wanted that same drop-in simplicity, but with FEX's speed.
+
+Here's the catch. Ask anyone who's worked with FEX whether you can deploy it that simply, one binary registered with `binfmt_misc` and done, and they'll say no. About the defaults, they're right, for three reasons:
+
+1. FEX is dynamically linked against arm64 glibc. Drop it into an x86 container and it can't even load, because there's no arm64 glibc there.
+2. FEX expects a FEXServer daemon running alongside it.
+3. FEX expects a separate x86 RootFS to translate against.
+
+None of these is fundamental. One build flag and a small source patch handle all three:
+
+1. Build FEX as a static-PIE binary, so it carries its own libraries and runs in any rootfs. This is the keystone: being static is what makes the third fix work. A dynamically-linked FEX would look for its loader inside the container's amd64 rootfs, fail to find it, and exit with `ENOENT`.
+2. Patch out the FEXServer requirement. FEX then runs standalone, with no daemon to keep alive in the guest.
+3. Default the RootFS to `/` and leave `FEX_ROOTFS` unset, so each container translates against its own x86 libraries, the ones already in the image.
+
+What's left is a single static binary with no daemon, no rootfs image, and nothing to configure: a real `qemu-user-static` replacement. FEX isn't friendly to this out of the box, but it's far less hostile than its reputation suggests.
+
+## One binary, one line
+
+Because we own the guest (our kernel, our init, our VirtioFS share), FEX ships like any other runtime binary, next to `dockerd` and `containerd`. At boot, init mounts the share, finds the binary, and registers it once:
+
+```
+:FEX-x86_64:M:0:\x7fELF\x02…\x3e\x00:…:/arcbox/runtime/bin/FEX:POCF
+```
+
+The `POCF` flags carry the trick. `F` is fix-binary: it pins the interpreter at registration time, so the open handle is inherited across every container's mount namespace. That single flag is why we never have to bind-mount FEX into individual containers.
+
+Compare that to the only prior attempt to run FEX for containers on Apple Silicon, [podman-fex](https://github.com/tnk4on/podman-fex). To get there it needs a custom multi-gigabyte machine image, forks of Podman and Buildah, a 1.8 GB x86 RootFS baked into the VM, a FEXServer per container, an OCI hook that bind-mounts FEX into every amd64 container, and a systemd unit to wire it all together at boot. It's careful work, but it bolts FEX onto a stack it doesn't control. We had the opposite luxury: we built the stack, so FEX could be one file and one line.
+
+## Getting it to actually run
+
+Getting the binary to *run* took fixing two bugs, each hiding behind "but it works on the other machine."
+
+First, illegal-instruction crashes. FEX's build tunes for whatever CPU compiles it, and our CI runs on ARM hardware with SVE (GitHub's Neoverse N2). The binary came out full of SVE instructions that Apple Silicon doesn't have, so it ran on the build box and SIGILL'd everywhere else. Pinning the build to a baseline target fixed it.
+
+That bought us a binary that ran on a real ARM64 Linux box and in a UTM arm64 VM, but still crashed in our own runtime, at random, deep in FEX's allocator with "Failed to map VMA region." This time it was ASLR. To keep our guest kernel minimal we'd left `CONFIG_COMPAT_BRK` on, which boots `randomize_va_space=1`, a mode FEX's x86-64 allocator can't lay itself out under; the Linux box and UTM VM where it worked both boot `=2`, like any stock distro. Flipping the sysctl ourselves confirmed it: `1` crashed, `2` ran clean. One line of kernel config, done.
+
+## Does it hold up?
+
+We replaced a closed, hardware-accelerated translator with an open-source JIT. Did we give up performance? We benchmarked 7-Zip and a Linux kernel build, comparing amd64 on ArcBox (FEX) against amd64 on OrbStack (Rosetta), with arm64 on ArcBox as the native baseline.[^bench]
+
+| Workload (12 threads) | native (arm64) | FEX | Rosetta |
+| --- | --- | --- | --- |
+| 7-Zip LZMA (MIPS) ↑ | 103,540 | 77,145 | **92,888** |
+| 7-Zip SHA-256 (MB/s) ↑ | 27,192 | **5,640** | 3,530 |
+| 7-Zip AES-256-CBC encode (MB/s) ↑ | 17,973 | **9,170** | 9,052 |
+| 7-Zip AES-256-CBC decode (MB/s) ↑ | 125,284 | 48,173 | **71,970** |
+| Linux kernel build, `-j12` (seconds) ↓ | 12 | 187 | **84** |
+
+The picture is honest. On SHA-256, FEX is well ahead of Rosetta. On AES encryption it's a tie. On general compression and AES decryption, Rosetta leads by 10–50%. And on the kernel build, Rosetta is more than twice as fast.
+
+That last row is the tell, and it points straight at what's next.
+
+## What we left on the table
+
+Two things explain the kernel-build gap, and both are addressable.
+
+The first is memory ordering. x86 guarantees Total Store Ordering; ARM doesn't. Apple Silicon has a hardware TSO mode (the single biggest reason Rosetta is fast), but reaching it from inside a VM takes two pieces we don't ship yet: an out-of-tree kernel `prctl` that flips the `ACTLR_EL1` bit, and our VMM permitting the guest to set it. Today FEX runs with software TSO emulation. It's already competitive, and hardware TSO is the headroom.
+
+The second is caching. Rosetta keeps a persistent ahead-of-time cache. A kernel build spawns thousands of short-lived `gcc` processes, and FEX re-JITs each one. A persistent FEX code cache would close most of that gap.
+
+One compatibility note, stated plainly: Go 1.24+ binaries that use the [new `vgetrandom` vDSO fast path](https://github.com/golang/go/issues/69577) can crash under FEX, because FEX doesn't implement that vDSO entry yet. It's a known upstream gap, not something specific to our setup.
+
+## Try it
+
+amd64 containers work on ArcBox today, with nothing to configure:
+
+```bash
+docker run --platform linux/amd64 alpine uname -m
+# x86_64
+```
+
+The runtime is open source at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox). Our FEX build ships with our boot assets; it tracks upstream FEX, applies a single patch on top, and builds in CI.
+
+We left Rosetta behind and didn't lose much for it. The parts we did lose, we know how to get back.
+
+[^eval]: A stock arm64 Linux VM on Virtualization.framework, with FEX, QEMU user-mode, and Rosetta each installed the conventional way. Workloads, single-threaded: `sha256sum` of a 64 MB file, `gzip -9` of a 64 MB file, and a 20-million-iteration `awk` loop.
+
+[^bench]: Apple M4 Pro (12 cores), 48 GB; each guest given 16 GB and all 12 cores, running the identical container image on every runtime. 7-Zip via `7z b` (LZMA), `7z b -mm=SHA256`, and `7z b -mm=AES256CBC`, all on 12 threads. Kernel build: Linux 6.18.35, `make tinyconfig` then `make -j12`, wall-clock timed.
