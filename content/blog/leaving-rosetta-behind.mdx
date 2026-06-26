@@ -77,9 +77,13 @@ The `POCF` flags carry the trick. `F` is fix-binary: it pins the interpreter at 
 
 Compare that to the only prior attempt to run FEX for containers on Apple Silicon, [podman-fex](https://github.com/tnk4on/podman-fex). To get there it needs a custom multi-gigabyte machine image, forks of Podman and Buildah, a 1.8 GB x86 RootFS baked into the VM, a FEXServer per container, an OCI hook that bind-mounts FEX into every amd64 container, and a systemd unit to wire it all together at boot. It's careful work, but it bolts FEX onto a stack it doesn't control. We had the opposite luxury: we built the stack, so FEX could be one file and one line.
 
-## Why it ran everywhere but our VM
+## Getting it to actually run
 
-The same static binary ran on a real ARM64 Linux box and in a UTM arm64 VM, but crashed non-deterministically in ours, FEX bailing at "Failed to map VMA region." The binary was fine; our kernel wasn't. To stay minimal it shipped `CONFIG_COMPAT_BRK`, which boots `randomize_va_space=1`, an ASLR mode FEX's x86-64 allocator can't lay itself out under. OrbStack ran the same binary cleanly at `randomize_va_space=2`; flipping that sysctl confirmed it, and the fix was one line of kernel config.
+Getting the binary to *run* took fixing two bugs, each hiding behind "but it works on the other machine."
+
+First, illegal-instruction crashes. FEX's build tunes for whatever CPU compiles it, and our CI runs on ARM hardware with SVE (GitHub's Neoverse N2). The binary came out full of SVE instructions that Apple Silicon doesn't have, so it ran on the build box and SIGILL'd everywhere else. Pinning the build to a baseline target fixed it.
+
+That bought us a binary that ran on a real ARM64 Linux box and in a UTM arm64 VM, but still crashed in our own runtime, at random, deep in FEX's allocator with "Failed to map VMA region." This time it was ASLR. To keep our guest kernel minimal we'd left `CONFIG_COMPAT_BRK` on, which boots `randomize_va_space=1`, a mode FEX's x86-64 allocator can't lay itself out under; the Linux box and UTM VM where it worked both boot `=2`, like any stock distro. Flipping the sysctl ourselves confirmed it: `1` crashed, `2` ran clean. One line of kernel config, done.
 
 ## Does it hold up?
 
