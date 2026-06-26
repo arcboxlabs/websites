@@ -77,6 +77,12 @@ The `POCF` flags carry the trick. `F` is fix-binary: it pins the interpreter at 
 
 Compare that to the only prior attempt to run FEX for containers on Apple Silicon, [podman-fex](https://github.com/tnk4on/podman-fex). To get there it needs a custom multi-gigabyte machine image, forks of Podman and Buildah, a 1.8 GB x86 RootFS baked into the VM, a FEXServer per container, an OCI hook that bind-mounts FEX into every amd64 container, and a systemd unit to wire it all together at boot. It's careful work, but it bolts FEX onto a stack it doesn't control. We had the opposite luxury: we built the stack, so FEX could be one file and one line.
 
+## Why it ran everywhere but our VM
+
+Getting FEX to *deploy* cleanly was the easy part. Getting it to *run* cost us days. The same static binary worked on a real ARM64 Linux box and inside a UTM arm64 VM, but in our own runtime it crashed non-deterministically, with FEX bailing out at "Failed to map VMA region." An occasional SIGILL on the side sent us chasing a phantom CPU-feature bug first, which turned out to be a red herring.
+
+The cause wasn't FEX or the binary. It was our guest kernel. To keep it minimal we'd left `CONFIG_COMPAT_BRK` enabled, which forces `kernel.randomize_va_space=1` at boot: a weaker ASLR mode that stock distributions don't use. FEX's x86-64 allocator needs to reserve a large, specific virtual-address layout, and under `=1` it couldn't place it reliably, so it failed. The tell came from the competition. OrbStack ran the exact same FEX binary cleanly, because its guest boots `randomize_va_space=2`, like every normal Linux system. Flipping the sysctl confirmed it: `1` crashed, `2` ran clean, every time, on both 48-bit and 52-bit kernels. The fix was one line in our kernel config, dropping `COMPAT_BRK` so the guest boots `=2`.
+
 ## Does it hold up?
 
 We replaced a closed, hardware-accelerated translator with an open-source JIT. Did we give up performance? We benchmarked 7-Zip and a Linux kernel build, comparing amd64 on ArcBox (FEX) against amd64 on OrbStack (Rosetta), with arm64 on ArcBox as the native baseline.[^bench]
