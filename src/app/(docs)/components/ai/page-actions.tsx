@@ -1,12 +1,12 @@
 'use client';
 
 import { captureException } from '@sentry/nextjs';
-import { useMemo, useTransition } from 'react';
-import { Check, ChevronDown, Copy, ExternalLinkIcon, TextIcon } from 'lucide-react';
+import { useCallback, useMemo, useTransition } from 'react';
+import { Check, ChevronDown, Copy, ExternalLinkIcon, Loader2, TextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from 'fumadocs-ui/components/ui/popover';
+import { useClipboard } from 'foxact/use-clipboard';
 
 const cache = new Map<string, string>();
 
@@ -19,27 +19,25 @@ export function LLMCopyButton({
   markdownUrl: string
 }) {
   const [isLoading, startLoading] = useTransition();
-  const [checked, onClick] = useCopyButton(() => {
+  const { copy, copied } = useClipboard({
+    onCopyError: captureException
+  });
+
+  const handleClick = useCallback(() => {
     const cached = cache.get(markdownUrl);
-    if (cached) return navigator.clipboard.writeText(cached);
+    if (cached) return copy(cached);
 
     startLoading(async () => {
       try {
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            'text/plain': fetch(markdownUrl).then(async (res) => {
-              const content = await res.text();
-              cache.set(markdownUrl, content);
-
-              return content;
-            })
-          })
-        ]);
+        const res = await fetch(markdownUrl);
+        const content = await res.text();
+        cache.set(markdownUrl, content);
+        copy(content);
       } catch (err) {
         captureException(err);
       }
     });
-  });
+  }, [copy, markdownUrl]);
 
   return (
     <button
@@ -52,9 +50,9 @@ export function LLMCopyButton({
           className: 'gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground'
         })
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
-      {checked ? <Check /> : <Copy />}
+      {copied ? <Check /> : (isLoading ? <Loader2 className="animate-spin" /> : <Copy />)}
       Copy Markdown
     </button>
   );

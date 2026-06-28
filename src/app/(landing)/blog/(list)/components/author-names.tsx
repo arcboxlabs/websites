@@ -13,11 +13,12 @@ export default function AuthorNames({ authorIds }: { authorIds: Array<string | u
 
   const visibleCount = Math.min(authorNames.length, 3);
   const visible = authorNames.slice(0, visibleCount);
-  const remaining = Math.max(0, authorNames.length - visibleCount);
 
   if (visible.length === 0) return null;
 
   if (visible.length === 1) return <span>{visible[0]}</span>;
+
+  const remaining = Math.max(0, authorNames.length - visibleCount);
 
   if (remaining <= 0) {
     return <span>{fastStringArrayJoin(visible.slice(0, -1), ', ')} and {visible[visible.length - 1]}</span>;

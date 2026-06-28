@@ -27,7 +27,7 @@ export function Mermaid({ chart }: { chart: string }) {
   }, [chart]);
 
   if (svg) {
-    // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- mermaid
+    // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml -- mermaid
     return <div dangerouslySetInnerHTML={{ __html: svg }} />;
   }
 

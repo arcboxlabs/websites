@@ -1,5 +1,6 @@
 import { rehypeToc, remarkHeading, remarkImage, remarkMdxMermaid, remarkGfm } from 'fumadocs-core/mdx-plugins';
-import { applyMdxPreset, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config';
+import { applyMdxPreset, defineDocs } from 'fumadocs-mdx/config';
+import { pageSchema, metaSchema } from 'fumadocs-core/source/schema';
 import { remarkReadingTime } from './remark-reading-time';
 
 import { z } from 'zod';
@@ -7,7 +8,7 @@ import { z } from 'zod';
 export const blog = defineDocs({
   dir: 'content/blog',
   docs: {
-    schema: frontmatterSchema.extend({
+    schema: pageSchema.extend({
       published: z.boolean().optional().default(false),
       category: z.string().optional(),
       keywords: z.array(z.string()).optional(),
@@ -17,7 +18,7 @@ export const blog = defineDocs({
       hero: z.string().optional(),
       date: z.union([z.string(), z.date()]).transform((val) => {
         if (val instanceof Date) {
-          return val.toISOString().split('T')[0];
+          return val.toISOString().split('T', 1)[0];
         }
         return val;
       })
