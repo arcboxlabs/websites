@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://arcbox.dev';
 
-  const staticPages: MetadataRoute.Sitemap = ['/', '/blog', '/docs'].map((path) => ({
+  const staticPages: MetadataRoute.Sitemap = ['/', '/blog', '/docs', '/privacy', '/terms', '/cookies'].map((path) => ({
     url: base + path,
     changeFrequency: 'weekly',
     priority: path === '/' ? 1 : 0.8

@@ -104,7 +104,7 @@ export function Footer() {
             {' '}
             ArcBox Labs. All rights reserved.
           </p>
-          {/* <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
             <Link
               href="/privacy"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -117,7 +117,13 @@ export function Footer() {
             >
               Terms of Service
             </Link>
-          </div> */}
+            <Link
+              href="/cookies"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Cookie Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
