@@ -1,19 +1,34 @@
 import * as Sentry from '@sentry/nextjs';
 import { posthog } from 'posthog-js';
+import { getCachedCookielessRegion, isCookielessRegion } from '@/lib/analytics-region';
 
-if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+function initPostHog(cookieless: boolean) {
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
     capture_pageleave: true,
     capture_pageview: true,
     capture_performance: { web_vitals: true },
-    persistence: 'localStorage+cookie',
+    // Cookieless in regions where non-essential cookies would need consent
+    persistence: cookieless ? 'memory' : 'localStorage+cookie',
     loaded(ph) {
       if (process.env.NODE_ENV === 'production') {
         ph.debug(true);
       }
     }
   });
+}
+
+if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+  const cachedCookieless = getCachedCookielessRegion();
+  if (cachedCookieless === null) {
+    // Initialize once, after detection, so the whole session keeps a single
+    // distinct_id instead of splitting on a mid-session persistence switch.
+    isCookielessRegion()
+      .then(initPostHog)
+      .catch(() => initPostHog(true));
+  } else {
+    initPostHog(cachedCookieless);
+  }
 }
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

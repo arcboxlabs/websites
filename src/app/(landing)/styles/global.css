@@ -8,3 +8,23 @@
 html {
   scroll-padding-top: 5.625rem;
 }
+
+/* the site theme is dark; print as dark-on-white so legal/blog pages are readable on paper */
+@media print {
+  * {
+    background: transparent !important;
+    color: #111 !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  nav,
+  footer {
+    display: none !important;
+  }
+}
