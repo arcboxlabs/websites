@@ -51,12 +51,13 @@ export default function PrivacyPage() {
       </p>
 
       <p>
-        The website may use cookies, local storage, and similar technologies to remember
-        preferences, understand usage, measure performance, and improve the Service. If a PostHog
-        analytics key is configured, ArcBox may use PostHog to collect page views, page leave
-        events, web vitals, and similar product analytics — using local storage and cookies, or,
-        for visitors in the European Economic Area, the United Kingdom, and Switzerland, in
-        cookieless mode without persistent identifiers.
+        The Service may use cookies, local storage, and similar technologies to remember
+        preferences, understand usage, measure performance, and improve the Service. ArcBox uses
+        product analytics to collect page views, page leave events, web vitals, and similar usage
+        and interaction information — using local storage and cookies, or, for visitors in the
+        European Economic Area, the United Kingdom, and Switzerland, in cookieless mode without
+        persistent identifiers. Where you are signed in, analytics may be associated with your
+        account.
       </p>
 
       <h3>Error and crash diagnostics</h3>
@@ -69,7 +70,7 @@ export default function PrivacyPage() {
       <h3>ArcBox Desktop telemetry</h3>
       <p>
         ArcBox Desktop runs on your Mac without requiring an account. Official builds of ArcBox
-        Desktop include two kinds of telemetry:
+        Desktop include telemetry such as:
       </p>
       <ul>
         <li>
@@ -77,7 +78,7 @@ export default function PrivacyPage() {
           {' '}
           ArcBox Desktop uses PostHog to collect application lifecycle and feature usage events.
           Product analytics is enabled by default. You can turn it off at any time with the
-          "Share anonymous usage data" toggle in ArcBox Desktop settings.
+          usage data toggle in ArcBox Desktop settings.
         </li>
         <li>
           <strong>Crash and error reporting.</strong>
@@ -92,6 +93,16 @@ export default function PrivacyPage() {
         version, and diagnostic metadata. Telemetry is not intended to include the contents of
         your containers, images, volumes, or files. We apply filters intended to remove
         home-directory paths from crash reports before they are sent.
+      </p>
+
+      <h3>Content on the Cloud Services</h3>
+      <p>
+        Where ArcBox offers account-based cloud services, the content you run, store, or share on
+        them — such as code, images, volumes, and data inside your containers or sandboxes — is
+        processed on infrastructure we operate to provide those services. We access it only to
+        provide, secure, and support the services you request, to comply with law, or with your
+        permission, as described in Section 6, and, where sharing features are offered, people
+        you share content with can view it.
       </p>
 
       <h3>Network and infrastructure logs</h3>
@@ -121,7 +132,10 @@ export default function PrivacyPage() {
         <li>operate, maintain, secure, and improve the Service;</li>
         <li>provide documentation, downloads, support, updates, and related communications;</li>
         <li>respond to questions, feedback, bug reports, and support requests;</li>
-        <li>analyze site usage, performance, reliability, and feature quality;</li>
+        <li>
+          analyze usage, performance, reliability, and feature quality, and develop new features
+          and services;
+        </li>
         <li>detect, prevent, and respond to fraud, abuse, security incidents, and technical issues;</li>
         <li>comply with legal obligations and enforce our Terms of Service; and</li>
         <li>send administrative notices, including updates to this Privacy Policy.</li>
@@ -170,9 +184,9 @@ export default function PrivacyPage() {
           {' '}
           We may share information with vendors that help us host, secure, analyze, monitor, and
           support the Service, including PostHog, Inc. (product analytics), Functional Software,
-          Inc. d/b/a Sentry (error monitoring and crash reporting), and Cloudflare, Inc. (network
-          and content delivery). These vendors process information on our behalf and under our
-          instructions.
+          Inc. d/b/a Sentry (error monitoring and crash reporting), Cloudflare, Inc. (network and
+          content delivery), and AI model providers that power AI features we operate. These
+          vendors process information on our behalf and under our instructions.
         </li>
         <li>
           <strong>Legal and safety reasons.</strong>
