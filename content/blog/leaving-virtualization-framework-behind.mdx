@@ -46,7 +46,7 @@ The known cost was Rosetta. Apple's Linux Rosetta is exposed only through Virtua
 
 ## First boot in a week, then the bill came due
 
-The initial port went fast. Four issues opened on April 6, all Priority 1: the FFI crate, the boot path, the device integration, the backend selector. Seven days later they were all Done. Linux booted; our existing virtio backends talked to the guest over virtio-mmio; the runtime knew how to choose between HV and VZ per VM.
+The initial port went fast. We split the work into four pieces on April 6 — the FFI wrapper, the boot path, the device integration, and the backend selector — and seven days later all four were shipped. Linux booted; our existing virtio backends talked to the guest over virtio-mmio; the runtime knew how to choose between HV and VZ per VM.
 
 Two days into that sprint, we ran a three-way independent review against the branch: 70 files, roughly 14,000 lines of new code. Around thirty findings came back. Most fell into the same bucket: something Virtualization.framework had been quietly doing, and we hadn't noticed we needed to do it ourselves.
 
@@ -108,7 +108,7 @@ Single-flow, we're already past twice VZ's throughput, thanks to the part of the
 
 **The idle model still polls.** WFI parks the vCPU for 1 ms and re-enters, so an idle 4-vCPU VM does thousands of hypervisor round-trips per second doing nothing. The `<0.05%` idle-CPU target we set for ourselves is arithmetically incompatible with this. The fix is tickless idle, and we haven't finished it yet.
 
-**Virtualization.framework is still the default.** Users opt in with `abctl system backend hv`, and VZ remains the default while we close the last correctness gaps. The rest of the work is tracked in the [HV Backend project on Linear](https://linear.app/arcbox/project/hv-backend-35014c93f85e).
+**Virtualization.framework is still the default.** Users opt in with `abctl system backend hv`, and VZ remains the default while we close the last correctness gaps. The remaining work is happening in the open at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox).
 
 Rosetta didn't come with us, either. That's the next post.
 
