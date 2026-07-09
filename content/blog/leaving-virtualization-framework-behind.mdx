@@ -108,7 +108,7 @@ Single-flow, we're already past twice VZ's throughput, thanks to the part of the
 
 **The idle model still polls.** WFI parks the vCPU for 1 ms and re-enters, so an idle 4-vCPU VM does thousands of hypervisor round-trips per second doing nothing. The `<0.05%` idle-CPU target we set for ourselves is arithmetically incompatible with this. The fix is tickless idle, and we haven't finished it yet.
 
-**Virtualization.framework is still the default.** Users pick between backends with `ARCBOX_VM_BACKEND`, and VZ remains the default while we close the last correctness gaps. The rest of the work is tracked in the [HV Backend project on Linear](https://linear.app/arcbox/project/hv-backend-35014c93f85e).
+**Virtualization.framework is still the default.** Users opt in with `abctl system backend hv`, and VZ remains the default while we close the last correctness gaps. The rest of the work is tracked in the [HV Backend project on Linear](https://linear.app/arcbox/project/hv-backend-35014c93f85e).
 
 Rosetta didn't come with us, either. That's the next post.
 
@@ -117,7 +117,13 @@ Rosetta didn't come with us, either. That's the next post.
 Docker on Apple Silicon, on our VMM:
 
 ```bash
-ARCBOX_VM_BACKEND=hv arcbox start
+# One-time setup
+abctl daemon start
+abctl docker enable
+
+# Opt into the HV backend
+abctl system backend hv
+
 docker run alpine uname -a
 # aarch64
 ```
