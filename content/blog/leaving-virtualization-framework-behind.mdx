@@ -54,10 +54,6 @@ Two examples. **A u16 wrap in the RX ring**: `poll_net_rx` compared the avail an
 
 Neither is a "bad code" moment. They're the kind of bug the framework used to absorb before our code ever saw it. Most of the review's thirty findings closed within days; the deeper ones, like interrupt delivery, ring notification barriers, and idle scheduling, took months and are still going.
 
-## The platform doesn't always help
-
-Even without the framework, the platform can fight you. Our development machines are M5 Max on macOS 26, released a couple of months ago, and on that combination the Hypervisor.framework guest is advertised as having **phantom SVE2.1**: the CPU feature bits show it, but the very first SVE instruction the guest tries to execute traps with SIGILL. This is a macOS bug in the virtualization layer that only surfaces on hardware new enough that Apple's own layers haven't fully caught up. The workaround is `arm64.nosve` on the kernel command line, unconditionally on M5. Building on the newest Apple Silicon means occasionally patching around what Apple gets wrong on top of what Apple doesn't do for you.
-
 ## The vsock stall
 
 The rest of the work is easiest to explain through one bug. Once the VMM was booting and serving Docker, we started noticing that `docker` commands hung a second or two before doing anything. Every command.
