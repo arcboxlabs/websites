@@ -5,7 +5,6 @@ date: "2026-07-10"
 category: "Engineering"
 author: ["peron", "aprilnea"]
 published: true
-featured: false
 keywords: ["hypervisor framework", "virtualization framework", "apple silicon", "virtio", "custom vmm", "container runtime", "arm64", "macos"]
 ---
 
@@ -48,11 +47,11 @@ The known cost was Rosetta. Apple's Linux Rosetta is exposed only through Virtua
 
 The initial port went fast. We split the work into four pieces on April 6 — the FFI wrapper, the boot path, the device integration, and the backend selector — and seven days later all four were shipped. Linux booted; our existing virtio backends talked to the guest over virtio-mmio; the runtime knew how to choose between HV and VZ per VM.
 
-Two days into that sprint, we ran a three-way independent review against the branch: 70 files, roughly 14,000 lines of new code. Around thirty findings came back. Most fell into the same bucket: something Virtualization.framework had been quietly doing, and we hadn't noticed we needed to do it ourselves.
+Three days into that sprint, we ran a three-way independent review against the branch: 70 files, roughly 14,000 lines of new code. Around thirty findings came back. Most fell into the same bucket: something Virtualization.framework had been quietly doing, and we hadn't noticed we needed to do it ourselves.
 
 Two examples. **A u16 wrap in the RX ring**: `poll_net_rx` compared the avail and used indices with `>=` instead of `==`. VirtIO ring indices are 16-bit and wrap freely; the spec defines the ring as empty only when the two are strictly equal. After 65,535 injected frames, avail wrapped to zero, the loose comparison passed, the loop exited, and RX stalled permanently. **A use-after-free on shutdown**: we joined vCPU threads before dropping guest memory, but not the block-IO workers, which were still doing `pread`/`pwrite` into memory that had just been freed. Rust doesn't save you from that if the workers hold raw pointers, and ours did.
 
-Neither is a "bad code" moment. They're the kind of bug the framework used to absorb before our code ever saw it. Most of the review's thirty findings closed within days; the deeper ones, like interrupt delivery, ring notification barriers, and idle scheduling, took months and are still going.
+Neither is a "bad code" moment. They're the kind of bug the framework used to absorb before our code ever saw it. About half of the review's thirty findings closed within days; the deeper ones, like interrupt delivery, ring notification barriers, and idle scheduling, took months and are still going.
 
 ## The vsock stall
 
@@ -97,7 +96,7 @@ We compared virtio-net throughput against Virtualization.framework's VZNAT basel
 | --- | --- | --- |
 | virtio-net single-flow ↑ | ~10 Gbps | **22.7 Gbps** |
 | virtio-net multi-flow ↑ | ~10 Gbps | ~10 Gbps |
-| Docker CLI latency, cold ↓ | (opaque) | **5–11 ms** |
+| Docker CLI latency, after idle ↓ | (not measured) | **5–11 ms** |
 | VirtioFS cache policy | not exposed | **configurable end-to-end** |
 
 Single-flow, we're already past twice VZ's throughput, thanks to the part of the work we're proudest of: a zero-copy RX path that scatters host-side bytes directly into guest descriptors. Multi-flow, we're at parity but no better. The ceiling is the interrupt path, which still does more work per completion than it should.
@@ -124,7 +123,7 @@ abctl docker enable
 # Opt into the HV backend
 abctl system backend hv
 
-docker run alpine uname -a
+docker run alpine uname -m
 # aarch64
 ```
 
@@ -132,4 +131,4 @@ The runtime is open source at [github.com/arcboxlabs/arcbox](https://github.com/
 
 We left Virtualization.framework behind and got back everything we came for. The gaps that remain, we know how to close.
 
-[^bench]: Apple M5 Max (18 cores), 128 GB, macOS 26.4. Guest given 18 vCPUs / 16 GB, Linux kernel 6.12. Network numbers from `iperf3` inside a container against a host-side server, single TCP stream. Docker CLI numbers from `curl --unix-socket` against the daemon's Docker Engine API socket, against a warmed-up runtime. Requires macOS 15+ on the host; the HV backend uses `hv_gic_*` (GICv3), which is macOS Sequoia and up.
+[^bench]: Apple M5 Max (18 cores), 128 GB, macOS 26.4. Guest given 18 vCPUs / 16 GB, Linux kernel 6.12. Network numbers from `iperf3` inside a container against a host-side server, single TCP stream, host→guest direction. Docker CLI numbers from `curl --unix-socket` against the daemon's Docker Engine API socket, against a warmed-up runtime. Requires macOS 15+ on the host; the HV backend uses `hv_gic_*` (GICv3), which is macOS Sequoia and up.
