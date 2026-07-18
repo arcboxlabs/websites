@@ -7,7 +7,7 @@ import HeroPreview from './hero-preview';
 import { downloadLinks } from '@/constants/links';
 import BrewSnippetCopyButton from './brew-command';
 
-const BREW_COMMAND = 'brew install --cask arcboxlabs/tap/arcbox';
+const BREW_COMMAND = 'brew install --cask arcbox';
 
 export function Hero() {
   return (
