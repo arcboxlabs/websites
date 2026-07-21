@@ -55,7 +55,7 @@ description: Common questions about ArcBox Desktop.
     The ArcBox daemon is not running. Start it with `arcbox start` or launch ArcBox Desktop.
   </Accordion>
   <Accordion title="Containers can't access the internet" id="network">
-    Check if a VPN is active. Some VPNs interfere with container networking. Restart the runtime with `arcbox restart` after connecting to a VPN. See [Troubleshooting](./troubleshooting) for more.
+    Check host connectivity, then run `arcbox doctor`. ArcBox automatically handles the common `172.16.0.0/12` conflict used by Surge and other VPNs, but a VPN's packet filter can still block traffic independently of the routing table. See [VPN Compatibility](./vpn-compatibility) and [Troubleshooting](./troubleshooting).
   </Accordion>
   <Accordion title="The privileged helper won't install" id="helper">
     Open **System Settings → Privacy & Security → Login Items & Extensions** and enable the ArcBox helper. On managed devices, your IT administrator may need to approve it via MDM. See [Helper](./helper).

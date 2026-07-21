@@ -56,10 +56,4 @@ The default networks (`bridge`, `host`, `none`) cannot be removed.
 
 ## VPN Compatibility
 
-Some VPN clients modify the routing table in ways that break container networking. If containers lose internet access after connecting to a VPN, restart the runtime:
-
-```bash
-arcbox restart
-```
-
-Contact your VPN provider about split-tunnel configuration for long-term compatibility.
+ArcBox automatically adapts when Surge or another VPN owns the container network's preferred route. See [VPN Compatibility](./vpn-compatibility) for the routing behavior, Surge configuration, verification steps, and remaining overlap limitations.

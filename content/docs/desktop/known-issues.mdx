@@ -5,15 +5,6 @@ description: Current known issues and workarounds.
 
 ## Current Known Issues
 
-### VPN Compatibility
-
-Some VPN clients modify the system routing table in ways that break container networking. If containers lose internet access after connecting to a VPN:
-
-- Restart the ArcBox runtime after connecting: `arcbox restart`
-- Contact your VPN provider about split-tunnel configuration
-
-This is an active area of improvement.
-
 ### Large Compose Projects
 
 Compose projects with more than 50 services may show delayed UI updates during bulk start/stop operations. All containers will eventually reach the correct state — the display catches up within a few seconds.

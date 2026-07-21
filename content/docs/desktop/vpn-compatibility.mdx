@@ -1,0 +1,76 @@
+---
+title: VPN Compatibility
+description: How ArcBox coexists with Surge and VPN clients that route 172.16.0.0/12.
+---
+
+ArcBox automatically handles a common macOS route conflict where a VPN client installs an exact `172.16.0.0/12` route. ArcBox preserves the VPN route and keeps host-to-container traffic working without repeatedly taking ownership of the same route.
+
+<Callout type="info">
+  This compatibility applies to route ownership. ArcBox does not bypass VPN security policies, packet filters, or content filters.
+</Callout>
+
+## How Route Selection Works
+
+ArcBox reserves `172.16.0.0/12` for Docker container networks. When no other service owns that exact route, ArcBox installs the preferred route through its virtual bridge:
+
+```text
+172.16.0.0/12 -> ArcBox bridge
+```
+
+If Surge or another VPN owns the exact `/12`, ArcBox leaves it untouched and installs two more-specific routes instead:
+
+```text
+172.16.0.0/13 -> ArcBox bridge
+172.16.0.0/12 -> VPN gateway (preserved)
+172.24.0.0/13 -> ArcBox bridge
+```
+
+macOS selects the longest matching prefix, so container traffic uses the two ArcBox `/13` routes while the VPN keeps its `/12` route. ArcBox never deletes or rewrites the external route.
+
+## Stable Behavior During VPN Changes
+
+ArcBox watches the macOS routing table and reacts when a VPN connects, disconnects, or reloads its configuration. No manual restart is normally required.
+
+After ArcBox switches to the two `/13` routes, it keeps that layout until the ArcBox runtime stops. This avoids an ownership loop where ArcBox and the VPN repeatedly replace each other's `/12` route.
+
+If the VPN disconnects, the split routes remain valid for the current runtime session. Restarting ArcBox while the `/12` is free returns to the preferred single-route layout.
+
+## Surge
+
+If your Surge profile already excludes private networks, you can keep a configuration such as:
+
+```ini
+tun-excluded-routes = 192.168.0.0/16, 172.16.0.0/12
+```
+
+`tun-excluded-routes` controls which destinations Surge excludes from TUN handling. It does not reserve `172.16.0.0/12` for the physical gateway. ArcBox can still install the more-specific `/13` routes for its container networks.
+
+You do not need to delete Surge routes, add a static route to your physical gateway, or run a script when Surge reconnects.
+
+## Check Compatibility
+
+Run the built-in diagnostics after connecting the VPN:
+
+```bash
+arcbox doctor
+```
+
+The container route check passes when either:
+
+- the exact `172.16.0.0/12` route points to the ArcBox bridge, or
+- both `172.16.0.0/13` and `172.24.0.0/13` point to the ArcBox bridge.
+
+You can then verify direct connectivity with a running container:
+
+```bash
+container_ip="$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' my-container)"
+ping -c 3 "$container_ip"
+```
+
+## Remaining Conflicts
+
+ArcBox does not overwrite an external route for either fallback `/13`. If `arcbox doctor` reports a route conflict, check whether the VPN or another network service owns `172.16.0.0/13` or `172.24.0.0/13` and include the diagnostic output when reporting the issue.
+
+The ArcBox container range also cannot overlap a real private network that you need to reach. If your LAN or remote network hosts services inside `172.16.0.0/12`, traffic to those addresses conflicts with ArcBox container addressing.
+
+If the route check passes but traffic is still blocked, the VPN may be filtering packets independently of the routing table. Check the VPN's local-network and packet-filter settings or contact the VPN provider.

@@ -54,10 +54,10 @@ description: Solutions for common issues with ArcBox Desktop.
         Check host network connectivity first
       </Step>
       <Step>
-        Check if a VPN is active — some VPNs interfere with container networking
+        If a VPN is active, run `arcbox doctor` and review [VPN Compatibility](./vpn-compatibility). ArcBox normally adapts to route changes without a restart.
       </Step>
       <Step>
-        Restart the ArcBox runtime: `arcbox restart`
+        If you changed the VPN configuration, restart the ArcBox runtime to re-evaluate the preferred route: `arcbox restart`
       </Step>
     </Steps>
   </Accordion>
