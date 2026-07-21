@@ -1,7 +1,5 @@
-import type { ReactNode } from 'react';
-
 interface LegalPageProps {
-  children: ReactNode,
+  children: React.ReactNode,
   description: string,
   title: string,
   updated: string
