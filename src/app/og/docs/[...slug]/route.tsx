@@ -5,10 +5,13 @@ import { OGImage } from '@/app/og/components/og-template';
 import { loadOGFonts } from '@/app/og/fonts';
 
 export const dynamic = 'force-static';
+
+const rExtname = /\.[^.]+$/;
+
 export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...slug]'>) {
   const { slug } = await params;
   // slug is e.g. ['intro', 'installation.png'] — strip the extension from the last segment
-  const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(/\.[^.]+$/, '')];
+  const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(rExtname, '')];
   const page = source.getPage(pageSlugs);
   if (!page) notFound();
 

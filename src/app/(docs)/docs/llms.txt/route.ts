@@ -5,7 +5,9 @@ export const dynamic = 'force-static';
 
 export function GET() {
   const lines: string[] = ['# Documentation', ''];
-  for (const page of source.getPages()) {
+  const pages = source.getPages();
+  for (let i = 0, len = pages.length; i < len; i++) {
+    const page = pages[i];
     lines.push(`- [${page.data.title}](${page.url}): ${page.data.description}`);
   }
   return new Response(fastStringArrayJoin(lines, '\n'));

@@ -1,4 +1,5 @@
 const GEO_CACHE_KEY = 'arcbox_geo';
+const rCloudflareCountry = /^loc=([A-Z]+)$/m;
 
 // EEA + UK + Switzerland, where ePrivacy rules require consent before
 // non-essential cookies — analytics runs cookieless there instead.
@@ -53,7 +54,7 @@ async function detectRegion(): Promise<boolean> {
   try {
     // First-party Cloudflare endpoint, available on every proxied zone
     const response = await fetch('/cdn-cgi/trace');
-    const country = /^loc=([A-Z]+)$/m.exec(await response.text())?.[1];
+    const country = rCloudflareCountry.exec(await response.text())?.[1];
     if (country) {
       const cookieless = COOKIELESS_REGIONS.has(country);
       // Cache only outside consent regions: visitors there receive analytics

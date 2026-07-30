@@ -1,4 +1,5 @@
 import ArcBoxDesktopLogo from '@/components/arcbox-desktop-logo';
+import { withoutProtocol } from 'ufo';
 
 interface OGImageProps {
   title: string,
@@ -58,6 +59,13 @@ function generateArcDots(): Array<{ x: number, y: number, op: number }> {
   return dots;
 }
 
+function getTitleSize(titleLength: number): number {
+  if (titleLength > 50) return 48;
+  if (titleLength > 38) return 56;
+  if (titleLength > 26) return 64;
+  return 72;
+}
+
 const DOTS = generateArcDots();
 
 export function OGImage({
@@ -67,16 +75,9 @@ export function OGImage({
   siteName = 'ArcBox',
   section
 }: OGImageProps) {
-  const titleSize =
-    title.length > 50
-      ? 48
-      : title.length > 38
-        ? 56
-        : title.length > 26
-          ? 64
-          : 72;
+  const titleSize = getTitleSize(title.length);
 
-  const displayUrl = url ? url.replace(/^https?:\/\//, '').toUpperCase() : undefined;
+  const displayUrl = url ? withoutProtocol(url).toUpperCase() : undefined;
   const sectionLabel = section ? SECTION_LABELS[section] : undefined;
 
   return (

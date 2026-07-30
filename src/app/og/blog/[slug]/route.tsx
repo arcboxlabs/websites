@@ -6,10 +6,12 @@ import { loadOGFonts } from '@/app/og/fonts';
 
 export const revalidate = false;
 
+const rExtname = /\.[^.]+$/;
+
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // slug is e.g. 'my-post.png' — strip the extension to look up the post
-  const post = BlogSource.getPost(slug.replace(/\.[^.]+$/, ''));
+  const post = BlogSource.getPost(slug.replace(rExtname, ''));
   if (!post) notFound();
 
   const fonts = await loadOGFonts();
