@@ -30,7 +30,6 @@ const CONSENT_TIMEZONES_OUTSIDE_EUROPE = new Set([
 /** Synchronous fast path from the per-session geo cache; null when undetected. */
 export function getCachedCookielessRegion(): boolean | null {
   try {
-    // eslint-disable-next-line sukka/react-prefer-foxact-persistent -- This bootstrap runs before React, so hook-based storage APIs are unavailable.
     const cached = sessionStorage.getItem(GEO_CACHE_KEY);
     return cached === null ? null : COOKIELESS_REGIONS.has(cached);
   } catch {
@@ -62,7 +61,6 @@ async function detectRegion(): Promise<boolean> {
       // kind — ePrivacy applies to sessionStorage just as it does to cookies.
       if (!cookieless) {
         try {
-          // eslint-disable-next-line sukka/react-prefer-foxact-persistent -- This bootstrap runs before React, so hook-based storage APIs are unavailable.
           sessionStorage.setItem(GEO_CACHE_KEY, country);
         } catch {
           // storage unavailable — detection still succeeded
@@ -77,7 +75,7 @@ async function detectRegion(): Promise<boolean> {
   // Deliberately over-inclusive: an EU visitor mistaken for non-EU is a
   // compliance problem, the reverse only costs cross-session analytics.
   try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     return timeZone.startsWith('Europe/') || CONSENT_TIMEZONES_OUTSIDE_EUROPE.has(timeZone);
   } catch {
     return true;

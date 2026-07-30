@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useEffect } from 'foxact/use-abortable-effect';
 
 export default function HeaderScrollContainer({ children }: React.PropsWithChildren) {
   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
+  useEffect((signal) => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { signal });
   }, []);
 
   return (
