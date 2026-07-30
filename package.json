@@ -33,7 +33,7 @@
     "lucide-react": "^0.577.0",
     "mdast-util-to-string": "^4.0.0",
     "minireset.css": "^0.0.7",
-    "next": "16.2.1-canary.6",
+    "next": "16.2.12",
     "posthog-js": "^1.408.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
