@@ -13,6 +13,7 @@
       "@public/*": ["./public/*"],
       "fumadocs-mdx-collections/*": ["./.source/*"]
     },
+    "types": ["node"],
     "resolveJsonModule": true,
     "allowJs": true,
     "noEmit": true,
