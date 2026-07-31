@@ -1,39 +1,50 @@
 ---
 title: Efficiency
-description: How ArcBox minimizes CPU, memory, and battery usage.
+description: How ArcBox uses CPU, memory, and battery — and what it does not reclaim.
+icon: BatteryCharging
 ---
 
 ## Design Philosophy
 
-ArcBox treats efficiency as a structural property, not a tuning knob. Low resource usage comes from architecture decisions, not from asking users to configure limits.
+ArcBox treats efficiency as a structural property rather than a tuning knob. The levers are architectural: a minimal guest, a userspace networking datapath with no kernel extension, and no polling loops in the idle path.
 
-## Idle Behavior
+## Memory
 
-When no containers are running, ArcBox consumes minimal resources:
+<Callout type="warn">
+  **Memory the guest has touched is not returned to macOS while the VM runs.** ArcBox has a balloon device, but neither macOS hypervisor backend reclaims through it today — Virtualization.framework releases nothing host-side on inflation, and the Hypervisor.framework path only hints deactivation, which Darwin treats as advisory. Expect the daemon's host footprint to sit near the VM's configured memory once workloads have used it.
+</Callout>
 
-| Resource | Idle Usage |
-|----------|------------|
-| CPU | ~0% |
-| Memory | \<150 MB |
-| Disk I/O | None |
-| Network | None |
+What that means in practice:
 
-The VM pauses when idle and resumes instantly when you start a container. There is no background polling, indexing, or sync when nothing is running.
+- The only real memory levers are the VM's configured size and macOS's own memory compressor.
+- Stopping a container frees memory **inside** the guest, where the next container can use it. It does not hand memory back to macOS.
+- Stopping the runtime is what returns memory to the host.
 
-## Dynamic Scaling
+The same applies to [machines](./machine-resources): allocation is an upper bound, but once a guest touches memory, the host keeps it reserved until that guest stops.
 
-Resources scale with actual demand:
+## CPU
 
-- **CPU** — virtual cores are shared with the host. Containers get CPU time when they need it and yield it when idle.
-- **Memory** — the VM uses only the memory containers actively require. Freed memory is returned to the host.
-- **Disk** — the virtual disk grows on demand and does not pre-allocate space.
+vCPUs are shared with the host rather than pinned. Containers get CPU time when they need it and yield it when idle — there is no background polling, indexing, or file-watching loop running when nothing is.
 
-## Battery Impact
+## Disk
 
-ArcBox is designed for laptop use. When idle, it has near-zero battery impact. Active workloads use CPU efficiently through Apple Silicon's native performance cores.
+The Docker data image grows on demand instead of pre-allocating. Free blocks are not returned automatically; reclaim them explicitly:
 
-## Compared to Docker Desktop
+```bash
+abctl disk usage
+abctl disk compact
+```
 
-Docker Desktop runs a full Linux VM that consumes memory even when idle, polls for file changes continuously, and keeps background services running. ArcBox avoids all of these patterns.
+## Battery
 
-See [Benchmarks](./benchmarks) for specific numbers.
+**Settings → System → Pause containers while Mac is sleeping** is on by default and is the setting that matters most for battery life. Turn it off only if you need containers to keep running while the lid is closed.
+
+## Measuring
+
+```bash
+abctl top
+```
+
+Or the **Activity** pane under **System** in the sidebar, which shows live CPU, memory, and network for the System VM and every running container.
+
+Results depend heavily on hardware, macOS version, and which [hypervisor backend](./settings#compatibility) you are on, so measure on the machine you care about rather than assuming a number carries across.

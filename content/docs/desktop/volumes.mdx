@@ -1,17 +1,16 @@
 ---
 title: Volumes
-description: Create and manage persistent volumes for container data.
+description: Create and browse persistent volumes for container data.
+icon: HardDrive
 ---
 
 ## Volume List
 
-Click **Volumes** in the sidebar to see all Docker volumes on your system.
-
-Each entry shows the volume name, driver, mount count, and creation date.
+**Volumes** under **Docker** in the sidebar lists every Docker volume with its driver and creation time. `⌘F` filters; the sort menu reorders.
 
 ## Create a Volume
 
-Click **New Volume**. Give it a name. The default `local` driver is used unless you specify otherwise.
+`⌘N` opens the new-volume sheet. Name it; the `local` driver is used unless you say otherwise.
 
 Or from the CLI:
 
@@ -19,24 +18,52 @@ Or from the CLI:
 docker volume create my-data
 ```
 
-## Browse Contents
+## Detail Tabs
 
-Click a volume to browse its contents in a file viewer. This shows the files stored in the volume without needing to attach it to a running container.
+<Tabs items={['Info', 'Files']}>
+  <Tab>
+    Driver, mount point, labels, and creation time.
+  </Tab>
+  <Tab>
+    Browse the volume's contents — even when no container has it mounted. The volume's guest mount point is resolved through the read-only `~/ArcBox` export, so files open in their default app and **Reveal in Finder** works. See [File Access](./file-access).
+  </Tab>
+</Tabs>
 
 ## Remove
 
-Select a volume and click **Delete**. Volumes in use by a container cannot be removed.
+Delete a volume from its row. Volumes in use by a container cannot be removed.
 
-To clean up unused volumes:
+To clean up everything unused:
 
 ```bash
 docker volume prune
 ```
 
+<Callout type="error">
+  Removing a volume deletes its data. There is no undo.
+</Callout>
+
 ## Bind Mounts vs Volumes
 
-**Bind mounts** map a directory on your Mac into a container. They are good for source code and config files where you want changes to sync both ways.
+**Bind mounts** map a directory on your Mac into a container. Because ArcBox shares `/Users` into the guest at the same path, the path you write is the path the container gets — no translation:
 
-**Volumes** are managed by the container runtime. They are better for persistent data like databases that do not need to be accessed directly from the host.
+```bash
+docker run -v /Users/you/project:/app my-image
+```
 
-ArcBox optimizes both paths for near-native filesystem performance.
+Use them for source code and config you want to edit on macOS.
+
+**Volumes** are managed by the runtime and live on the guest's own filesystem, which means no cross-boundary metadata traffic. Use them for databases and other write-heavy state.
+
+<Callout type="info">
+  As of 1.31, metadata-heavy work over bind mounts — `node_modules` scans, file watchers, stat storms — is 20–60% faster than in earlier releases. Volumes still win for databases.
+</Callout>
+
+## Reclaiming Space
+
+Volume data lives on the shared Docker data image. To see and reclaim what it occupies on your Mac:
+
+```bash
+abctl disk usage
+abctl disk compact
+```

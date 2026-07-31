@@ -1,85 +1,92 @@
 ---
 title: Linux Machines
-description: Create and manage lightweight Linux virtual machines.
+description: Create and manage full Linux virtual machines.
+icon: Server
 ---
 
 ## What Are Machines?
 
-Machines are full Linux virtual machines running on Apple's Virtualization.framework. They provide a complete Linux environment with its own kernel, filesystem, and network stack.
+Machines are complete Linux VMs, each with its own kernel, persistent disk, and distribution. They are separate from the System VM that runs your containers.
 
-Use machines when you need:
+Use a machine when you need:
 
-- A persistent Linux environment for development
-- Software that requires a full kernel (e.g., custom kernel modules, systemd services)
-- An isolated environment separate from the container runtime
+- A persistent Linux environment you can install into and keep
+- Software that needs a full kernel — custom modules, systemd units, nested virtualization experiments
+- An environment isolated from the container runtime
 
 ## Machine List
 
-Click **Machines** in the sidebar. Each machine shows its name, status, distribution, and allocated resources.
+**Machines** under **Linux** in the sidebar shows each machine with its state, distribution, and allocated resources.
 
 ## Create a Machine
 
 <Tabs items={['Desktop', 'CLI']}>
   <Tab>
-    Click **New Machine** and configure:
-
-    - **Name** — identifier for the machine
-    - **Distribution** — choose from [available distributions](./distributions)
-    - **CPU** — number of virtual cores (default: 2)
-    - **Memory** — RAM allocation (default: 2 GB)
-    - **Disk** — virtual disk size (default: 20 GB)
+    Click the new-machine button and configure the name, distribution, CPU, memory, disk size, and any directory mounts.
   </Tab>
   <Tab>
     ```bash
-    arcbox machine create --name dev --distro ubuntu:24.04 --cpus 4 --memory 4g --disk 40g
+    abctl machine create dev --distro ubuntu --cpus 4 --memory 4096 --disk 50
     ```
+
+    `--memory` is in MB and `--disk` is in GB. Omitting `--cpus` lets the daemon use the host core count.
   </Tab>
 </Tabs>
 
-The machine boots in seconds using ArcBox's optimized kernel and initramfs.
+See [Distributions](./distributions) for what you can install and [Resources](./machine-resources) for the defaults.
 
 ## Lifecycle
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Stopped
+    [*] --> Stopped: Create
     Stopped --> Starting: Start
-    Starting --> Running: Boot complete
+    Starting --> Running: Agent ready
     Running --> Stopping: Stop
     Stopping --> Stopped: Shutdown complete
-    Running --> Running: Restart
     Stopped --> [*]: Remove
 ```
 
-**Start / Stop / Restart** — use the controls next to each machine.
+Start, stop, and remove from the machine row, or from the CLI:
+
+```bash
+abctl machine start dev
+abctl machine stop dev          # --force to kill it
+abctl machine remove dev
+```
 
 <Callout type="error">
-  **Remove** deletes the machine and its virtual disk. This is irreversible.
+  **Remove** deletes the machine and its disk. This is irreversible.
 </Callout>
 
-## Terminal Access
+## Detail Tabs
 
-Click a running machine to open a terminal session. This gives you a root shell inside the VM.
+Select a machine to open its detail view:
 
-For SSH access, see [SSH](./ssh).
+| Tab | What it shows |
+|-----|---------------|
+| **Info** | Distribution, state, resources, mounts, and network address |
+| **Logs** | Boot and agent output |
+| **Terminal** | An interactive shell inside the machine |
+| **Files** | The guest filesystem, browsable and downloadable |
 
 ## Next Steps
 
 <Cards>
   <Card title="Commands" href="./machine-commands">
-    Common commands for working inside machines.
+    Driving machines from `abctl`.
   </Card>
   <Card title="Networking" href="./machine-networking">
-    Network configuration and connectivity.
+    Addresses, DNS, and reaching services.
   </Card>
   <Card title="File Sharing" href="./file-sharing">
-    Share files between your Mac and machines.
+    Sharing directories between your Mac and a machine.
   </Card>
   <Card title="SSH" href="./ssh">
-    Connect via SSH from your terminal.
+    Connecting from your terminal.
   </Card>
   <Card title="Resources" href="./machine-resources">
-    Configure CPU, memory, and disk.
+    CPU, memory, and disk.
   </Card>
   <Card title="Distributions" href="./distributions">
     Available Linux distributions.

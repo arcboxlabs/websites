@@ -1,12 +1,13 @@
 ---
 title: Installation
 description: Install ArcBox Desktop on macOS.
+icon: Download
 ---
 
 ## System Requirements
 
 <Callout type="info">
-  ArcBox Desktop requires **macOS 15 (Sequoia)** or later on **Apple Silicon** (M1 or later) with at least 4 GB of available memory.
+  ArcBox Desktop requires **macOS 15 (Sequoia)** or later on **Apple Silicon**. Intel support is in progress.
 </Callout>
 
 ## Install
@@ -18,9 +19,11 @@ description: Install ArcBox Desktop on macOS.
     ```
   </Tab>
   <Tab>
-    Download the latest `.dmg` from [arcbox.dev/download](https://arcbox.dev/download). Open the disk image and drag ArcBox to your Applications folder.
+    Download the latest `.dmg` from [the releases page](https://github.com/arcboxlabs/arcbox-desktop/releases/latest). Open the disk image and drag ArcBox to your Applications folder.
   </Tab>
 </Tabs>
+
+The app bundle contains the `arcbox-daemon` runtime, the `abctl` CLI, the guest kernel and rootfs, and the Docker CLI tools. There is nothing else to install.
 
 ## First Launch
 
@@ -28,63 +31,67 @@ description: Install ArcBox Desktop on macOS.
   <Step>
     ### Authorize the Privileged Helper
 
-    ArcBox requests permission to install a privileged helper. This helper manages the Docker socket symlink, CLI tools, and DNS configuration. It runs with minimal privileges and only performs validated operations. See [Helper](./helper) for details.
+    macOS asks for an administrator password so ArcBox can install a small root helper. It manages the `/var/run/docker.sock` symlink, the `/usr/local/bin` CLI symlinks, and the `/etc/resolver/arcbox.local` DNS file — nothing else. See [Helper](./helper).
   </Step>
   <Step>
-    ### Initialize the Runtime
+    ### Boot the System VM
 
-    ArcBox creates a lightweight VM on demand. This takes a few seconds the first time and is near-instant afterward.
+    The daemon seeds the boot assets from the app bundle and boots the Linux guest. The first boot takes a few seconds; later ones are much faster.
+
+    The window shows startup progress while this happens.
   </Step>
   <Step>
-    ### Install CLI Tools (Optional)
+    ### Set Up the Command Line
 
-    ArcBox can install the `arcbox` and `docker` CLI commands to `/usr/local/bin`. You can skip this and do it later from Settings.
+    **Settings → System → Switch Docker & Kubernetes context automatically** is on by default, so `docker` targets ArcBox as soon as the daemon is up.
+
+    To get `abctl` on your `PATH` with completions, run:
+
+    ```bash
+    abctl setup install
+    ```
   </Step>
 </Steps>
 
 ## Verify
 
-Open ArcBox Desktop. If you see the container list (even if empty), the runtime is ready.
+Open ArcBox Desktop. If the sidebar loads and **Containers** shows a list (even an empty one), the runtime is ready.
 
 From the terminal:
 
 ```bash
-arcbox status
+abctl doctor
 ```
 
-You should see the daemon status and VM state.
+`doctor` checks the daemon socket, the System VM, the Docker API proxy, the DNS resolver, the network bridge, the container route, and the privileged helper.
 
 ## Uninstall
 
-<Steps>
-  <Step>
-    ### Quit ArcBox Desktop
-  </Step>
-  <Step>
-    ### Remove the App
+For a complete removal — including the root helper and the system files it manages — run:
 
-    Drag ArcBox from Applications to Trash.
-  </Step>
-  <Step>
-    ### Remove the Helper
+```bash
+abctl _uninstall
+```
 
-    ```bash
-    sudo /Library/PrivilegedHelperTools/dev.arcbox.helper uninstall
-    ```
-  </Step>
-  <Step>
-    ### Remove Data
+It prompts first, then stops and deregisters the daemon LaunchAgent, removes the helper binary, plist, and socket, removes `/etc/resolver/arcbox.local`, `/var/run/docker.sock`, and the `/usr/local/bin` symlinks, drops the `arcbox` Docker context, deletes `~/.arcbox`, and removes `/Applications/ArcBox.app`.
 
-    ```bash
-    rm -rf ~/Library/Application\ Support/ArcBox
-    ```
-  </Step>
-</Steps>
+Pass `--keep-data` to preserve `~/.arcbox/data` (images, volumes, machines), or `--yes` to skip the prompt.
+
+<Callout type="warn">
+  Without `--keep-data`, this removes every container, image, volume, machine, and sandbox. There is no undo.
+</Callout>
+
+<Callout type="info">
+  `brew uninstall --cask arcbox` quits the app and unloads the daemon, but it does **not** remove the privileged helper, `/etc/resolver/arcbox.local`, `/var/run/docker.sock`, or the `/usr/local/bin` symlinks — those need root. Run `abctl _uninstall` first if you want a clean system. Adding `--zap` additionally trashes `~/.arcbox` along with the app's preferences and caches.
+</Callout>
 
 ## Next Steps
 
 <Cards>
   <Card title="Quick Start" href="./quickstart">
     Run your first container in under five minutes.
+  </Card>
+  <Card title="Command Line" href="./cli">
+    The `docker` and `abctl` CLIs.
   </Card>
 </Cards>

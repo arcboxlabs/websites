@@ -1,44 +1,64 @@
 ---
 title: Kubernetes
-description: View and manage local Kubernetes pods and services.
+description: Run and inspect a local k3s cluster managed by ArcBox.
+icon: Ship
 ---
 
 ## Overview
 
-ArcBox Desktop provides a read-and-manage view of Kubernetes resources running in your local cluster.
+ArcBox runs a real Kubernetes cluster — [k3s](https://k3s.io), managed by the daemon inside the System VM. It is not a viewer bolted onto whatever cluster your kubeconfig happens to point at.
 
-This is not a full Kubernetes dashboard. It covers the resources developers interact with most: pods and services.
+The Desktop app covers the resources developers touch most: **Pods** and **Services**.
+
+## Starting the Cluster
+
+<Tabs items={['Desktop', 'CLI']}>
+  <Tab>
+    Open **Pods** or **Services** under **Kubernetes** in the sidebar. If the cluster is off, the pane shows **Kubernetes Disabled** with a **Turn On** button.
+  </Tab>
+  <Tab>
+    ```bash
+    abctl k8s start
+    abctl k8s status
+    ```
+  </Tab>
+</Tabs>
+
+## Connecting `kubectl`
+
+```bash
+abctl k8s enable
+```
+
+This installs `kubectl`, merges the ArcBox-managed kubeconfig into `~/.kube/config`, and switches your current context to the ArcBox cluster. `abctl k8s disable` restores the context you had before.
+
+To handle the kubeconfig yourself instead:
+
+```bash
+abctl k8s kubeconfig > arcbox.yaml
+KUBECONFIG=arcbox.yaml kubectl get nodes
+```
+
+<Callout type="info">
+  **Settings → System → Switch Docker & Kubernetes context automatically** keeps the context pointed at ArcBox while the app runs.
+</Callout>
 
 ## Pods
 
-The **Kubernetes** section in the sidebar shows pods grouped by namespace.
+The pods list groups by namespace and shows each pod's status, container readiness, and age.
 
-Each pod entry shows:
-
-- Pod name and namespace
-- Status (Running, Pending, Failed, etc.)
-- Container count and readiness
-- Age
-
-Click a pod to see its containers. Each container supports logs and terminal access, the same as Docker containers.
+Select a pod to see its containers. Logs and terminal access work exactly as they do for Docker containers.
 
 ## Services
 
-The services view shows:
+The services list shows type (ClusterIP, NodePort, LoadBalancer), ports, selectors, and the pods each service resolves to.
 
-- Service name and type (ClusterIP, NodePort, LoadBalancer)
-- Ports and target ports
-- Selector labels
-- Connected pods
-
-## Cluster Connection
-
-ArcBox uses your existing kubeconfig (`~/.kube/config`) to connect to the cluster. It respects the current context.
-
-To switch contexts, use the CLI:
+## Lifecycle
 
 ```bash
-kubectl config use-context <context-name>
+abctl k8s stop      # stop the cluster, keep its state
+abctl k8s restart
+abctl k8s delete    # discard cluster state entirely
 ```
 
-ArcBox Desktop picks up context changes automatically.
+`delete` removes the cluster's data. Workloads have to be reapplied afterwards.

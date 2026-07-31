@@ -1,32 +1,51 @@
 ---
 title: Resource Allocation
 description: Configure CPU, memory, and disk for machines.
+icon: Cpu
 ---
 
 ## Defaults
 
-New machines are created with:
+| Resource | Default | Flag |
+|----------|---------|------|
+| CPU | Host core count | `--cpus` |
+| Memory | 4096 MB | `--memory` (MB) |
+| Disk | 50 GB | `--disk` (GB) |
 
-| Resource | Default | Range |
-|----------|---------|-------|
-| CPU | 2 cores | 1–all available |
-| Memory | 2 GB | 512 MB–host limit |
-| Disk | 20 GB | 5 GB–256 GB |
+```bash
+abctl machine create dev --cpus 4 --memory 8192 --disk 100
+```
 
-These defaults work well for most development tasks. Adjust only when your workload needs it.
+Omitting `--cpus` lets the daemon pick the host core count.
 
 ## Changing Resources
 
-Select a machine and open its settings panel. CPU and memory can be adjusted while the machine is stopped. Changes take effect on next start.
+Resources are set when the machine is created. Changing CPU or memory afterwards means recreating the machine — the disk is separate from the machine record, so plan the disk size up front.
 
-Disk size can be increased but not reduced. The filesystem inside the VM expands automatically.
+## Sharing With the Host
 
-## Resource Sharing
+Machines, containers, and your Mac share the same physical CPU and memory. Allocation is an upper bound, not a reservation: a machine given 8 GB does not take 8 GB from the host until the guest actually uses it.
 
-Machines and containers share the host's physical resources. ArcBox does not reserve resources — allocation is an upper limit, not a guarantee.
-
-An idle machine with 4 GB allocated consumes only the memory it actively uses, not the full 4 GB.
+<Callout type="warn">
+  Memory the guest has touched is not returned to macOS while the machine runs. Stopping the machine is what frees it. Size machines for what they need rather than for headroom.
+</Callout>
 
 ## Monitoring
 
-The machine detail view shows live CPU and memory usage. This helps you right-size your allocation based on actual demand.
+The machine's **Info** tab shows its configuration, and **Activity** under **System** shows live CPU, memory, and network for the System VM and running containers.
+
+From the terminal:
+
+```bash
+abctl top          # live view
+abctl top --once   # one sample and exit
+```
+
+## Disk Space
+
+Container and image data lives on the shared Docker data image, not in a machine. Check and reclaim it with:
+
+```bash
+abctl disk usage
+abctl disk compact
+```

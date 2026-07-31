@@ -1,43 +1,59 @@
 ---
-title: SSH
-description: Connect to machines via SSH from your terminal.
+title: Shell Access
+description: Get an interactive shell inside a Linux machine.
+icon: SquareChevronRight
 ---
 
-## Built-in SSH
-
-ArcBox configures SSH access for every machine automatically. No manual key setup is needed.
+## `abctl machine ssh`
 
 ```bash
-arcbox ssh <machine-name>
+abctl machine ssh dev
 ```
 
-This opens an SSH session using ArcBox's built-in key management. Keys are generated per-machine and stored locally.
+This opens an interactive login shell inside the machine. Despite the name, it is not the SSH protocol — the CLI opens a PTY session over the daemon's gRPC channel, puts your terminal in raw mode, and forwards window resizes. There are no keys to manage and no port to expose.
 
-## Using Standard SSH
-
-You can also connect with the standard `ssh` command. ArcBox registers machines in your SSH config:
+Pass a command to run it and exit instead of attaching:
 
 ```bash
-ssh <machine-name>.arcbox
+abctl machine ssh dev uptime
 ```
 
-The hostname `<machine-name>.arcbox` resolves to the machine's internal IP address via ArcBox's DNS resolver.
-
-## Port Forwarding
-
-SSH port forwarding works as expected:
+For scripting, `abctl machine exec` is the non-interactive equivalent:
 
 ```bash
-ssh -L 3000:localhost:3000 <machine-name>.arcbox
+abctl machine exec dev -- cat /etc/os-release
 ```
 
-This forwards port 3000 from the machine to your Mac.
+## From the Desktop App
 
-## File Transfer
+Select a machine and open its **Terminal** tab. It is the same session, in a window.
 
-Use `scp` or `rsync` to move files between your Mac and a machine:
+## Using a Real SSH Server
+
+<Callout type="warn">
+  Machines do not run an SSH server by default, and ArcBox does not provision keys or write entries into your `~/.ssh/config`. `ssh`, `scp`, and `rsync` against a machine only work once you set one up yourself.
+</Callout>
+
+If you need SSH — for an editor's remote-development mode, for example — install and configure it inside the machine:
 
 ```bash
-scp ./file.txt <machine-name>.arcbox:/home/user/
-rsync -av ./project/ <machine-name>.arcbox:/home/user/project/
+abctl machine ssh dev
+sudo apt update && sudo apt install -y openssh-server
+sudo systemctl enable --now ssh
+mkdir -p ~/.ssh && printf '%s\n' 'ssh-ed25519 AAAA...' >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 ```
+
+The machine's hostname resolves from your Mac, so you can then connect normally:
+
+```bash
+ssh user@dev.arcbox.local
+scp ./file.txt user@dev.arcbox.local:~/
+```
+
+## Moving Files Without SSH
+
+For everyday file movement, prefer the paths that already exist:
+
+- Your home directory is shared into every machine — see [File Sharing](./file-sharing).
+- The **Files** tab in the Desktop app browses the guest filesystem and downloads from it.

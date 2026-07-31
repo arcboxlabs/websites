@@ -1,48 +1,61 @@
 ---
 title: Architecture
 description: How ArcBox Desktop works under the hood.
+icon: Blocks
 ---
 
 ## Overview
 
-ArcBox Desktop is a native macOS application that provides a GUI for the ArcBox runtime. It does not run containers itself — it communicates with the ArcBox daemon, which manages the actual workloads.
+ArcBox Desktop is a client. It does not run containers itself — it talks to `arcbox-daemon`, which owns the virtual machines, networking, and storage.
 
 ```mermaid
 graph TD
-    subgraph "Your Mac"
+    subgraph "macOS Host"
         A["ArcBox Desktop<br/>(SwiftUI)"]
-        B["arcbox daemon<br/>(Rust)"]
-        C["Privileged Helper"]
+        B["arcbox-daemon<br/>(Rust)"]
+        C["arcbox-helper<br/>(root, launchd)"]
     end
-    subgraph "Lightweight VM"
-        D["Container Runtime"]
-        E["Guest Kernel"]
-        F["VirtIO Devices"]
+    subgraph "System VM (Linux)"
+        D["arcbox-agent"]
+        E["dockerd · containerd · k3s"]
+        F["Sandbox microVMs"]
     end
 
-    A -- "gRPC over<br/>Unix Socket" --> B
-    A -- "XPC" --> C
-    B -- "Virtualization.framework" --> E
-    E --> D
-    E --> F
+    A -- "gRPC over Unix socket" --> B
+    A -- "Docker Engine API" --> B
+    B -- "tarpc over /var/run/arcbox-helper.sock" --> C
+    B -- "Hypervisor.framework or Virtualization.framework" --> D
+    D --> E
+    D --> F
 ```
 
 ## Components
 
 <Cards>
   <Card title="Desktop App">
-    A SwiftUI application using the `@Observable` pattern for state management. Communicates with the daemon over gRPC (via `grpc-swift`) and renders the UI. Has no privileged access — all privileged operations go through the helper.
+    A SwiftUI application using the `@Observable` pattern — no Combine, no third-party UI frameworks. It reaches the daemon over gRPC for machines, sandboxes, Kubernetes, stats, and system state, and over the Docker Engine API for Docker resources. It holds no privileges of its own.
   </Card>
   <Card title="Daemon">
-    A Rust process (`arcboxd`) that manages the container runtime, virtual machines, networking, and filesystem. Exposes a gRPC API over a Unix socket. Creates and manages a lightweight Linux VM using Apple's Virtualization.framework.
+    `arcbox-daemon`, a Rust process shipped inside the app bundle. Startup is a phased pipeline that ends at a `READY` state the app subscribes to, so the window can show real progress instead of a spinner. It serves `~/.arcbox/run/arcbox.sock` (gRPC) and `~/.arcbox/run/docker.sock` (Docker API).
   </Card>
   <Card title="Privileged Helper">
-    A minimal daemon installed via `SMAppService` that handles three operations: Docker socket symlink, CLI installation, and DNS resolver configuration. See [Helper](./helper).
+    `arcbox-helper`, a small root service started by launchd on socket activation. It performs a fixed set of validated host mutations and nothing else. See [Helper](./helper).
   </Card>
-  <Card title="Lightweight VM">
-    A Linux VM running a custom-built kernel optimized for container workloads. Boots in milliseconds. VirtIO devices provide high-performance bridging for storage, networking, and IPC.
+  <Card title="System VM">
+    One long-lived Linux VM running a custom kernel and an EROFS root filesystem. `arcbox-agent` inside it speaks protobuf over vsock and supervises `dockerd`, `containerd`, and the k3s cluster. Sandboxes are separate Firecracker microVMs the agent launches inside it.
   </Card>
 </Cards>
+
+## Hypervisor Backends
+
+The System VM can run on either of two backends, switchable in [Settings → System](./settings) or with `abctl system backend`:
+
+| Backend | What it is | amd64 translation |
+|---------|-----------|-------------------|
+| **VZ** (default) | Apple's Virtualization.framework | Rosetta |
+| **HV** | ArcBox's own VMM on Hypervisor.framework, with a device model and VirtIO stack maintained in-repo | [FEX](https://github.com/FEX-Emu/FEX) |
+
+Switching restarts the System VM and stops running containers. Images, volumes, and machine data are preserved.
 
 ## Communication
 
@@ -50,61 +63,71 @@ graph TD
 sequenceDiagram
     participant UI as Desktop (SwiftUI)
     participant D as Daemon (Rust)
-    participant VM as VM (Linux)
+    participant G as Guest agent
 
-    UI->>D: gRPC: ListContainers
-    D->>VM: ttrpc: enumerate
-    VM-->>D: container list
-    D-->>UI: ContainerList response
+    UI->>D: gRPC: WatchSetupStatus
+    D-->>UI: startup phase stream
+
+    UI->>D: Docker Engine API: GET /containers/json
+    D->>G: proxied to guest dockerd
+    G-->>D: container list
+    D-->>UI: JSON response
 
     Note over UI,D: Real-time events
-    D->>UI: gRPC stream: DockerEvent
-    UI->>UI: Update UI
+    D-->>UI: Docker / machine / sandbox event streams
 ```
 
 | Path | Protocol | Why |
 |------|----------|-----|
 | Desktop ↔ Daemon | gRPC over Unix socket | Type safety, streaming, code generation |
-| Daemon ↔ VM | ttrpc over vsock | Minimal overhead, no TCP stack required |
-
-## Data Flow
-
-All container data (images, volumes, logs) lives inside the VM's virtual disk. The daemon acts as a proxy, translating Docker API calls into operations inside the VM.
+| Desktop ↔ Daemon | Docker Engine API over Unix socket | Reuses the same API the `docker` CLI speaks |
+| Daemon ↔ Guest agent | protobuf over vsock | Minimal overhead, no TCP stack required |
+| Daemon ↔ Helper | tarpc over a launchd socket | Peer code-signature verification on every connection |
 
 <Callout type="info">
-  The Desktop app caches display state in memory but is not the source of truth. If the app restarts, it re-fetches everything from the daemon.
+  The Desktop app caches display state in memory but is never the source of truth. On restart it re-fetches everything from the daemon.
 </Callout>
+
+## Networking and Storage
+
+The macOS networking datapath runs in userspace: DHCP, DNS forwarding, TCP via `smoltcp`, and host socket proxying, with no `pf` NAT and no `utun` device. Published container ports are forwarded by binding a host listener per rule, so no privileged helper is involved.
+
+Docker data lives on a Btrfs image (`~/.arcbox/data/docker.img`) paired with a small ext4 metadata image. Your home directory is shared into the guest over VirtioFS at the same path, so `/Users/you` inside the guest is `/Users/you` on the host.
 
 ## File Locations
 
 <Files>
-  <Folder name="~" defaultOpen>
-    <Folder name="Library" defaultOpen>
-      <Folder name="Application Support" defaultOpen>
-        <Folder name="ArcBox" defaultOpen>
-          <File name="config.json" />
-          <File name="vm.disk" />
-          <File name="daemon.sock" />
-        </Folder>
-      </Folder>
-      <Folder name="Logs">
-        <Folder name="ArcBox">
-          <File name="arcbox.log" />
-        </Folder>
-      </Folder>
+  <Folder name="~/.arcbox" defaultOpen>
+    <Folder name="run" defaultOpen>
+      <File name="docker.sock" />
+      <File name="arcbox.sock" />
+      <File name="daemon.pid" />
     </Folder>
+    <Folder name="log">
+      <File name="daemon.log" />
+      <File name="agent.log" />
+      <File name="dockerd.log" />
+      <File name="containerd.log" />
+    </Folder>
+    <Folder name="data">
+      <File name="docker.img" />
+      <File name="docker-meta.img" />
+      <Folder name="machines" />
+      <Folder name="volumes" />
+    </Folder>
+    <Folder name="boot" />
+    <Folder name="runtime" />
+    <Folder name="bin" />
   </Folder>
-  <Folder name="/Library" defaultOpen>
-    <Folder name="PrivilegedHelperTools">
-      <File name="dev.arcbox.helper" />
-    </Folder>
-    <Folder name="LaunchDaemons">
-      <File name="dev.arcbox.helper.plist" />
-    </Folder>
+  <Folder name="/usr/local/libexec">
+    <File name="arcbox-helper" />
   </Folder>
-  <Folder name="/etc">
-    <Folder name="resolver">
-      <File name="arcbox" />
-    </Folder>
+  <Folder name="/Library/LaunchDaemons">
+    <File name="com.arcboxlabs.desktop.helper.plist" />
+  </Folder>
+  <Folder name="/etc/resolver">
+    <File name="arcbox.local" />
   </Folder>
 </Files>
+
+Point the daemon and CLI elsewhere with `--data-dir`.

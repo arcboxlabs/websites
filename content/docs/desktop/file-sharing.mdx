@@ -1,41 +1,45 @@
 ---
 title: File Sharing
 description: Share files between your Mac and Linux machines.
+icon: Share2
 ---
 
-## Built-in File Sharing
+## `/Users` Is Shared at the Same Path
 
-ArcBox mounts your home directory into each machine automatically:
+ArcBox shares your Mac's `/Users` into every machine — and into the System VM that runs containers — over VirtioFS, mounted at the **same** path:
 
 ```
-/Users/<username>  →  /mnt/mac/<username>
+/Users/<you>  →  /Users/<you>
 ```
 
-Files sync in both directions with near-native performance. Changes made on your Mac appear inside the machine immediately, and vice versa.
+Nothing is rewritten, so macOS paths work verbatim inside the guest. That is what makes bind mounts work without translation:
+
+```bash
+docker run -v /Users/you/project:/app my-image
+```
+
+Changes are visible in both directions immediately.
 
 ## Custom Mounts
 
-Add additional mount points when creating a machine:
+Machines can take additional shares at creation time:
 
 ```bash
-arcbox machine create --name dev --mount /path/on/mac:/path/in/machine
+abctl machine create dev --mount /path/on/mac:/path/in/machine
 ```
 
-Or configure mounts in the machine settings panel in Desktop.
+Repeat `--mount` for more than one. Each becomes its own VirtioFS share.
 
-## SCP and rsync
+<Callout type="info">
+  Mounts are fixed at creation. To change them, recreate the machine.
+</Callout>
 
-For machines without shared mounts, use standard file transfer tools:
+## From the Desktop App
 
-```bash
-scp ./file.txt dev.arcbox:/home/user/
-rsync -av ./project/ dev.arcbox:/home/user/project/
-```
-
-See [SSH](./ssh) for connection details.
+The **Files** tab on a machine browses the guest filesystem directly, with download support — useful for pulling a build artifact out without leaving the app.
 
 ## Performance
 
-Shared mounts use VirtIO filesystem passthrough for minimal overhead. Sequential read/write performance is >90% of native.
+Shares use VirtioFS, so there is no network filesystem in the path. Sequential throughput is close to native.
 
-For workloads that are sensitive to filesystem latency (e.g., `git status` on very large repositories), consider working directly inside the machine filesystem rather than through a shared mount.
+Latency-bound workloads are the exception. Something like `git status` over a very large repository does many small metadata operations, and each one crosses the guest boundary. For those, work on a path that lives inside the machine's own disk rather than on the share.

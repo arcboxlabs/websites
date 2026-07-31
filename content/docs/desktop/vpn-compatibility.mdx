@@ -1,6 +1,7 @@
 ---
 title: VPN Compatibility
 description: How ArcBox coexists with Surge and VPN clients that route 172.16.0.0/12.
+icon: Route
 ---
 
 ArcBox automatically handles a common macOS route conflict where a VPN client installs an exact `172.16.0.0/12` route. ArcBox preserves the VPN route and keeps host-to-container traffic working without repeatedly taking ownership of the same route.
@@ -52,7 +53,7 @@ You do not need to delete Surge routes, add a static route to your physical gate
 Run the built-in diagnostics after connecting the VPN:
 
 ```bash
-arcbox doctor
+abctl doctor
 ```
 
 The container route check passes when either:
@@ -69,7 +70,7 @@ ping -c 3 "$container_ip"
 
 ## Remaining Conflicts
 
-ArcBox does not overwrite an external route for either fallback `/13`. If `arcbox doctor` reports a route conflict, check whether the VPN or another network service owns `172.16.0.0/13` or `172.24.0.0/13` and include the diagnostic output when reporting the issue.
+ArcBox does not overwrite an external route for either fallback `/13`. If `abctl doctor` reports a route conflict, check whether the VPN or another network service owns `172.16.0.0/13` or `172.24.0.0/13` and include the diagnostic output when reporting the issue.
 
 The ArcBox container range also cannot overlap a real private network that you need to reach. If your LAN or remote network hosts services inside `172.16.0.0/12`, traffic to those addresses conflicts with ArcBox container addressing.
 

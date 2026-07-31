@@ -1,28 +1,57 @@
 ---
 title: Sandbox Templates
-description: Pre-built sandbox configurations for common development workflows.
+description: Build sandbox root filesystems from templates, Docker images, or Dockerfiles.
+icon: FileCode
 ---
+
+## What a Template Is
+
+A template is a Dockerfile shipped inside the `abctl` binary, so a sandbox image for a known workload can be built without you writing or hosting anything. Templates go through the same build path as `--from-dockerfile` — they are an input to it, not a separate mechanism.
 
 ## Built-in Templates
 
-ArcBox ships with templates for common development stacks:
+```bash
+abctl sandbox templates
+```
 
-| Template | Description | Included Tools |
-|----------|-------------|----------------|
-| **Ubuntu** | General-purpose Linux environment | build-essential, curl, git, vim |
-| **Node.js** | JavaScript/TypeScript development | Node.js LTS, npm, yarn |
-| **Python** | Python development | Python 3, pip, venv |
-| **Go** | Go development | Go toolchain, gopls |
-| **Rust** | Rust development | rustc, cargo, rustfmt, clippy |
+| Template | Description |
+|----------|-------------|
+| `claude` | Claude Code on Node.js 22 with `git`, `ripgrep`, and `less`, running as a non-root user |
 
-Templates are optimized for fast startup. Base layers are cached locally after first use.
+Use one directly:
 
-## Using a Template
+```bash
+abctl sandbox create --id t1 --from-template claude --memory 2048
+```
 
-Select a template when creating a new sandbox. ArcBox configures the environment, installs tools, and drops you into a ready-to-use shell.
+`abctl claude` uses this template for you — see [Sandboxes](./sandbox#coding-agents).
 
-You can customize the environment after creation — install additional packages, change settings, add files. Changes persist within the sandbox until it is destroyed.
+## Customizing a Template
 
-## Custom Templates
+Print a template's Dockerfile, edit it, and build your version:
 
-Custom template support is planned. In the meantime, you can create a sandbox from any Docker image by selecting **Custom Image** during creation.
+```bash
+abctl sandbox templates --show claude > Dockerfile
+# edit Dockerfile
+abctl sandbox create --id mine --from-dockerfile ./Dockerfile --memory 2048
+```
+
+## Building From a Docker Image
+
+Any image you already have works as a rootfs source:
+
+```bash
+abctl sandbox create --id build --from-image node:22 --cpus 2 --memory 2048
+```
+
+<Callout type="warn">
+  Only the image's **filesystem** becomes the sandbox rootfs. `ENV`, `USER`, `WORKDIR`, and `ENTRYPOINT` are not carried over, so supply them when you exec — with `--user`, absolute paths, or an explicit `PATH`.
+</Callout>
+
+## Caching
+
+Converted rootfs images are cached and keyed on the source layer content, so rebuilding an unchanged image reuses the conversion. Editing the Dockerfile changes the key and triggers a fresh build.
+
+## The Templates Pane
+
+The **Templates** item under **Sandbox** in the sidebar is a placeholder in the current release — manage templates from `abctl` for now. See [Known Issues](./known-issues).

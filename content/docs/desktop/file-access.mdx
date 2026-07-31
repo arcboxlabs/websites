@@ -1,35 +1,63 @@
 ---
 title: File Access
-description: Browse and manage files inside containers, images, and volumes.
+description: Browse files inside containers, images, volumes, and machines from Finder and the Desktop app.
+icon: FolderOpen
 ---
+
+## The `~/ArcBox` Volume
+
+The daemon exports the guest's Docker data root read-only over NFSv4 and mounts it on your Mac at `~/ArcBox`. The containerd data root — where the image store keeps every snapshot — rides along as a child export at `~/ArcBox/containerd`.
+
+That makes container, image, and volume filesystems ordinary files as far as macOS is concerned. Finder, `grep`, your editor, and Quick Look all work on them without a copy step.
+
+```
+guest /var/lib/docker/<rest>      →  ~/ArcBox/<rest>
+guest /var/lib/containerd/<rest>  →  ~/ArcBox/containerd/<rest>
+```
+
+<Callout type="warn">
+  The export is **read-only**. To put files into a container, use `docker cp` or a bind mount.
+</Callout>
 
 ## Container Files
 
-Select a container and open the **Files** tab to explore its filesystem.
+Select a container and open the **Files** tab.
 
-The browser shows a tree view of the container's root filesystem. Navigate directories by clicking. File metadata (size, permissions, modification time) is displayed for each entry.
+The browser shows one merged filesystem: the container's writable layer unioned over the image layers beneath it, so you see what the process sees rather than a pile of separate layers. Whiteouts — the markers a layer uses to delete a file from the layer below — are honored, so a deleted file does not reappear.
+
+A badge above the tree reports how many layers were merged. If a layer cannot be served through the export, the badge says so and names the count instead of quietly presenting a partial tree as complete.
 
 ### Operations
 
-- **View** — click a file to preview its contents. Text files render inline. Binary files show metadata only.
-- **Download** — right-click a file and select **Download** to copy it to your Mac.
-- **Upload** — drag a file from Finder into the browser to copy it into the container.
+- **Open** — double-click a file to open it in its default macOS app.
+- **Reveal in Finder** — jump to the file's real location under `~/ArcBox`.
+- **Copy Path** — copy the host path, ready to paste into a terminal.
 
 ### CLI Equivalent
 
 ```bash
-docker cp <container>:/path/to/file ./local-path
-docker cp ./local-file <container>:/path/to/destination
+docker cp <container>:/path/to/file ./local-path     # out
+docker cp ./local-file <container>:/path/to/dest     # in
 ```
 
 ## Volume Files
 
-Click a volume in the Volumes view to browse its contents. This works even when no container has the volume mounted.
+Select a volume and open its **Files** tab. The volume's mount point is a guest path, resolved through the same export — so you can browse a volume's contents even when nothing has it mounted.
 
 ## Image Files
 
-Click an image to inspect its layers. Each layer shows the files added, modified, or removed by that layer.
+Select an image and open its **Files** tab to browse its layers, resolved by the daemon under the containerd image store.
+
+## Machine Files
+
+Machines have their own **Files** tab, browsing the guest filesystem directly. See [Machines](./machines).
+
+## Hiding the Volume
+
+`~/ArcBox` appears in Finder like any other mount. **Settings → Storage → Hide ArcBox volume from Finder & Desktop** is the intended control for that, though it is not active yet — see [Known Issues](./known-issues).
 
 ## Performance
 
-The file browser fetches directory listings on demand. Large directories load progressively. For bulk file operations or recursive copies, the CLI is faster.
+Directory listings are fetched on demand and large directories load progressively. Because the path is NFS, latency-bound work — recursive greps over a huge tree, for example — is slower than it would be natively. For bulk copies, `docker cp` from the CLI is faster.
+
+If the export is not mounted, the Files tab says so and offers a refresh; the usual cause is that the daemon is not running.
