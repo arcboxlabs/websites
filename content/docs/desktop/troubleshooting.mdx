@@ -144,7 +144,9 @@ abctl doctor
 
     <Steps>
       <Step>
-        Quit ArcBox Desktop and relaunch it. The daemon keeps running, so containers are unaffected.
+        Quit ArcBox Desktop and relaunch it.
+
+        Note what quitting does by default: it stops the daemon and everything it runs, and restores your previous Docker context. Keeping the daemon alive across a quit needs both **Keep running when app is quit** and **Show in menu bar** enabled — and even then, choosing Quit explicitly still shuts it down.
       </Step>
       <Step>
         **Settings → General → Troubleshooting → Export Diagnostic Report…** collects logs and system state for an issue report.

@@ -14,7 +14,11 @@ Open settings with `⌘,` or from the app menu. There are four panes: **General*
 |---------|---------|--------------|
 | **Start at login** | Off | Registers ArcBox as a macOS login item |
 | **Show in menu bar** | Off | Adds a menu bar item with container controls and live metrics |
-| **Keep running when app is quit** | Off | Leaves the daemon and your workloads running after you close the window |
+| **Keep running when app is quit** | Off | Leaves the daemon and your workloads running after you close the window. Requires **Show in menu bar** as well — closing the window then hides the app instead of terminating it |
+
+<Callout type="warn">
+  With the defaults, quitting ArcBox Desktop stops the daemon and everything it runs, and restores your previous Docker context. Choosing **Quit** from the menu bar item shuts the daemon down even when both settings above are enabled — use the window close button to keep it alive.
+</Callout>
 
 ### Updates
 
