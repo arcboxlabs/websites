@@ -5,69 +5,84 @@ description: How the ArcBox privileged helper works and why it needs elevated pe
 
 ## What It Does
 
-The ArcBox helper is a small privileged daemon that performs three operations:
+`arcbox-helper` is a small root service that performs the host mutations the unprivileged daemon cannot:
 
 <Steps>
   <Step>
     ### Docker Socket Symlink
 
-    Creates `/var/run/docker.sock` pointing to the ArcBox socket, so Docker CLI tools and third-party integrations find it at the standard location.
+    Points `/var/run/docker.sock` at `~/.arcbox/run/docker.sock`, so Docker CLI tools and third-party integrations find the engine at the standard path.
   </Step>
   <Step>
-    ### CLI Tool Installation
+    ### CLI Symlinks
 
-    Installs symlinks in `/usr/local/bin` for `docker` and `arcbox` commands.
+    Creates `/usr/local/bin` entries for `docker`, `docker-buildx`, `docker-compose`, `docker-credential-osxkeychain`, and `abctl`, pointing into the app bundle.
   </Step>
   <Step>
-    ### DNS Resolver Configuration
+    ### DNS Resolver
 
-    Writes a resolver file to `/etc/resolver/arcbox` so that `.arcbox` hostnames resolve to container and machine IPs.
+    Writes `/etc/resolver/arcbox.local` so `*.arcbox.local` hostnames resolve to container and machine addresses. See [Domains](./domains).
+  </Step>
+  <Step>
+    ### Hosts Alias and Route Setup
+
+    Manages a single marked `/etc/hosts` line and the container-subnet route. See [VPN Compatibility](./vpn-compatibility) for the routing behavior.
   </Step>
 </Steps>
 
-That's it. The helper does not run containers, access your files, or phone home.
+The helper does not run containers, read your files, or reach the network.
 
 ## Security Design
 
 ```mermaid
 graph LR
-    A["ArcBox Desktop"] -- "XPC" --> B["Privileged Helper"]
-    B -- "Symlink only" --> C["/var/run/docker.sock"]
-    B -- "Symlink only" --> D["/usr/local/bin/docker"]
-    B -- "Write" --> E["/etc/resolver/arcbox"]
+    A["ArcBox Desktop / daemon / abctl"] -- "tarpc over<br/>/var/run/arcbox-helper.sock" --> B["arcbox-helper (root)"]
+    B -- "symlink" --> C["/var/run/docker.sock"]
+    B -- "symlink" --> D["/usr/local/bin/*"]
+    B -- "write" --> E["/etc/resolver/arcbox.local"]
 ```
-
-The helper follows a strict security model:
 
 | Principle | Detail |
 |-----------|--------|
-| **Minimum privilege** | Only performs the three operations listed above. All other runtime work is done by the unprivileged daemon. |
-| **Path validation** | All paths are validated against a whitelist using regex. The helper refuses to write to unexpected locations. |
-| **Symlink-only writes** | The helper creates symlinks, not files. It never writes executable code to disk. |
-| **Code signing** | Validates that the calling application is signed with the correct team identifier before accepting XPC connections. |
-| **Idempotent operations** | Running the same operation twice produces the same result. No state accumulates. |
+| **Peer code-signature verification** | Every accepted connection is checked with `SecCodeCheckValidity` against a signing identifier and team OU, preferring the audit token so the check binds to the live connecting process. Rejected peers are dropped before any request is dispatched. |
+| **Bundle allow-list** | Only `com.arcboxlabs.desktop` and its `.daemon` / `.cli` / `.dev` variants may connect. |
+| **Path validation** | Symlink targets must be regular files under an app bundle's `Contents/MacOS/xbin/` inside `/Applications` or `/Users`. Relative paths and `..` are rejected. |
+| **Ownership markers** | The helper only replaces or deletes entries it owns. Resolver and hosts entries carry a `# managed by arcbox-helper` marker, and it refuses to overwrite foreign resolvers or real sockets. |
+| **Symlink-only writes** | It creates symlinks and marked text files. It never writes executable code to disk. |
+| **Idempotent operations** | Running the same operation twice produces the same result. |
+
+<Callout type="info">
+  The helper socket is world-connectable so a non-root daemon can reach a root launchd service without setuid tricks. Authorization is the signature check, not the filesystem mode.
+</Callout>
+
+## Versioning
+
+The helper carries its own version, independent of the app and the runtime, and is only replaced when the on-disk root binary genuinely must change — a wire break, a security fix, or a capability the daemon hard-requires. Ordinary app updates do not bump it, so they do not re-prompt for an administrator password.
 
 ## Installation
 
-The helper is installed via `SMAppService` on first launch. macOS prompts you to authorize it.
+The installers run `abctl _install`, which places the binary and registers the launchd service. macOS prompts for an administrator password.
 
 <Files>
-  <Folder name="/Library" defaultOpen>
-    <Folder name="PrivilegedHelperTools" defaultOpen>
-      <File name="dev.arcbox.helper" />
-    </Folder>
-    <Folder name="LaunchDaemons" defaultOpen>
-      <File name="dev.arcbox.helper.plist" />
-    </Folder>
+  <Folder name="/usr/local/libexec" defaultOpen>
+    <File name="arcbox-helper" />
+  </Folder>
+  <Folder name="/Library/LaunchDaemons" defaultOpen>
+    <File name="com.arcboxlabs.desktop.helper.plist" />
+  </Folder>
+  <Folder name="/var/run" defaultOpen>
+    <File name="arcbox-helper.sock" />
   </Folder>
 </Files>
 
-## Uninstall
+Check that it is reachable and at a compatible version:
 
 ```bash
-sudo /Library/PrivilegedHelperTools/dev.arcbox.helper uninstall
+abctl doctor
 ```
 
-<Callout type="warn">
-  This removes the helper binary, launchd plist, and all symlinks it created. ArcBox Desktop will continue to work but without system-level integration (no `/var/run/docker.sock`, no CLI in PATH, no `.arcbox` DNS).
-</Callout>
+## Uninstall
+
+The helper is removed as part of a full uninstall — see [Installation](./install#uninstall). Removing it leaves ArcBox Desktop working, but without `/var/run/docker.sock`, the `/usr/local/bin` CLI symlinks, or `.arcbox.local` DNS.
+
+Its log lives at `/var/log/arcbox/helper.log`; read it with `sudo abctl logs -c helper`.

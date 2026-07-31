@@ -1,60 +1,84 @@
 ---
 title: Settings
-description: Configure ArcBox Desktop behavior, Docker socket, CLI tools, DNS, and proxy.
+description: Configure ArcBox Desktop — startup, updates, privacy, terminal, backend, and storage.
 ---
 
-## Accessing Settings
-
-Click the gear icon in the bottom-left of the sidebar, or use `⌘,`.
+Open settings with `⌘,` or from the app menu. There are four panes: **General**, **Account**, **System**, and **Storage**.
 
 ## General
 
-**Launch at login** — start ArcBox automatically when you log in to your Mac.
+### Startup
 
-**Check for updates** — enable automatic update checks. See [Updates](./updates) for details.
+| Setting | Default | What it does |
+|---------|---------|--------------|
+| **Start at login** | Off | Registers ArcBox as a macOS login item |
+| **Show in menu bar** | Off | Adds a menu bar item with container controls and live metrics |
+| **Keep running when app is quit** | Off | Leaves the daemon and your workloads running after you close the window |
 
-## Docker
+### Updates
 
-<Accordions type="single">
-  <Accordion title="Docker Socket" id="socket">
-    ArcBox creates a Docker socket at `/var/run/docker.sock` by default. This requires the privileged helper.
+Automatic update checks and automatic download-and-install, plus a **Stable** / **Beta** channel picker. New installs default to installing updates automatically. See [Updates](./updates).
 
-    If you prefer a user-level socket, switch to `~/.arcbox/docker.sock` and set `DOCKER_HOST` accordingly:
-
-    ```bash
-    export DOCKER_HOST=unix://$HOME/.arcbox/docker.sock
-    ```
-  </Accordion>
-  <Accordion title="CLI Tools" id="cli">
-    Install or remove the `docker` and `arcbox` CLI commands in `/usr/local/bin`. These are symlinks to the tools bundled with ArcBox.
-  </Accordion>
-  <Accordion title="Compose" id="compose">
-    ArcBox bundles `docker compose` (v2). No separate installation is needed.
-  </Accordion>
-</Accordions>
-
-## Network
-
-**DNS resolver** — ArcBox installs a local DNS resolver for `.arcbox` domain resolution. This enables hostname-based access to containers and machines. The resolver is managed by the [privileged helper](./helper).
-
-**Proxy** — configure HTTP/HTTPS proxy for container image pulls and outbound traffic:
-
-```
-HTTP Proxy:   http://proxy.example.com:8080
-HTTPS Proxy:  http://proxy.example.com:8080
-No Proxy:     localhost,127.0.0.1,.example.com
-```
-
-Proxy settings are passed to the container runtime.
-
-## Resources
-
-**Default VM resources** — configure the default CPU, memory, and disk allocation for new machines. These defaults apply when creating a machine without explicit resource settings.
-
-## Advanced
+### Privacy
 
 <Callout type="warn">
-  **Reset** resets ArcBox to factory defaults. This stops all containers and machines, removes the runtime VM, and clears configuration. Your images and volumes are preserved.
+  **Share anonymous usage data** is **on** by default. It sends feature-usage statistics — no account, no container data, no filesystem content. Turn it off here. See [Security](./security#telemetry).
 </Callout>
 
-**Experimental features** — enable features that are still in development. These may change or be removed in future releases.
+### Terminal
+
+- **Terminal theme** — System, Light, or Dark for the built-in terminal.
+- **External terminal app** — which app opens when you choose to open a terminal in a new window. ArcBox lists the terminals it finds, and **Choose…** picks any app bundle.
+
+### Troubleshooting
+
+**Export Diagnostic Report…** collects logs and system state into a file you can attach to an issue.
+
+## Account
+
+Sign in to an ArcBox account to use ArcBox Platform features. Signing in opens your browser.
+
+<Callout type="info">
+  An account is optional. Everything local — containers, Kubernetes, machines, sandboxes — works signed out. Signing out does not touch your local containers or settings.
+</Callout>
+
+## System
+
+### Environment
+
+**Switch Docker & Kubernetes context automatically** (on by default) points the `docker` and `kubectl` contexts at ArcBox while it runs, and restores the previous ones when you turn it off.
+
+### Compatibility
+
+**Virtual machine backend** chooses the hypervisor for the System VM:
+
+| Backend | amd64 translation |
+|---------|-------------------|
+| Virtualization.framework (default) | Rosetta |
+| Hypervisor.framework | [FEX](https://github.com/FEX-Emu/FEX) |
+
+<Callout type="error">
+  Switching backends restarts the System VM and **stops all running containers**. Images and container data are preserved. [Sandboxes](./sandbox) require the Virtualization.framework backend.
+</Callout>
+
+The same switch is available as `abctl system backend hv|vz`.
+
+**Pause containers while Mac is sleeping** (on by default) improves battery life. Turn it off only if you need background services to keep running with the lid closed.
+
+## Storage
+
+### Data
+
+Your data lives under `~/.arcbox`. **Include data in Time Machine backups** is off by default — ArcBox adds a `tmutil` exclusion, since VM disk images churn constantly and back up poorly.
+
+### Danger Zone
+
+<Callout type="error">
+  **Reset Docker Data** stops all containers and prunes every container, image, volume, and network. **Reset All Data** does the same and is the broader reset. Neither can be undone.
+</Callout>
+
+Machine and sandbox data is not covered by these buttons — remove those individually, or uninstall. See [Installation](./install#uninstall).
+
+## Not Yet Available
+
+Storage location, "Hide ArcBox volume from Finder & Desktop", "Reset Kubernetes Cluster", and VM CPU/memory limits appear in the UI but are inactive pending daemon support. See [Known Issues](./known-issues).

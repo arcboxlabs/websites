@@ -1,37 +1,54 @@
 ---
 title: What's New
-description: Release notes and changelog for ArcBox Desktop.
+description: Recent ArcBox Desktop releases.
 ---
 
-## 1.0.0
+The complete changelog lives in [the repository](https://github.com/arcboxlabs/arcbox-desktop/blob/master/CHANGELOG.md), and every release is published to [GitHub Releases](https://github.com/arcboxlabs/arcbox-desktop/releases). This page summarizes the ones worth knowing about.
 
-_2026-02-28_
+## 1.31
 
-The first stable release of ArcBox Desktop.
+_2026-07-31_
 
-### Highlights
+**File access on mounted folders is much faster.** Metadata-heavy work on `-v` bind mounts — stat storms over source trees, `node_modules` scans, file watchers — is roughly 20–60% faster (stat-class operations +64%, lookups +44%, create/delete +22%). The guest kernel now briefly polls for fast filesystem replies instead of paying a cross-CPU wakeup per operation. Bulk read/write throughput is unchanged.
 
-- **Full Docker compatibility** — Docker CLI, Compose v2, BuildKit, and the complete container lifecycle
-- **Native SwiftUI interface** — container list, logs, terminal, inspect, stats, images, volumes, networks
-- **Real-time event sync** — CLI and GUI stay in sync via Docker event streaming with sub-second latency
-- **Linux machines** — create and manage lightweight VMs with SSH access
-- **Sandboxes** — disposable development environments from built-in templates
-- **Kubernetes** — view pods and services from your local cluster
-- **`.arcbox` DNS** — automatic hostname resolution for containers and machines
-- **Privileged helper** — Docker socket symlink, CLI install, and DNS resolver via SMAppService
-- **Auto-updates** — Sparkle-based updates with stable and beta channels
+**Container Files shows one merged filesystem.** The [Files tab](./file-access) unions image and container layers into a single browsable tree, with honest handling of whiteouts and layers it cannot read.
 
-### Performance
+## 1.30.1
 
-- Container cold start: ~300ms (4x faster than Docker Desktop)
-- Container warm start: ~90ms (5.5x faster)
-- Idle memory: \<150 MB
-- File I/O: >90% of native speed
+_2026-07-31_
 
-### Known Issues
+**Fixes a severe idle CPU bug.** An idle VM could enter a perpetual memory-reclaim cycle every ~8.5 minutes, burning up to 14 CPU cores for about 100 seconds per cycle — fans spinning and battery draining while doing nothing.
 
-See [Known Issues](./known-issues) for current limitations.
+The cause: the idle memory balloon asked the guest to release memory that macOS never actually reclaims on either virtualization backend, so all of that work was pure cost. The balloon no longer inflates on macOS. No action needed — the fix applies on the next VM start. See [Efficiency](./efficiency) for what this means for memory.
 
----
+## 1.30.0
 
-Release notes for future versions will be added here as they ship.
+_2026-07-25_
+
+**`docker build` is roughly an order of magnitude faster.** A simple cold build goes from ~8.1 s to ~0.7 s, a 12-stage build from ~12.7 s to ~1.1 s, and container start from ~700 ms to ~200 ms.
+
+Three things changed underneath: Docker's metadata moved to a dedicated ext4 volume instead of paying Btrfs commit costs on every `fsync`, the guest kernel got a tick rate and preemption model suited to container churn, and the container runtime binaries are now exec'd from a read-only block image rather than over the host filesystem share.
+
+<Callout type="warn">
+  **First launch on 1.30 migrates your Docker metadata** to the new volume, keeping the originals alongside as `*.pre-ext4` directories. The migration is one-way: downgrading to an older ArcBox afterwards starts Docker with empty state, so images and containers appear to be gone. They are not deleted — restoring the `*.pre-ext4` directories brings back the state as of the upgrade.
+</Callout>
+
+New installs now default to downloading and installing updates automatically. See [Updates](./updates).
+
+## 1.29.0
+
+_2026-07-20_
+
+Image layers are browsable from the Files tab, resolved by the daemon under the containerd image store.
+
+Startup now fails visibly when the [privileged helper](./helper) is missing or too old, instead of failing obscurely later, and helper version comparison was tightened to independent semver.
+
+## 1.27–1.28
+
+_2026-07-18 to 2026-07-19_
+
+The Machines pane is wired to the machine gRPC service and updates from the event stream instead of polling, so machines started from `abctl` appear immediately.
+
+## Update Channels
+
+Stable is the default. Switch to beta in **Settings → General → Update channel** for earlier access to upcoming releases.

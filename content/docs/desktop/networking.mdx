@@ -5,55 +5,65 @@ description: Container networking, port mapping, host access, and DNS.
 
 ## Default Network
 
-Every container connects to a default bridge network. Containers on the same network can communicate using container names as hostnames.
+Every container joins the default bridge network. Containers on the same network reach each other by container name through Docker's own DNS. No configuration is needed for most development workflows.
 
-No manual network configuration is needed for most development workflows.
+ArcBox's networking datapath runs entirely in userspace on the host — DHCP, DNS forwarding, TCP, and socket proxying — with no `pf` NAT rules and no `utun` device.
 
 ## Port Mapping
 
-Expose container ports to your Mac with `-p`:
+Publish a container port with `-p`:
 
 ```bash
 docker run -d -p 8080:80 nginx
 ```
 
-The service is then accessible at `localhost:8080` and `<container-name>.arcbox:8080`.
+The daemon binds a host listener per rule and forwards traffic into the guest, so the service is reachable at `localhost:8080`.
 
-Port mappings are displayed in the container list and the Inspect tab.
+<Callout type="info">
+  Publishing is unprivileged, which means host ports below 1024 cannot be bound. Use a high port and reach the container directly at `<name>.arcbox.local` when you need the real port number.
+</Callout>
 
-## Host Networking
+Published ports appear in the container list and on the **Info** tab.
 
-Containers can reach services running on your Mac using the special hostname:
+## Reaching the Host from a Container
+
+Your Mac is reachable from inside a container at:
 
 ```
 host.docker.internal
+gateway.docker.internal
 ```
 
-This resolves to your Mac's IP address as seen from inside the container. Useful for connecting to local databases, APIs, or other services during development.
+Useful for connecting to a database, API, or dev server running natively on macOS.
 
 ## Container-to-Container
 
-Containers on the same user-defined network can reach each other by name:
+Containers on the same user-defined network reach each other by name:
 
 ```bash
 docker network create my-net
 docker run -d --name db --network my-net postgres
 docker run -d --name app --network my-net my-app
-# "app" can connect to "db" using hostname "db"
+# "app" connects to "db" using the hostname "db"
 ```
 
-ArcBox provides built-in DNS resolution within Docker networks.
+## Reaching Containers from Your Mac
 
-## `.arcbox` Domains
-
-Containers are also reachable from your Mac at `<name>.arcbox`. See [Domains](./domains) for details.
+Containers are also reachable at `<name>.arcbox.local`, on whatever port the service actually listens on — no publishing required. See [Domains](./domains).
 
 ## Managing Networks
 
-Click **Networks** in the sidebar to view, create, and delete Docker networks. Each network shows its driver, subnet, and connected containers.
+**Networks** under **Docker** in the sidebar lists every Docker network with its driver, subnet, and attached containers, and lets you create and delete them. The built-in `bridge`, `host`, and `none` networks cannot be removed.
 
-The default networks (`bridge`, `host`, `none`) cannot be removed.
+## amd64 Images
+
+`linux/amd64` images run alongside native arm64 with no configuration. Translation happens inside the guest — Rosetta on the Virtualization.framework backend, [FEX](https://github.com/FEX-Emu/FEX) on the Hypervisor.framework backend.
+
+```bash
+docker run --platform linux/amd64 alpine uname -m
+# x86_64
+```
 
 ## VPN Compatibility
 
-ArcBox automatically adapts when Surge or another VPN owns the container network's preferred route. See [VPN Compatibility](./vpn-compatibility) for the routing behavior, Surge configuration, verification steps, and remaining overlap limitations.
+ArcBox reserves `172.16.0.0/12` for container networks and adapts when a VPN client claims that route. See [VPN Compatibility](./vpn-compatibility) for the routing behavior, Surge configuration, and verification steps.

@@ -1,68 +1,95 @@
 ---
 title: Domains
-description: Access containers and machines by name using .arcbox DNS.
+description: Access containers and machines by name using arcbox.local DNS.
 ---
 
 ## Automatic DNS
 
-Every container and machine gets a hostname automatically:
+Containers and machines register a hostname when they start:
 
 ```
-<container-name>.arcbox
-<machine-name>.arcbox
+<container-name>.arcbox.local
+<machine-name>.arcbox.local
 ```
 
-These hostnames resolve from your Mac without any configuration. You can access services directly:
+These resolve from your Mac with no configuration:
 
 ```bash
-curl http://my-api.arcbox:8080/health
-ssh dev.arcbox
+curl http://my-api.arcbox.local:8080/health
+ssh dev.arcbox.local
 ```
 
-No need to look up IP addresses, configure port mappings for inter-service access, or edit `/etc/hosts`.
+No IP lookups, no `/etc/hosts` edits, and no port mapping needed just to reach a service from the host.
 
 ## How It Works
 
 ```mermaid
 graph LR
-    A["Your Mac"] -- "DNS query<br/>my-api.arcbox" --> B["/etc/resolver/arcbox"]
-    B --> C["ArcBox DNS Resolver"]
-    C -- "10.0.2.x" --> A
+    A["Your Mac"] -- "DNS query<br/>my-api.arcbox.local" --> B["/etc/resolver/arcbox.local"]
+    B --> C["ArcBox DNS forwarder"]
+    C -- "container address" --> A
 ```
 
-ArcBox installs a local DNS resolver for the `.arcbox` domain. The resolver is configured by the [privileged helper](./helper) and runs as part of the ArcBox daemon.
+The [privileged helper](./helper) writes `/etc/resolver/arcbox.local`, which tells macOS to send `*.arcbox.local` queries to ArcBox's resolver. A name it does not know returns `NXDOMAIN` rather than leaking to your upstream resolver. Every other domain uses your normal DNS path untouched.
 
-Only `.arcbox` queries go through ArcBox. All other DNS traffic uses your normal resolver.
+ArcBox also announces these names over mDNS, so other devices on your network can resolve them too.
+
+Check the resolver from the terminal:
+
+```bash
+abctl dns status
+```
 
 ## Container Domains
 
-Containers are accessible at `<name>.arcbox` while running. The hostname resolves to the container's internal IP address.
-
-For containers with exposed ports, you can reach the service from your Mac:
+A running container is reachable at `<name>.arcbox.local`, which resolves to its address inside the container network. Because you are reaching the container directly, you use the port the service actually listens on — not the published host port:
 
 ```bash
 # Container running nginx with -p 8080:80
-curl http://my-nginx.arcbox:8080
+curl http://my-nginx.arcbox.local     # port 80, the container's own port
+curl http://localhost:8080            # the published mapping
 ```
 
 ## Machine Domains
 
-Machines are accessible at `<name>.arcbox`. SSH, HTTP, and any other protocol work:
+Machines resolve the same way, and every port is reachable without forwarding anything:
 
 ```bash
-ssh my-machine.arcbox
-curl http://my-machine.arcbox:3000
+ssh my-machine.arcbox.local
+curl http://my-machine.arcbox.local:3000
 ```
 
 ## Compose Services
 
-Containers in a Compose project get hostnames based on their service name:
+Compose containers register two names — a hierarchical one built from the Compose labels, and the flat container name:
 
 ```bash
-# docker-compose.yml with service "api"
-curl http://api.arcbox:3000
+# project "shop", service "api"
+curl http://api.shop.arcbox.local:3000    # <service>.<project>
+curl http://shop-api-1.arcbox.local:3000  # the container name Compose assigned
+```
+
+Inside the project's own network, containers still reach each other by plain service name (`api`) through Docker's DNS, as usual.
+
+## Sandbox Domains
+
+A [sandbox](./sandbox) registers its ID, so it is reachable at `<sandbox-id>.arcbox.local` while it runs.
+
+## Reaching the Host
+
+From inside a container, your Mac is reachable at the usual Docker aliases:
+
+```
+host.docker.internal
+gateway.docker.internal
 ```
 
 ## Disabling DNS
 
-If you prefer not to use `.arcbox` DNS, you can disable it in [Settings](./settings). The resolver file at `/etc/resolver/arcbox` will be removed. Containers and machines remain accessible by IP address.
+Remove the resolver with:
+
+```bash
+abctl dns uninstall
+```
+
+Reinstall it with `abctl dns install`. Containers and machines stay reachable by IP address either way.

@@ -1,55 +1,49 @@
 ---
 title: Keyboard Shortcuts
-description: Keyboard shortcuts reference for ArcBox Desktop.
+description: Keyboard shortcuts in ArcBox Desktop.
 ---
 
-## Global
+<Callout type="info">
+  ArcBox Desktop deliberately ships a small set of shortcuts today rather than a speculative map of them. Everything below is what the app actually binds.
+</Callout>
+
+## Application
 
 | Shortcut | Action |
 |----------|--------|
 | `⌘,` | Open Settings |
-| `⌘K` | Open command palette |
-| `⌘F` | Search / Filter current view |
-| `⌘1`–`⌘5` | Switch sidebar sections |
-| `⌘N` | New (container, machine, or sandbox depending on context) |
-| `⌘W` | Close current tab |
 | `⌘Q` | Quit ArcBox |
+| `⌘W` | Close the window |
+| `⌘M` | Minimize |
 
-## Container View
+The **New** item is removed from the File menu — creating things happens in the list views, below.
 
-| Shortcut | Action |
-|----------|--------|
-| `⌘L` | Open logs for selected container |
-| `⌘T` | Open terminal for selected container |
-| `⌘I` | Open inspect for selected container |
-| `⌘⌫` | Remove selected container |
-| `Enter` | Open detail view |
-| `↑` / `↓` | Navigate container list |
+## List Views
 
-## Log Viewer
+In **Containers**, **Images**, **Volumes**, and **Networks**:
 
 | Shortcut | Action |
 |----------|--------|
-| `⌘F` | Search in logs |
-| `⌘G` | Find next match |
-| `⇧⌘G` | Find previous match |
-| `⌘⇧T` | Toggle timestamps |
-| `Esc` | Clear search / Exit |
+| `⌘N` | Create a new item of that kind (new container, pull image, new volume, new network) |
+| `⌘F` | Focus the search field |
+| `Esc` | Dismiss search |
+| `↑` / `↓` | Move through the list |
+
+Search is also available in **Machines**, **Pods**, and **Services**.
+
+## Sheets and Dialogs
+
+| Shortcut | Action |
+|----------|--------|
+| `Return` | Confirm — Create, Pull, Run |
+| `Esc` | Cancel |
 
 ## Terminal
 
-| Shortcut | Action |
-|----------|--------|
-| `⌘C` | Copy selected text |
-| `⌘V` | Paste |
-| `⌘+` | Increase font size |
-| `⌘-` | Decrease font size |
-| `⌘0` | Reset font size |
+The built-in terminal follows the usual macOS conventions — `⌘C` to copy a selection, `⌘V` to paste. Everything else goes through to the shell, so `Ctrl-C`, `Ctrl-D`, and full-screen programs behave as they would in any terminal.
 
-## Navigation
+To use your own terminal app instead, set **Settings → General → External terminal app**.
 
-| Shortcut | Action |
-|----------|--------|
-| `⌘[` | Go back |
-| `⌘]` | Go forward |
-| `⌘⇧F` | Global search |
+## Menu Bar
+
+Enable **Settings → General → Show in menu bar** for container controls and live metrics without bringing the window forward.

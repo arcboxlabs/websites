@@ -3,41 +3,40 @@ title: ArcBox vs Colima
 description: How ArcBox compares to Colima, and how to migrate.
 ---
 
+Colima and ArcBox are both open source, but they are built on opposite premises. Colima is a thin, scriptable layer over Lima, which is itself a layer over QEMU or Virtualization.framework. ArcBox writes the VMM, the device model, and the networking datapath itself.
+
 ## Comparison
 
 | | ArcBox | Colima |
 |--|--------|--------|
-| **Pricing** | Free | Free (open source) |
-| **License** | MIT/Apache-2.0 (core) | MIT |
-| **GUI** | Native SwiftUI desktop app | None (CLI only) |
-| **Cold start** | ~300ms | ~3–5s |
-| **File I/O** | >90% native | 50–80% native |
-| **Idle memory** | \<150 MB | ~300 MB |
-| **Hypervisor** | Virtualization.framework | QEMU / Virtualization.framework |
-| **Docker compatibility** | Full | Full (via Lima) |
+| **License** | MIT OR Apache-2.0 | MIT |
+| **GUI** | Native SwiftUI app | None — CLI only |
+| **Hypervisor** | Own VMM on Hypervisor.framework, or Virtualization.framework | QEMU or Virtualization.framework, via Lima |
+| **Docker compatibility** | Drop-in Engine API | Full, via Lima |
+| **Kubernetes** | k3s cluster managed by the daemon | k3s, built in |
 | **Linux machines** | Built-in | Via Lima |
-| **Sandboxes** | Built-in | Not available |
-| **Kubernetes** | Pod/service viewer | K3s built-in |
+| **Sandboxes** | Built-in microVMs with snapshots | Not available |
+| **Zero-config hostnames** | `name.arcbox.local` | Not available |
+| **Container runtimes** | Docker | Docker, containerd, or Incus |
 | **Apple Silicon** | Native | Native |
 | **Intel Mac** | Not yet | Supported |
+| **Platform** | macOS | Anywhere Lima runs |
 
 ## What's Better in ArcBox
 
-- **Native desktop GUI** — visual container management, logs, terminal, stats
-- **10x faster startup** — optimized kernel and hypervisor vs QEMU overhead
-- **Better file I/O** — >90% native vs 50–80% (depends on Colima's mount type)
-- **Lower resource usage** — \<150 MB idle vs ~300 MB
-- **Sandboxes** — disposable dev environments
-- **Automatic DNS** — `.arcbox` domains with zero configuration
+- **A native desktop GUI.** Visual container management, streaming logs, an integrated terminal, a merged-layer file browser, and live activity metrics.
+- **A purpose-built runtime.** The VMM, VirtIO devices, and networking datapath are written for this workload rather than assembled from general-purpose parts.
+- **Sandboxes.** Disposable microVMs with their own kernel, plus checkpoint and restore.
+- **Zero-config hostnames.** `name.arcbox.local` for every container and machine.
+- **`~/ArcBox` as a real volume.** Container, image, and volume filesystems are browsable in Finder, no copy step.
 
 ## What Colima Has That ArcBox Doesn't
 
-- **Fully open source** — Colima is MIT licensed end-to-end, including the CLI
-- **Intel Mac support**
-- **K3s Kubernetes** — built-in lightweight Kubernetes cluster
-- **Multiple runtimes** — supports containerd and Docker
-- **SSH-based architecture** — simple, debuggable, and scriptable
-- **Linux/Windows** — runs anywhere Lima runs
+- **Intel Mac support**, and Linux hosts
+- **Multiple container runtimes** — containerd and Incus alongside Docker
+- **A simpler, more debuggable architecture** — it is Lima underneath, and you can drop to `limactl` when you need to
+- **Maturity** — a longer track record with fewer sharp edges
+- **A pure-CLI footprint** — no GUI to run at all, which some CI and headless setups prefer
 
 ## Migrate from Colima
 
@@ -55,25 +54,25 @@ description: How ArcBox compares to Colima, and how to migrate.
     ```
   </Step>
   <Step>
-    ### Set Docker Context
+    ### Point the Docker CLI at ArcBox
 
     ```bash
-    docker context use default
-    ```
-  </Step>
-  <Step>
-    ### Verify
-
-    ```bash
+    abctl docker enable
     docker info
     ```
 
-    Confirm ArcBox is the active runtime.
+    `abctl docker enable` creates the `arcbox` context and makes it the default, replacing Colima's.
   </Step>
   <Step>
     ### Recreate Workloads
 
-    Pull images and start your containers. Compose files work without changes.
+    <Callout type="info">
+      `abctl migrate` supports Docker Desktop and OrbStack, not Colima. Pull your images and start your containers again — Compose files work without changes.
+    </Callout>
+
+    ```bash
+    docker compose up -d
+    ```
   </Step>
   <Step>
     ### Uninstall Colima (Optional)
@@ -85,3 +84,9 @@ description: How ArcBox compares to Colima, and how to migrate.
     ```
   </Step>
 </Steps>
+
+## Differences to Expect
+
+- **Kubernetes is not on by default.** Start it with `abctl k8s start`, then `abctl k8s enable` to wire up `kubectl`. See [Kubernetes](./kubernetes).
+- **Mounts need no configuration.** ArcBox shares `/Users` at the same path in the guest, so there is no `--mount-type` decision to make.
+- **Host ports below 1024 cannot be published.** Port forwarding runs unprivileged. See [Networking](./networking#port-mapping).

@@ -3,50 +3,59 @@ title: Distributions
 description: Available Linux distributions for ArcBox machines.
 ---
 
-## Supported Distributions
+## Available Images
 
-| Distribution | Versions | Default |
-|-------------|----------|---------|
-| **Ubuntu** | 24.04 LTS, 22.04 LTS | Yes |
-| **Debian** | 12 (Bookworm) | No |
-| **Fedora** | 40, 39 | No |
-| **Alpine** | 3.20 | No |
-| **Arch Linux** | Rolling | No |
+Machine images are mirrored from [images.linuxcontainers.org](https://images.linuxcontainers.org) and published as versioned, immutable streams named `{distro}-{release}-{arch}`:
 
-Ubuntu 24.04 is the default distribution for new machines. It provides the broadest compatibility with development tools and packages.
+| Distribution | Releases | Status |
+|-------------|----------|--------|
+| **Ubuntu** | `noble`, `resolute` | Tested — default |
+| **Alpine** | `3.23`, `3.24` | Tested |
+| **Debian** | `trixie`, `forky` | Mirrored |
+| **Fedora** | `43`, `44` | Mirrored |
+| **Arch Linux** | `current` | Mirrored |
+
+Both `arm64` and `amd64` are published. Ubuntu is the default when you do not pass `--distro`.
+
+<Callout type="info">
+  Ubuntu and Alpine are the paths that are exercised regularly. The other distributions are mirrored and selectable, but you may hit rough edges — please [report them](https://github.com/arcboxlabs/arcbox/issues).
+</Callout>
 
 ## Choosing a Distribution
 
 <Tabs items={['Desktop', 'CLI']}>
   <Tab>
-    Select the distribution in the machine creation dialog when clicking **New Machine**.
+    Pick the distribution in the machine creation sheet.
   </Tab>
   <Tab>
     ```bash
-    arcbox machine create --name dev --distro ubuntu:24.04
-    arcbox machine create --name server --distro alpine:3.20
+    abctl machine create dev --distro ubuntu
+    abctl machine create dev --distro ubuntu --distro-version noble
+    abctl machine create web --distro alpine --distro-version 3.24
     ```
+
+    `--distro-version` accepts the codename (`noble`) or the user-facing release (`24.04`). Omit it when the distribution has exactly one published release for your architecture.
   </Tab>
 </Tabs>
 
+## Pinned Versions
+
+Each stream keeps several dated builds. Referring to a stream follows its latest build; pinning `stream@version` reproduces an exact one. Older builds stay retrievable on the CDN even after they drop out of the index, so a pinned reference keeps working.
+
 ## What's Included
 
-All distributions ship with:
+Images are the upstream distribution's default variant — a base system with its package manager configured, and nothing else. Compilers, runtimes, and language toolchains are not preinstalled.
 
-- SSH server (for remote access)
-- Core utilities (curl, git, tar, etc.)
-- Package manager configured with default repositories
-
-<Callout type="info">
-  Development tools (compilers, runtimes, etc.) are not pre-installed. Install them via the distribution's package manager after creating the machine.
+<Callout type="warn">
+  No SSH server is installed or enabled. Use `abctl machine ssh` for a shell, or install `openssh-server` yourself — see [Shell Access](./ssh).
 </Callout>
 
-## Custom Images
+## Custom Kernels
 
-You can create a machine from a custom disk image if your preferred distribution is not listed:
+For testing, a machine can boot a kernel you supply:
 
 ```bash
-arcbox machine create --name custom --image /path/to/disk.qcow2
+abctl machine create test --kernel /path/to/vmlinux --cmdline "console=hvc0 ..."
 ```
 
-The image must be in qcow2 format.
+Both flags are for development and debugging; the bundled kernel is what normal machines use.

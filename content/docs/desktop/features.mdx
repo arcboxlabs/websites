@@ -3,35 +3,44 @@ title: Features
 description: An overview of what ArcBox Desktop can do.
 ---
 
+The sidebar groups everything into five sections: **System**, **Docker**, **Kubernetes**, **Linux**, and **Sandbox**.
+
 <Cards>
-  <Card title="Container Runtime" href="./containers">
-    Run Docker containers with full API compatibility. Compose project grouping, real-time log streaming, integrated terminal, and live stats.
+  <Card title="Containers" href="./containers">
+    Docker containers with full Engine API compatibility. Compose project grouping, real-time log streaming, an interactive terminal, and a file browser that reads through the overlay layers.
   </Card>
-  <Card title="Linux Machines" href="./machines">
-    Lightweight Linux VMs in seconds. Real kernel, SSH access, adjustable CPU/memory/disk. Ideal for systemd, custom kernel modules, or persistent Linux environments.
-  </Card>
-  <Card title="Sandboxes" href="./sandbox">
-    Disposable development environments from templates. Node.js, Python, Rust, Go — start a preconfigured workspace and tear it down when done.
+  <Card title="Images, Volumes, Networks" href="./images">
+    Pull and inspect images, create and browse volumes, manage Docker networks — each with its own file browser where it makes sense.
   </Card>
   <Card title="Kubernetes" href="./kubernetes">
-    View and manage pods and services in your local cluster. Logs and terminal access work the same as with Docker containers.
+    Pods and services from the k3s cluster the daemon manages. Logs and terminal access work the same as with Docker containers.
   </Card>
-  <Card title=".arcbox Domains" href="./domains">
-    Every container and machine gets a DNS name automatically. Access services at `name.arcbox` from your Mac — zero configuration.
+  <Card title="Linux Machines" href="./machines">
+    Full Linux VMs with their own kernel, persistent disk, and a distro you choose. Attach a terminal, browse the guest filesystem, or drive them from `abctl`.
+  </Card>
+  <Card title="Sandboxes" href="./sandbox">
+    Disposable microVMs for AI agents, untrusted code, and CI jobs. Ports, snapshots, file access, and a lifecycle event log.
   </Card>
   <Card title="File Access" href="./file-access">
-    Browse and manage files inside containers, images, and volumes directly from the Desktop GUI. Download or upload with a click.
+    Container, image, and volume filesystems mounted at `~/ArcBox` — browsable in Finder, and merged across overlay layers in the app.
+  </Card>
+  <Card title="Activity" href="./efficiency">
+    Live CPU, memory, and network for the System VM and every running container, in one view.
+  </Card>
+  <Card title="arcbox.local Domains" href="./domains">
+    Containers and machines register a DNS name automatically. Reach them at `name.arcbox.local` from your Mac — zero configuration.
   </Card>
   <Card title="Docker-Compatible CLI" href="./cli">
-    Drop-in `docker` CLI replacement. Existing scripts, CI pipelines, and Compose files work without changes.
-  </Card>
-  <Card title="Benchmarks" href="./benchmarks">
-    Built for Apple Silicon. ~300ms cold start. >90% native file I/O. Under 150 MB idle memory.
+    Bundled `docker`, `buildx`, and `compose`, plus the `abctl` runtime CLI. Existing scripts, CI pipelines, and Compose files work without changes.
   </Card>
 </Cards>
 
+## amd64 on Apple Silicon
+
+`linux/amd64` images run next to native arm64 with nothing to configure. On the default Virtualization.framework backend, Intel code is translated by Rosetta; on the Hypervisor.framework backend, by [FEX](https://github.com/FEX-Emu/FEX). Switch backends in [Settings → System](./settings).
+
 ## Privacy
 
-<Callout type="info">
-  ArcBox runs entirely on your Mac. No account required. No telemetry by default. No feature gates on the free tier. Crash reporting via Sentry is opt-in.
+<Callout type="warn">
+  ArcBox Desktop shares anonymous feature-usage statistics by default. Turn it off in **Settings → General → Privacy → Share anonymous usage data**. No account is required, and no container data, filesystem content, or source code is collected. See [Security](./security) for details.
 </Callout>

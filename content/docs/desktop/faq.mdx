@@ -7,57 +7,86 @@ description: Common questions about ArcBox Desktop.
 
 <Accordions type="single">
   <Accordion title="Is ArcBox free?" id="free">
-    Yes. The core runtime and Desktop application are free to use with no account required. Enterprise features (SSO, audit logs, Kubernetes integration) are available under a commercial license.
+    Yes. Both the runtime and the Desktop app are open source under MIT OR Apache-2.0, with no closed core and no features held back behind a paid tier. No account is required. Personal use is free, and commercial use is free during the public beta. See [Licensing](./licensing).
+  </Accordion>
+  <Accordion title="Do I need an ArcBox account?" id="account">
+    No. Containers, Kubernetes, machines, and sandboxes all work signed out. An account is only for ArcBox Platform features.
   </Accordion>
   <Accordion title="Does ArcBox require an internet connection?" id="offline">
-    No. ArcBox runs entirely offline after installation. Image pulls require internet access, but cached images and running containers work without connectivity.
+    No. Pulling images needs the network, but cached images, running containers, and everything in the app work offline.
   </Accordion>
   <Accordion title="Does ArcBox support Intel Macs?" id="intel">
-    Currently, ArcBox Desktop requires Apple Silicon (M1 or later). Intel support is on the roadmap but not yet available.
+    Not yet. ArcBox Desktop requires Apple Silicon on macOS 15 (Sequoia) or later. Intel support is in progress.
   </Accordion>
   <Accordion title="Does ArcBox support Linux or Windows?" id="platforms">
-    ArcBox Desktop is macOS-only. The ArcBox core runtime supports Linux (x86_64 and ARM64). There is no Windows version.
+    The Desktop app is macOS-only. Linux host support for the runtime is on the roadmap; macOS came first. There is no Windows version.
   </Accordion>
 </Accordions>
 
 ## Docker Compatibility
 
 <Accordions type="single">
-  <Accordion title="Can I use my existing Docker Compose files?" id="compose">
-    Yes. ArcBox is fully compatible with Docker Compose v2. Your `docker-compose.yml` files work without changes.
+  <Accordion title="Can I use my existing Compose files?" id="compose">
+    Yes. Compose v2 is bundled and your `compose.yaml` files work unchanged. See [Compose Projects](./compose).
   </Accordion>
-  <Accordion title="Can I use Docker CLI with ArcBox?" id="docker-cli">
-    Yes. ArcBox installs a `docker` CLI that talks to the ArcBox runtime. Existing scripts and tools that use the Docker CLI work as-is.
+  <Accordion title="Can I use the Docker CLI?" id="docker-cli">
+    Yes. ArcBox bundles `docker`, `buildx`, and `compose`, and exposes a standard Docker Engine API socket. `abctl docker enable` creates the `arcbox` context and makes it the default, so existing scripts and tools work as-is.
+  </Accordion>
+  <Accordion title="Can I run linux/amd64 images on Apple Silicon?" id="amd64">
+    Yes, with nothing to configure. Translation happens inside the guest — Rosetta on the Virtualization.framework backend, [FEX](https://github.com/FEX-Emu/FEX) on the Hypervisor.framework backend.
+
+    ```bash
+    docker run --platform linux/amd64 alpine uname -m
+    # x86_64
+    ```
   </Accordion>
   <Accordion title="Does ArcBox support Docker Extensions?" id="extensions">
-    No. Docker Extensions are a proprietary Docker Desktop feature. ArcBox provides equivalent functionality through its built-in features.
+    No. Extensions are a Docker Desktop feature and are not part of the Docker Engine API.
   </Accordion>
-  <Accordion title="Does ArcBox support Docker BuildKit?" id="buildkit">
-    Yes. BuildKit is the default build engine. `docker build` and `docker buildx` work as expected.
+  <Accordion title="Does ArcBox support BuildKit?" id="buildkit">
+    Yes, it is the default build engine. `docker build` and `docker buildx` work as expected. The build cache is not shown in the GUI — use `docker builder prune`.
+  </Accordion>
+  <Accordion title="Is Kubernetes a real cluster?" id="k8s">
+    Yes — a [k3s](https://k3s.io) cluster managed by the daemon, not a viewer over someone else's cluster. Start it with `abctl k8s start` and wire up `kubectl` with `abctl k8s enable`. See [Kubernetes](./kubernetes).
   </Accordion>
 </Accordions>
 
-## Performance
+## Performance and Resources
 
 <Accordions type="single">
-  <Accordion title="Why is ArcBox faster than Docker Desktop?" id="faster">
-    ArcBox uses a lighter hypervisor (Apple Virtualization.framework), an optimized guest kernel, and pre-warmed filesystem snapshots. These structural choices reduce overhead on every critical path. See [Benchmarks](./benchmarks) for data.
+  <Accordion title="Why would ArcBox be faster?" id="faster">
+    A purpose-built VMM with its own device model, a minimal guest kernel and read-only root filesystem, a userspace networking datapath with no `pf` NAT or `utun` device, VirtioFS sharing instead of a network filesystem, and snapshot restore for sandboxes.
+
+    See [Benchmarks](./benchmarks) for numbers, and measure on your own hardware — results vary by machine, macOS version, and [hypervisor backend](./settings#compatibility).
   </Accordion>
-  <Accordion title="How much memory does ArcBox use when idle?" id="memory">
-    Under 150 MB. ArcBox scales resources with actual workload demand and reclaims memory from idle containers.
+  <Accordion title="Why doesn't memory go back to macOS when I stop a container?" id="memory">
+    Because neither macOS hypervisor backend reclaims guest memory through the balloon device today. Stopping a container frees memory inside the guest for the next container; stopping the runtime is what returns it to the host. See [Efficiency](./efficiency#memory).
+  </Accordion>
+  <Accordion title="Which hypervisor backend should I use?" id="backend">
+    Virtualization.framework — the default, the better-tested path, and the one [sandboxes](./sandbox) require. Hypervisor.framework is where ArcBox's own VMM work happens; switch with `abctl system backend hv` if you want to try it, and expect different startup and idle characteristics.
+  </Accordion>
+</Accordions>
+
+## Privacy
+
+<Accordions type="single">
+  <Accordion title="Does ArcBox collect telemetry?" id="telemetry">
+    Anonymous feature-usage statistics are shared **by default**, and crash reports are sent from release builds. No account, container data, filesystem content, or source code is collected, and home-directory paths are stripped from crash reports.
+
+    Turn usage data off in **Settings → General → Privacy**. See [Security](./security#telemetry).
   </Accordion>
 </Accordions>
 
 ## Troubleshooting
 
 <Accordions type="single">
-  <Accordion title='Docker commands return "Cannot connect to the Docker daemon"' id="daemon">
-    The ArcBox daemon is not running. Start it with `arcbox start` or launch ArcBox Desktop.
+  <Accordion title='Docker says "Cannot connect to the Docker daemon"' id="daemon">
+    Start the daemon with `abctl daemon start` or by launching ArcBox Desktop, then check your context with `docker context ls`. See [Troubleshooting](./troubleshooting#cannot-connect).
   </Accordion>
-  <Accordion title="Containers can't access the internet" id="network">
-    Check host connectivity, then run `arcbox doctor`. ArcBox automatically handles the common `172.16.0.0/12` conflict used by Surge and other VPNs, but a VPN's packet filter can still block traffic independently of the routing table. See [VPN Compatibility](./vpn-compatibility) and [Troubleshooting](./troubleshooting).
+  <Accordion title="Containers can't reach the internet" id="network">
+    Check host connectivity, then run `abctl doctor`. ArcBox handles the common `172.16.0.0/12` conflict used by Surge and other VPNs, but a VPN's packet filter can block traffic independently of the routing table. See [VPN Compatibility](./vpn-compatibility).
   </Accordion>
   <Accordion title="The privileged helper won't install" id="helper">
-    Open **System Settings → Privacy & Security → Login Items & Extensions** and enable the ArcBox helper. On managed devices, your IT administrator may need to approve it via MDM. See [Helper](./helper).
+    Open **System Settings → General → Login Items & Extensions** and enable the ArcBox helper. On managed devices, IT may need to approve it via MDM. See [Helper](./helper).
   </Accordion>
 </Accordions>

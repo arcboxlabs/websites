@@ -3,26 +3,47 @@ title: Compose Projects
 description: Manage multi-container applications defined with Docker Compose.
 ---
 
+## Compose Is Bundled
+
+`docker compose` (v2) ships with ArcBox. `abctl docker setup` installs it alongside `docker` and `buildx`, so there is nothing separate to install and your existing `compose.yaml` files work unchanged.
+
 ## Automatic Grouping
 
-ArcBox Desktop detects containers started with `docker compose` and groups them under their project name. No configuration is needed.
+ArcBox Desktop groups containers by Compose project with no configuration. Each project is a collapsible group whose header shows the project name and a `running / total` count.
 
-Each Compose project appears as a collapsible group in the container list. The group header shows the project name and an aggregate status (running, partially running, stopped).
+Groups are ordered so live work stays at the top: projects with something running come first, then fully stopped ones.
 
 ## Project Operations
 
-**Start / Stop** — click the play or stop button on the project header to start or stop all containers in the project at once.
+- **Start / Stop all** — the control on the group header applies to every container in the project, concurrently rather than one by one.
+- **Delete All** — removes the whole project's containers, with a confirmation step.
+- **Expand / Collapse** — click the project name.
 
-**Expand / Collapse** — click the project name to show or hide individual containers.
+Individual containers inside a group behave exactly like standalone ones: logs, terminal, info, and files. See [Using Containers](./containers).
 
-Each container within the project supports the same operations as standalone containers: logs, terminal, inspect, files, and stats.
+## How Grouping Is Detected
 
-## Compose File Detection
+ArcBox reads the standard Compose labels from container metadata:
 
-ArcBox reads Compose labels (`com.docker.compose.project`, `com.docker.compose.service`) from container metadata. Any tool that sets these labels — including `docker compose`, Podman Compose, or manual labeling — will result in proper grouping.
+```
+com.docker.compose.project
+com.docker.compose.service
+```
+
+Any tool that sets them groups correctly — `docker compose`, another Compose implementation, or labels you apply yourself.
+
+## Compose Hostnames
+
+Compose containers register two DNS names, so you can reach a service from your Mac without publishing a port:
+
+```bash
+# project "shop", service "api"
+curl http://api.shop.arcbox.local:3000
+curl http://shop-api-1.arcbox.local:3000
+```
+
+Inside the project's network, containers still reach each other by plain service name. See [Domains](./domains).
 
 ## Mixed Workflows
 
-You can use `docker compose` from the CLI and manage the resulting containers in the Desktop UI. State syncs in real time.
-
-Changes made in the GUI (stopping a single service, for example) are reflected immediately in `docker compose ps`.
+Run `docker compose up` in a terminal and manage the result in the GUI — state syncs through the Docker event stream in both directions. Stopping one service in the app shows up immediately in `docker compose ps`.

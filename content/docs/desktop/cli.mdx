@@ -1,13 +1,27 @@
 ---
 title: Command Line
-description: Use the Docker CLI and ArcBox CLI alongside the Desktop app.
+description: Use the Docker CLI and the abctl CLI alongside the Desktop app.
 ---
+
+ArcBox Desktop bundles two command-line tools: a standard `docker` CLI and `abctl`, the ArcBox runtime CLI. Both talk to the same daemon as the GUI, so state stays in sync in every direction.
+
+<Callout type="info">
+  `abctl` is the CLI's name. A compatibility shim named `arcbox` still forwards to it, but it is deprecated — use `abctl` in new scripts.
+</Callout>
 
 ## Docker CLI
 
-ArcBox provides a drop-in `docker` CLI. Install it from **Settings → Docker → Install CLI Tools**, or let ArcBox install it on first launch.
+The Desktop app ships `docker`, `docker-buildx`, and `docker-compose` inside its bundle, and the [privileged helper](./helper) symlinks them into `/usr/local/bin`. There is nothing to download.
 
-Once installed, all standard Docker commands work:
+```bash
+abctl docker enable   # create the "arcbox" context and make it the default
+```
+
+<Callout type="info">
+  `abctl docker setup` downloads those tools into `~/.arcbox` instead. It exists for CLI-only installs — Desktop users do not need it.
+</Callout>
+
+`enable` creates a Docker context named `arcbox` and sets it as the current one, so every `docker` command targets ArcBox:
 
 ```bash
 docker run -d -p 8080:80 nginx
@@ -16,72 +30,152 @@ docker build -t my-app .
 docker logs -f my-container
 ```
 
-The CLI communicates with the same ArcBox daemon as the Desktop GUI. Changes made via CLI appear in the GUI immediately, and vice versa.
+`abctl docker status` reports the integration state, and `abctl docker disable` restores whichever context was default before.
 
-## ArcBox CLI
+<Callout type="info">
+  The Desktop app can switch the context for you. **Settings → System → Switch Docker & Kubernetes context automatically** is on by default.
+</Callout>
 
-The `arcbox` CLI provides additional commands for managing the runtime:
+## Shell Integration
 
-<Tabs items={['Runtime', 'Machines', 'Diagnostics']}>
-  <Tab>
-    ```bash
-    arcbox start          # Start the ArcBox daemon
-    arcbox stop           # Stop the daemon and all workloads
-    arcbox restart        # Restart the daemon
-    arcbox status         # Show daemon and VM status
-    arcbox version        # Show version info
-    ```
-  </Tab>
-  <Tab>
-    ```bash
-    arcbox machine create # Create a Linux machine
-    arcbox machine list   # List machines
-    arcbox ssh <name>     # SSH into a machine
-    ```
-  </Tab>
-  <Tab>
-    ```bash
-    arcbox logs           # Show daemon logs
-    arcbox doctor         # Diagnose common issues
-    ```
-  </Tab>
-</Tabs>
-
-## CI Usage
-
-ArcBox's Docker CLI is compatible with CI tools that expect a Docker daemon. If you run CI locally (e.g., `act` for GitHub Actions), it works with ArcBox.
+`abctl setup install` puts `abctl` on your `PATH` and installs completions for `abctl` and `docker`:
 
 ```bash
-# Run GitHub Actions locally
-act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+abctl setup install     # PATH + completions + shell profile line
+abctl setup status      # check what is installed
+abctl setup uninstall   # undo it
 ```
 
-## Socket Path
+It writes `~/.arcbox/shell/init.<shell>` and appends a `source` line to `~/.zprofile`, `~/.bash_profile`, or `~/.config/fish/config.fish`.
 
-By default, ArcBox creates the Docker socket at `/var/run/docker.sock`.
-
-If another tool occupies that path, or you prefer a user-level socket:
-
-```bash
-export DOCKER_HOST=unix://$HOME/.arcbox/docker.sock
-```
-
-## Shell Completions
+To print completions yourself instead:
 
 <Tabs items={['zsh', 'bash', 'fish']}>
   <Tab>
     ```bash
-    arcbox completions zsh > ~/.zfunc/_arcbox
+    abctl setup completions --shell zsh > ~/.zfunc/_abctl
     ```
   </Tab>
   <Tab>
     ```bash
-    arcbox completions bash > /usr/local/etc/bash_completion.d/arcbox
+    abctl setup completions --shell bash > /usr/local/etc/bash_completion.d/abctl
     ```
   </Tab>
   <Tab>
     ```bash
-    arcbox completions fish > ~/.config/fish/completions/arcbox.fish
+    abctl setup completions --shell fish > ~/.config/fish/completions/abctl.fish
     ```
   </Tab>
 </Tabs>
+
+## Command reference
+
+<Tabs items={['Runtime', 'Machines', 'Sandboxes', 'Kubernetes', 'Diagnostics']}>
+  <Tab>
+    ```bash
+    abctl daemon start        # start the ArcBox daemon
+    abctl daemon stop         # stop the daemon and all workloads
+    abctl daemon status       # show daemon state
+
+    abctl system backend      # print the System VM hypervisor backend
+    abctl system backend hv   # switch to Hypervisor.framework (restarts the VM)
+    abctl system backend vz   # switch to Virtualization.framework (default)
+
+    abctl disk usage          # Docker data image usage
+    abctl disk compact        # trim free blocks from the data image
+
+    abctl boot status         # boot asset (kernel/rootfs) state
+    abctl boot prefetch       # download boot assets ahead of first launch
+
+    abctl info                # version, OS, arch, CPU count, machine count
+    abctl version             # version only
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    abctl machine create dev --distro ubuntu   # create a Linux machine
+    abctl machine list                         # list machines
+    abctl machine start dev
+    abctl machine stop dev
+    abctl machine remove dev
+
+    abctl machine ssh dev                      # interactive shell
+    abctl machine exec dev -- uname -a         # run one command
+    abctl machine inspect dev                  # full configuration
+    abctl machine info dev                     # guest system info
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    abctl sandbox templates                     # list built-in rootfs templates
+    abctl sandbox create --memory 512           # create a microVM sandbox
+    abctl sandbox run <id> -- ./untrusted-bin   # run a command, stream output
+    abctl sandbox exec -t <id> -- bash          # interactive session
+    abctl sandbox cp ./file <id>:/workspace/    # copy files in or out
+    abctl sandbox expose <id> 3000              # publish a sandbox port on the host
+
+    abctl sandbox checkpoint <id> --name clean  # snapshot a booted sandbox
+    abctl sandbox restore clean                 # boot a copy from the snapshot
+    abctl sandbox list-snapshots
+
+    abctl claude                                # Claude Code in its own sandbox
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    abctl k8s start         # start the daemon-managed k3s cluster
+    abctl k8s status        # cluster and host-integration state
+    abctl k8s kubeconfig    # print the ArcBox-managed kubeconfig
+    abctl k8s enable        # wire kubectl on the host to the cluster
+    abctl k8s stop
+    abctl k8s delete        # discard cluster state
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    abctl doctor                    # run every runtime health check
+    abctl top                       # live CPU/memory/network for the System VM
+    abctl logs                      # daemon log, last 100 lines
+    abctl logs -f -c dockerd        # follow the guest dockerd log
+    abctl dns status                # DNS resolver for *.arcbox.local
+    ```
+
+    `abctl logs -c` accepts `daemon`, `helper`, `agent`, `dockerd`, and `containerd`.
+  </Tab>
+</Tabs>
+
+Every command takes `--format json` for scripting, and `--debug` for verbose logging. Run `abctl --help` for the full tree.
+
+## Migrating from another runtime
+
+```bash
+abctl migrate from docker-desktop
+abctl migrate from orbstack
+```
+
+Both import containers, images, and volumes from the other runtime's data directory. Pass `--yes` to skip the confirmation prompt.
+
+## CI usage
+
+ArcBox's Docker socket is a standard Docker Engine API endpoint, so tools that expect a Docker daemon work unchanged — including local CI runners:
+
+```bash
+act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+```
+
+## Socket paths
+
+The daemon owns two sockets under `~/.arcbox/run/`:
+
+| Socket | Purpose |
+|--------|---------|
+| `~/.arcbox/run/docker.sock` | Docker Engine API |
+| `~/.arcbox/run/arcbox.sock` | ArcBox gRPC API |
+
+The [privileged helper](./helper) also symlinks `/var/run/docker.sock` to the Docker socket, so tools that hardcode the standard path find it.
+
+To point the Docker CLI at ArcBox without using a context:
+
+```bash
+export DOCKER_HOST=unix://$HOME/.arcbox/run/docker.sock
+```

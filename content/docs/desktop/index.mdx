@@ -1,58 +1,55 @@
 ---
 title: Overview
-description: Get an overview of ArcBox Desktop, the all-in-one app for running containers, sandboxes, and Linux machines.
+description: Get an overview of ArcBox Desktop, the native macOS app for containers, Kubernetes, Linux machines, and sandboxes.
 ---
 
 ## What is ArcBox Desktop?
 
-ArcBox Desktop is a native macOS application for managing containers, Linux virtual machines, and sandboxes. It replaces Docker Desktop with a faster, lighter alternative built specifically for Apple Silicon.
+ArcBox Desktop is a native macOS application for containers, Kubernetes, Linux virtual machines, and agent sandboxes — one three-column window over everything the ArcBox runtime runs.
 
-Everything runs locally. There is no account required, no background daemon phoning home, and no feature gates on the free tier.
+It ships the `arcbox-daemon` runtime and the `abctl` CLI inside the app bundle and keeps itself up to date over Sparkle, so there is nothing else to install. Everything runs locally, and no account is required.
 
 ## What You Get
 
 <Cards>
   <Card title="Containers" href="./containers">
-    Full Docker-compatible container management. Pull images, run containers, view logs, open a terminal, inspect state. Compose projects are grouped automatically.
-  </Card>
-  <Card title="Machines" href="./machines">
-    Lightweight Linux VMs with SSH access and adjustable resources. Useful when you need a full Linux environment beyond what containers provide.
-  </Card>
-  <Card title="Sandboxes" href="./sandbox">
-    Isolated development environments created from templates. Start a preconfigured workspace in seconds.
+    Docker-compatible containers, images, volumes, and networks. Containers group by Compose project, with logs, an interactive terminal, and a layered file browser.
   </Card>
   <Card title="Kubernetes" href="./kubernetes">
-    View and manage pods and services running in your local cluster.
+    Pods and services from the daemon-managed k3s cluster, with the same logs and terminal as Docker containers.
+  </Card>
+  <Card title="Machines" href="./machines">
+    Full Linux VMs with their own kernel and persistent disk. Attach a terminal or browse the guest filesystem.
+  </Card>
+  <Card title="Sandboxes" href="./sandbox">
+    Disposable microVMs for agents and untrusted code, with ports, snapshots, and an event log.
   </Card>
 </Cards>
 
 ## How It Works
 
-ArcBox Desktop communicates with the ArcBox daemon over gRPC. The daemon manages the underlying virtual machines, container runtime, and networking.
-
-You interact with the GUI. The daemon does the heavy lifting.
+ArcBox Desktop is a client. It talks to the ArcBox daemon over gRPC for machines, sandboxes, Kubernetes, and system state, and over the Docker Engine API for Docker resources. The daemon owns the virtual machines, networking, and storage.
 
 ```mermaid
 graph TD
-    A["ArcBox Desktop<br/>(SwiftUI)"] -- "gRPC over Unix Socket" --> B["arcbox daemon<br/>(Rust)"]
-    B --> C["Lightweight VM"]
-    C --> D["Containers"]
-    C --> E["Networking"]
-    C --> F["Filesystem"]
+    A["ArcBox Desktop<br/>(SwiftUI)"] -- "gRPC · ~/.arcbox/run/arcbox.sock" --> B["arcbox-daemon<br/>(Rust)"]
+    A -- "Docker Engine API · ~/.arcbox/run/docker.sock" --> B
+    B -- "vsock" --> C["Linux guest<br/>arcbox-agent"]
+    C --> D["Containers · k3s"]
+    C --> E["Sandbox microVMs"]
 ```
 
-## Performance
+Everything is event-driven. The Docker, machine, and sandbox event streams feed the UI, so work started from `docker`, `abctl`, or `kubectl` shows up without a refresh — and vice versa.
 
-ArcBox is designed to stay out of your way.
+## Built from Scratch
 
-| Metric | ArcBox | Docker Desktop |
-|--------|--------|----------------|
-| Cold start | ~300ms | ~1,200ms |
-| Warm start | ~90ms | ~490ms |
-| Idle memory | \<150MB | ~200MB+ |
-| File I/O | >90% native | 75–95% native |
+Most of the performance-critical runtime is custom rather than vendored: a VMM on Hypervisor.framework with its own device model, VirtIO devices, a userspace macOS networking datapath, VirtioFS sharing, and a vsock guest agent. `linux/amd64` images run on Apple Silicon through [FEX](https://github.com/FEX-Emu/FEX) with nothing to configure.
 
-These numbers come from real benchmarks on Apple Silicon hardware. See [Benchmarks](./benchmarks) for methodology.
+See [Architecture](./architecture) for the full picture and [Benchmarks](./benchmarks) for performance numbers.
+
+<Callout type="info">
+  ArcBox is in public beta. The runtime and the Desktop app are both open source under MIT OR Apache-2.0.
+</Callout>
 
 ## Next Steps
 

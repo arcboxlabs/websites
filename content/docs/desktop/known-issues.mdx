@@ -1,26 +1,76 @@
 ---
 title: Known Issues
-description: Current known issues and workarounds.
+description: Current limitations and workarounds.
 ---
 
-## Current Known Issues
+ArcBox is in public beta. These are the limitations worth knowing about before you hit them.
 
-### Large Compose Projects
+## Platform
 
-Compose projects with more than 50 services may show delayed UI updates during bulk start/stop operations. All containers will eventually reach the correct state — the display catches up within a few seconds.
+### Apple Silicon only
 
-### File Watcher Limits
+Intel Mac support is in progress. macOS 15 (Sequoia) or later is required.
 
-If a container mounts a very large directory tree and uses inotify-based file watching, you may hit the default watcher limit. Increase it inside the container:
+### Sandboxes need M3 or newer
+
+[Sandboxes](./sandbox) rely on nested virtualization, which means the Virtualization.framework backend on Apple Silicon M3 or newer. On other hardware, or on the Hypervisor.framework backend, every sandbox operation fails with `FAILED_PRECONDITION`.
+
+## Memory
+
+### Idle memory is not returned to macOS
+
+Neither macOS hypervisor backend reclaims guest memory through the balloon device, so the daemon's host footprint stays near the VM's configured memory once workloads have touched it. Stopping a container frees memory inside the guest for the next container, not back to the host. See [Efficiency](./efficiency).
+
+## Machines
+
+### No SSH server
+
+Machines do not run `sshd`, and ArcBox does not provision keys or SSH config entries. `abctl machine ssh` gives you a shell over the daemon's channel, not the SSH protocol — install `openssh-server` yourself if you need real SSH. See [Shell Access](./ssh).
+
+### Resources are fixed at creation
+
+CPU and memory cannot be changed after a machine is created. Recreate the machine to change them.
+
+### Distributions beyond Ubuntu and Alpine are untested
+
+Debian, Fedora, and Arch images are mirrored and selectable, but Ubuntu and Alpine are the paths exercised regularly. Please report what breaks.
+
+## Desktop App
+
+### The Templates pane is a placeholder
+
+**Templates** under **Sandbox** in the sidebar is not wired up yet. Manage sandbox templates from `abctl sandbox templates` — see [Templates](./templates).
+
+### Some controls are disabled
+
+Storage location, "Hide ArcBox volume from Finder", and "Reset Kubernetes Cluster" are visible but inactive pending daemon support. VM CPU and memory limits are not exposed yet either.
+
+The **Export** row on an image's Info tab is also not wired up — use `docker save`.
+
+## Networking
+
+### Host ports below 1024 cannot be published
+
+Port publishing runs unprivileged, so `-p 80:80` fails to bind. Use a high host port, or reach the container directly at `<name>.arcbox.local` on its own port. See [Networking](./networking).
+
+### VPNs that claim 172.16.0.0/12
+
+ArcBox falls back to two more-specific routes rather than fighting a VPN for the same prefix, but it will not overwrite an external route for either fallback `/13`. See [VPN Compatibility](./vpn-compatibility).
+
+## Containers
+
+### inotify watcher limits
+
+A container watching a very large tree can exhaust the default watcher limit. Raise it inside the container:
 
 ```bash
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
-### Docker BuildKit Cache
+### BuildKit cache is not in the GUI
 
-BuildKit build cache is not yet visible in the Desktop images view. Use the CLI to manage build cache:
+Manage build cache from the CLI:
 
 ```bash
 docker builder prune
@@ -28,9 +78,14 @@ docker builder prune
 
 ## Reporting Issues
 
-File issues at [github.com/arcboxd/arcbox/issues](https://github.com/arcboxd/arcbox/issues) with:
+File runtime issues at [arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox/issues) and Desktop issues at [arcboxlabs/arcbox-desktop](https://github.com/arcboxlabs/arcbox-desktop/issues). Include:
 
-- ArcBox version (`arcbox version`)
-- macOS version
+- ArcBox version (`abctl version`) and macOS version
+- `abctl doctor` output
 - Steps to reproduce
-- Relevant logs from `~/Library/Logs/ArcBox/`
+
+**Settings → General → Troubleshooting → Export Diagnostic Report** collects the logs and system state for you.
+
+<Callout type="warn">
+  Report security vulnerabilities to [security@arcbox.dev](mailto:security@arcbox.dev), never to a public issue.
+</Callout>

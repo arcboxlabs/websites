@@ -5,52 +5,64 @@ description: Pull, browse, and manage container images.
 
 ## Image List
 
-Click **Images** in the sidebar to see all images on your system.
-
-Each entry shows the image name, tag, size, and creation date. Images are sorted by most recently used.
+**Images** under **Docker** in the sidebar lists every image on the system with its repository, tag, size, and age. `⌘F` filters; the sort menu orders by name, size, or date.
 
 ## Pull an Image
 
-Type an image name (e.g., `nginx`, `postgres:16`, `ghcr.io/org/app:latest`) in the search bar and click **Pull**.
+`⌘N` opens the pull sheet. Enter a reference — `nginx`, `postgres:16`, `ghcr.io/org/app:latest` — and ArcBox pulls it with layer-by-layer progress. Layers you already have are skipped.
 
-ArcBox shows layer-by-layer download progress. Shared layers are skipped automatically.
+Or from the CLI:
 
-## Run from Image
+```bash
+docker pull nginx
+docker pull --platform linux/amd64 nginx   # amd64 on Apple Silicon works too
+```
 
-Click **Run** next to any image to create a container from it. This opens the container creation dialog with the image pre-selected.
+## Detail Tabs
+
+<Tabs items={['Info', 'Files', 'Terminal']}>
+  <Tab>
+    Image ID, tag, creation time, size, and platform (`os/architecture`).
+
+    The **Export** row below them is not wired up yet — use `docker save` for now. See [Known Issues](./known-issues).
+  </Tab>
+  <Tab>
+    Browse the image's filesystem, resolved by the daemon under the containerd image store and served through the read-only `~/ArcBox` export. See [File Access](./file-access).
+  </Tab>
+  <Tab>
+    A shell in a throwaway container from this image — useful for checking what is actually inside before you run it.
+  </Tab>
+</Tabs>
+
+## Run From an Image
+
+Create a container from the selected image; the new-container sheet opens with it prefilled. See [Using Containers](./containers#creating-containers).
 
 ## Remove
 
-Select one or more images and click **Delete**. Images in use by running containers cannot be removed — stop the container first.
+Delete an image from its row. Images in use by a container cannot be removed until that container is gone.
 
-Dangling images (untagged layers left behind by rebuilds) can be cleaned up with the **Prune** button at the top of the image list, or from the CLI:
+Clean up dangling layers left behind by rebuilds:
 
 ```bash
 docker image prune
 ```
 
-## Image Details
-
-Click an image to see its metadata:
-
-- **Layers** — ordered list of layers with sizes
-- **Configuration** — entrypoint, cmd, exposed ports, environment variables
-- **Labels** — image labels and annotations
-- **History** — build history showing each Dockerfile instruction
-
 ## Private Registries
 
-ArcBox uses Docker Hub as the default registry. Public images pull without authentication.
-
-To pull from a private registry, authenticate via the CLI:
+Docker Hub is the default registry, and public images pull without authentication. For anything private, log in with the Docker CLI:
 
 ```bash
 docker login ghcr.io
 docker login registry.example.com
 ```
 
-ArcBox Desktop uses the same credential store as the Docker CLI. Once logged in, private images are accessible from both the CLI and the GUI.
+ArcBox uses the same credential store as the Docker CLI — `docker-credential-osxkeychain` is bundled, so credentials land in the macOS Keychain by default. If `~/.docker/config.json` names a different credential helper, ArcBox honors it. Once you are logged in, private images work from both the CLI and the GUI.
 
-Credentials are stored in the macOS Keychain by default. If your `~/.docker/config.json` specifies a different credential helper (e.g., `osxkeychain`, `pass`), ArcBox respects that configuration.
+## Building
 
-To configure a registry mirror or HTTP proxy, see [Settings](./settings).
+`docker build` and `docker buildx` work unchanged; BuildKit is the default engine and `buildx` is bundled.
+
+<Callout type="info">
+  BuildKit's build cache is not shown in the Images view. Manage it with `docker builder prune`.
+</Callout>

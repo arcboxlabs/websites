@@ -1,36 +1,31 @@
 ---
 title: Licensing
-description: ArcBox licensing model and what's included at each tier.
+description: How ArcBox is licensed and what you may do with it.
 ---
 
-## License Tiers
+## Open Source
 
-```mermaid
-graph BT
-    A["Core Layer<br/>MIT / Apache-2.0"] --> B["Pro Layer<br/>BSL-1.1 → MIT"]
-    B --> C["Enterprise Layer<br/>Proprietary"]
-```
+Both halves of ArcBox are open source under **MIT OR Apache-2.0**, at your option:
 
-### Core (Free, Open Source)
+| Component | Repository | License |
+|-----------|-----------|---------|
+| Runtime, daemon, CLI, helper | [arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox) | MIT OR Apache-2.0 |
+| Desktop app | [arcboxlabs/arcbox-desktop](https://github.com/arcboxlabs/arcbox-desktop) | MIT OR Apache-2.0 |
 
-The ArcBox runtime, CLI, and all core functionality are licensed under **MIT OR Apache-2.0**. You can use, modify, and distribute the core freely.
+That covers everything: the VMM, the VirtIO device model, the networking datapath, the filesystem sharing, the container runtime integration, the Docker-compatible API, the Kubernetes integration, the sandbox stack, and the SwiftUI app. There is no closed core and no feature held back behind a paid tier.
 
-This includes: hypervisor, VMM, VirtIO devices, container runtime, networking, filesystem, CLI, and the Docker-compatible API.
+## Cost
 
-### Pro
+No account, subscription, or license key is required to use ArcBox. Personal use is free. Commercial use is free during the public beta.
 
-Enhanced features (advanced filesystem, network optimizations, snapshot/restore) are licensed under **BSL-1.1**. They are free to use and convert to MIT after the change date.
+## Brand Assets
 
-### Enterprise
+The ArcBox name, mark, and screenshots are brand assets and are **not** covered by the source-code license. See [BRAND.md](https://static.arcbox.dev/BRAND.md) before using them — this matters mainly if you fork and redistribute.
 
-ArcBox Desktop, SSO/LDAP integration, audit logging, and Kubernetes orchestration are available under a commercial license.
+## Contributing
 
-## ArcBox Desktop
+Contributions are dual-licensed under the same terms. See [CONTRIBUTING.md](https://github.com/arcboxlabs/arcbox/blob/master/CONTRIBUTING.md) for build instructions and code standards.
 
-ArcBox Desktop is part of the Enterprise tier but is **free for individual use**. No account, subscription, or license key is required for personal and small-team use.
+## Third-Party Components
 
-Commercial and enterprise use requires a license. See [arcbox.dev/pricing](https://arcbox.dev/pricing) for details.
-
-## Open-Source Commitment
-
-The core runtime will always be open source. We believe infrastructure software should be inspectable, auditable, and forkable. See our [Open Source Philosophy](/blog/open-source-philosophy).
+ArcBox depends on open-source components including [FEX](https://github.com/FEX-Emu/FEX) for x86 translation, [Firecracker](https://firecracker-microvm.github.io) for sandbox microVMs, [k3s](https://k3s.io) for Kubernetes, and the upstream Docker CLI tools. Their licenses are listed in `NOTICE.md` in the runtime repository.

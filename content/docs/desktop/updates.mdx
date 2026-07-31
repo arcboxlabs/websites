@@ -5,31 +5,55 @@ description: How ArcBox Desktop handles automatic updates.
 
 ## Update Mechanism
 
-ArcBox Desktop uses Sparkle for automatic updates. When an update is available, you see a notification in the app with release notes and a one-click install option.
+ArcBox Desktop updates itself with [Sparkle](https://sparkle-project.org). Because the app bundle also carries the `arcbox-daemon` runtime, the `abctl` CLI, the guest kernel and rootfs, and the Docker CLI tools, one app update moves the whole stack — there is nothing to update separately.
 
-## Update Channels
+## Settings
+
+**Settings → General → Updates**:
+
+| Setting | Default |
+|---------|---------|
+| Automatically check for updates | On |
+| Automatically download and install updates | On for installs from 1.30 onward |
+| Update channel | Stable |
+
+Turning off automatic checks disables automatic installs too.
+
+## Channels
 
 | Channel | Description |
 |---------|-------------|
-| **Stable** | Production-ready releases. Default for all users. |
-| **Beta** | Early access to upcoming features. May contain rough edges. |
+| **Stable** | Production releases. The default. |
+| **Beta** | Earlier access to upcoming releases, with rougher edges. |
 
-Switch channels in **Settings → General → Update channel**.
+Switch in **Settings → General → Update channel**.
 
 ## Checking Manually
 
-Click **Check for Updates** in the app menu or in Settings. ArcBox checks immediately and shows the result.
+**Check for Updates…** in the app menu checks immediately and reports the result.
 
-## Rollback
+## The Privileged Helper
 
-If an update introduces problems, you can reinstall a previous version:
+The [helper](./helper) carries its own version and is replaced only when the on-disk root binary genuinely must change. Ordinary app updates leave it alone, so they do not re-prompt for an administrator password.
 
-1. Download the specific version from [arcbox.dev/releases](https://arcbox.dev/releases)
+When an update does require a newer helper, ArcBox says so at startup instead of failing obscurely later.
+
+## What Survives an Update
+
+Containers, images, volumes, networks, machines, and sandbox snapshots all live in `~/.arcbox` and are untouched by an app update.
+
+<Callout type="warn">
+  **Updating past 1.30 migrates your Docker metadata** to a new volume, keeping the originals as `*.pre-ext4` directories. The migration is one-way: downgrading afterwards starts Docker with empty state, so images and containers appear to be gone. They are not deleted — restoring the `*.pre-ext4` directories brings back the state as of the upgrade. See [What's New](./whats-new).
+</Callout>
+
+## Rolling Back
+
+1. Download the version you want from [GitHub Releases](https://github.com/arcboxlabs/arcbox-desktop/releases)
 2. Quit ArcBox Desktop
 3. Replace the app in `/Applications`
 
-Your containers, images, volumes, and machines are preserved across updates and rollbacks. Only the Desktop application binary changes.
+Mind the 1.30 migration note above before rolling back across it.
 
-## Offline Usage
+## Offline
 
-ArcBox Desktop works fully offline. Update checks fail silently when there is no internet connection. No functionality is lost.
+ArcBox works fully offline. Update checks fail quietly with no connection, and nothing else is affected.
