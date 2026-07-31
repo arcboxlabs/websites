@@ -49,21 +49,29 @@ abctl setup uninstall   # undo it
 
 It writes `~/.arcbox/shell/init.<shell>` and appends a `source` line to `~/.zprofile`, `~/.bash_profile`, or `~/.config/fish/config.fish`.
 
-To print completions yourself instead:
+To place the completions yourself instead, write them somewhere your shell already looks:
 
 <Tabs items={['zsh', 'bash', 'fish']}>
   <Tab>
     ```bash
+    mkdir -p ~/.zfunc
     abctl setup completions --shell zsh > ~/.zfunc/_abctl
     ```
+
+    `~/.zfunc` must be on your `fpath` before `compinit` runs — add `fpath=(~/.zfunc $fpath)` to `~/.zshrc` if it is not.
   </Tab>
   <Tab>
     ```bash
-    abctl setup completions --shell bash > /usr/local/etc/bash_completion.d/abctl
+    completion_dir="$(brew --prefix)/etc/bash_completion.d"
+    mkdir -p "$completion_dir"
+    abctl setup completions --shell bash > "$completion_dir/abctl"
     ```
+
+    This requires Homebrew's `bash-completion@2`. On Apple Silicon the prefix is `/opt/homebrew`, not `/usr/local` — use `brew --prefix` rather than hardcoding it. Without `bash-completion`, source the file from `~/.bash_profile` directly.
   </Tab>
   <Tab>
     ```bash
+    mkdir -p ~/.config/fish/completions
     abctl setup completions --shell fish > ~/.config/fish/completions/abctl.fish
     ```
   </Tab>

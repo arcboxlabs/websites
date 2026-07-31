@@ -140,12 +140,25 @@ abctl doctor
   </Accordion>
 
   <Accordion title="App crashes or misbehaves" id="crashes">
-    1. **Settings → General → Troubleshooting → Export Diagnostic Report…** collects logs and system state.
-    2. Read the daemon log directly: `abctl logs -f`
-    3. As a last resort, **Settings → Storage → Danger Zone → Reset Docker Data**.
+    Work outward from the app before touching any data:
+
+    <Steps>
+      <Step>
+        Quit ArcBox Desktop and relaunch it. The daemon keeps running, so containers are unaffected.
+      </Step>
+      <Step>
+        **Settings → General → Troubleshooting → Export Diagnostic Report…** collects logs and system state for an issue report.
+      </Step>
+      <Step>
+        Check whether the daemon is the actual problem rather than the app: `abctl doctor`, then `abctl logs -f`. If `abctl` works and only the window is broken, it is an app bug — please [file it](./known-issues#reporting-issues).
+      </Step>
+      <Step>
+        Restart the runtime: `abctl daemon stop && abctl daemon start`. This stops running containers but touches no data.
+      </Step>
+    </Steps>
 
     <Callout type="error">
-      Resetting removes every container, image, volume, and network. There is no undo.
+      **Settings → Storage → Danger Zone → Reset Docker Data** is not a fix for app crashes. It only prunes Docker state — every container, image, volume, and network, with no undo — and resets nothing about the app, its preferences, or the helper. Reach for it only when you have diagnosed corrupt Docker data specifically.
     </Callout>
   </Accordion>
 </Accordions>
