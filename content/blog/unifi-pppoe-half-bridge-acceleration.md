@@ -1,22 +1,24 @@
 ---
 title: "We Fixed UniFi's Slow PPPoE Performance by Offloading PPPoE to a Separate Device with Half-Bridge"
-description: "UniFi gateways (UDM Pro/SE/Pro Max, and friends) ship with notoriously underpowered CPUs and no hardware acceleration for PPPoE or NAT. Paired with a PPPoE-based ISP connection, the performance is even more dismal. So why not hand the PPPoE dialing off to a dedicated device and let the UniFi gateway focus on routing, IDS/IPS, and NAT while breaking past 2000 Mbps of throughput?"
-date: "2026-04-13"
+description: "UniFi gateways (UDM Pro/SE/Pro Max/Beast/EFG) ship with notoriously underpowered CPUs and has no hardware acceleration for PPPoE. Paired with a PPPoE-based ISP connection, the performance is dismal. So why not hand the PPPoE dialing off to a dedicated device and let the UniFi gateway focus on routing, IDS/IPS, and NAT while breaking past 5000 Mbps of throughput?"
+date: "2026-08-02"
 category: "Networking"
 author:
   - sukka
-cover: "/blog/cover/arcbox-desktop-launch.png"
+cover: "/blog/cover/unifi-pppoe-half-bridge-acceleration.png"
 published: true
-featured: true
 keywords: ["UniFi", "PPPoE", "OpenWrt", "half-bridge", "acceleration", "networking"]
 ---
 
 ## Prologue
 
-We are [ArcBox Labs](https://arcbox.dev). Our office has a 4 Gbps PPPoE connection behind a UniFi gateway, and we could never get anywhere close to that speed. So we built a custom, open-source solution.
+At [ArcBox Labs](https://arcbox.dev), our office has a 4 Gbps PPPoE connection behind a UniFi gateway, and we could never get anywhere close to that speed, and our UDM Pro Max is beginning to struggle and even affecting operation stability:
 
-The overwhelming majority of UniFi gateways, from the UDM Pro/SE/Pro Max and UXG Pro to the EFG, ship with CPUs that support neither PPPoE nor NAT hardware acceleration. As a result, whenever you put a PPPoE-based ISP connection behind one of these gateways, throughput takes a serious hit and never comes close to the rated line speed. This has been well-documented in the UniFi community:
+![Our UDM Pro Max hitting CPU bottleneck](/blog/images/unifi-pppoe-half-bridge-acceleration/udm-pro-max-cpu.png)
 
+This matches the behavior observed by many other UniFi users:
+
+- https://community.ui.com/questions/a6f24f8c-6b83-4617-ad33-b5af0b32d8dc?replyId=2808b654-e4be-4ac2-b199-09c1b1a0fbac
 - https://community.ui.com/questions/What-is-the-max-performance-for-PPPOE-on-UDM-Pro-With-Solution/67057f47-509e-4f8b-8edd-5dc29f380759
 - https://www.reddit.com/r/Ubiquiti/comments/1dto912/story_time_investigating_slow_pppoe_speeds_on/
 - https://forum.level1techs.com/t/unifi-and-bad-pppoe-speeds-any-solutions/224548
@@ -24,12 +26,14 @@ The overwhelming majority of UniFi gateways, from the UDM Pro/SE/Pro Max and UXG
 - https://www.reddit.com/r/Ubiquiti/comments/1buqkx1/max_speed_pppoe_on_udm_pro_with_10gbit_wan/
 - https://www.reddit.com/r/Ubiquiti/comments/1hctxjk/efg_with_pppoe_uk_testing/
 
+The overwhelming majority of UniFi gateways, from the UDM Pro/SE/Pro Max and UXG Pro to the EFG, ship with CPUs that support neither PPPoE nor NAT hardware acceleration. As a result, whenever you put a PPPoE-based ISP connection behind one of these gateways, throughput takes a serious hit and never comes close to the rated line speed. This has been well-documented in the UniFi community:
+
 In short, UniFi gateway PPPoE performance is pretty grim:
 
-- **UDM Pro/SE**: Speed test results typically land between 700 Mbps and 1200 Mbps on PPPoE.
-- **UDM Pro Max**: Typically between 1000 Mbps and 1500 Mbps on PPPoE.
-- **EFG**: Typically between 1400 Mbps and 1800 Mbps on PPPoE.
-- **UCG Fiber**: Thanks to the MediaTek Filogic 880 SoC, which does include PPPoE hardware acceleration, speed tests can exceed 7000 Mbps on PPPoE.
+- **UDM Pro/SE**: Speed test results typically land between 1200 Mbps and 1500 Mbps on PPPoE.
+- **UDM Pro Max**: Typically between 1400 Mbps and 1800 Mbps on PPPoE.
+- **EFG**: Typically between 1400 Mbps and 2400 Mbps on PPPoE.
+- **UCG Fiber**: Thanks to the MediaTek Filogic 880 SoC, which does include PPPoE hardware acceleration, speed tests can exceed 5000 Mbps on PPPoE.
 
 ## PPPoE
 
@@ -71,7 +75,7 @@ The core of [`arcboxlabs/pppoe-half-bridge`](https://github.com/arcboxlabs/pppoe
 6. Restarts the physical interface on OpenWrt (`ifdown && ifup`) to trigger a link-status change, which prompts the downstream UniFi gateway to request a fresh public IPv4 from OpenWrt's DHCP server.
 7. For most routers, the above steps are enough to get a public IP via DHCP and be online. For UniFi gateways, however, thanks to their buggy ARP implementation, we additionally need to add static ARP entries on OpenWrt (`ip neigh replace`) to ensure reliable communication between OpenWrt and the UniFi gateway.
 
-You can find the full configuration and usage example from the `EXAMPLE.md` file in the [`arcboxlabs/pppoe-half-bridge` GitHub repo](https://github.com/arcboxlabs/pppoe-half-bridge) as well, which uses a Banana Pi BPI-R4 Pro running OpenWrt as the PPPoE offload device, but you can use any device that supports OpenWrt for this purpose. In our tests, we were able to break past 4000 Mbps of PPPoE throughput.
+You can find the full configuration and usage example from the `EXAMPLE.md` file in the [`arcboxlabs/pppoe-half-bridge` GitHub repo](https://github.com/arcboxlabs/pppoe-half-bridge) as well, which uses a Banana Pi BPI-R4 Pro running OpenWrt as the PPPoE offload device, but you can use any device that supports OpenWrt for this purpose. In our tests, we were able to break past 5000 Mbps of PPPoE throughput.
 
 ----
 
