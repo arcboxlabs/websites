@@ -60,6 +60,7 @@ const asciiArt = String.raw`
  /_/  |_|/_/    \___//_____/ \____//_/|_|   /_____/\___,_\\.___//____/
 `;
 
+// eslint-disable-next-line no-console -- intentional browser console banner
 console.log(
   asciiArt
   + '\n%c We build high-performance container and VM runtime.\n'

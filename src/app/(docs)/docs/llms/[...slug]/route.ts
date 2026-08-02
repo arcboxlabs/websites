@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-static';
 
+const rExtname = /\.[^.]+$/;
+
 export async function GET(_req: Request, { params }: RouteContext<'/docs/llms/[...slug]'>) {
   const { slug } = await params;
-  const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(/\.[^.]+$/, '')];
+  const pageSlugs = [...slug.slice(0, -1), slug.at(-1)!.replace(rExtname, '')];
 
   const page = source.getPage(pageSlugs);
   if (!page) {

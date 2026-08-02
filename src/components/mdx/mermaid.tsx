@@ -2,12 +2,14 @@ import { CodeBlock, Pre } from 'fumadocs-ui/components/codeblock';
 import { renderMermaidSVG } from 'beautiful-mermaid';
 import { useMemo } from 'react';
 
+const rBeautifulMermaidEscape = /;\s*/g;
+
 export function Mermaid({ chart }: { chart: string }) {
   const svg = useMemo(() => {
     try {
       // beautiful-mermaid doesn't handle semicolons properly,
       // strip them since they're optional in mermaid syntax
-      const sanitized = chart.replaceAll(/;\s*/g, '\n');
+      const sanitized = chart.replaceAll(rBeautifulMermaidEscape, '\n');
       return renderMermaidSVG(
         sanitized,
         {
