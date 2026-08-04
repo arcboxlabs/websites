@@ -11,10 +11,13 @@ export type BlogThumbnailProps = Omit<React.ComponentProps<typeof Image>, 'src'>
 };
 
 export default async function BlogThumbnail({ src, alt, placeholder, ...restProps }: BlogThumbnailProps) {
-  if (hasProtocol(src)) {
+  // Only images under public/blog/cover can be statically imported (and blurred);
+  // anything else (remote URLs, generated /og/blog images) is passed through as-is.
+  if (hasProtocol(src) || !src.startsWith('/blog/cover/')) {
     if (placeholder === 'blur') {
       // eslint-disable-next-line @eslint-react/purity -- We are doing static export, and this warning is emitted during build time
-      process.emitWarning(`[BlogThumbnail] blur placeholder is not supported for remote images, ignoring: ${src}`);
+      process.emitWarning(`[BlogThumbnail] blur placeholder is only supported for images under public/blog/cover, ignoring: ${src}`);
+      placeholder = undefined;
     }
 
     return <Image src={src} alt={alt} placeholder={placeholder} {...restProps} />;

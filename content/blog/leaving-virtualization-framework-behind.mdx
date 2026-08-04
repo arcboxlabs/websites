@@ -1,0 +1,134 @@
+---
+title: "Leaving Virtualization.framework behind: building our own VMM on Apple Silicon"
+description: "Why ArcBox moved off Apple's Virtualization.framework and onto its own VMM on Hypervisor.framework: the control it bought us, what we had to rebuild, and the numbers we hit along the way."
+date: "2026-07-10"
+category: "Engineering"
+author: ["peron", "aprilnea"]
+published: true
+keywords: ["hypervisor framework", "virtualization framework", "apple silicon", "virtio", "custom vmm", "container runtime", "arm64", "macos"]
+---
+
+We run Docker on Apple Silicon on our own virtual machine monitor, built directly on Apple's low-level Hypervisor.framework, not the higher-level Virtualization.framework that Docker Desktop, OrbStack, Podman Desktop, and Colima all sit on top of. It's how we get 22.7 Gbps single-flow networking, sub-50 ms Docker CLI latency, and a filesystem stack whose cache policy is ours to tune. Getting there took more work than that sentence suggests.
+
+## Two frameworks, one missing control plane
+
+Apple ships two APIs for running virtual machines on macOS. Virtualization.framework is the high-level one: describe a VM, hand it to Apple, and you get vCPU scheduling, virtio devices, a working console, VirtioFS, and Rosetta x86-64 translation for free. Hypervisor.framework is the lower-level one: raw vCPU execution and memory mapping. You get much less, and you're expected to bring the rest.
+
+For most container runtimes, the higher level is the right choice. Rebuilding Apple's pieces only makes sense once the defaults block something important.
+
+For us, three did. Virtualization.framework's VirtioFS is a black box with no cache policy, no DAX, no tunable timeouts, and we'd already built a FUSE server with all three controls that the framework wouldn't let us plug in. Its virtio-net doesn't expose TCP Segmentation Offload, the single biggest lever on modern network throughput; our target is 50 Gbps and the framework caps out around 10. It also exposes no control over interrupt coalescing, which becomes the ceiling on multi-flow performance the moment you try to push it.
+
+We couldn't fix any of that inside Virtualization.framework. So we moved down.
+
+## Why not libkrun
+
+We also looked at [libkrun](https://github.com/containers/libkrun), the mature open-source VMM Red Hat uses for Podman Machine. libkrun handles the whole "boot a Linux guest on Hypervisor.framework" problem cleanly.
+
+We didn't use it, for the same reason we left Virtualization.framework: the parts we most wanted to own live inside the piece libkrun would replace. Its network path is a socket-forwarding model (TSI, in the same family as passt and gvproxy) — simpler than a real virtio-net stack, and unable to touch the zero-copy datapath we already had measured at 22.7 Gbps. Adopting libkrun would have meant giving up the thing we moved down for.
+
+libkrun stays useful as a reference. When a device won't come up, we still cross-check our code against theirs.
+
+## What Apple stops doing for you
+
+The high-level framework hides a lot. On Hypervisor.framework you're now on the hook for:
+
+- The **kernel boot handoff** — loading the image at the right guest physical address, setting the boot registers, and jumping in with the device tree in `X0`.
+- The **interrupt controller and PSCI** — the ARM firmware protocol Linux uses to bring vCPUs online and offline, reboot, and shut down. You need all of it, because getting three of the four right and one wrong looks like "the VM reboots for no reason."
+- The **virtio-mmio transport** — feature negotiation, queue notify decode, level-triggered interrupt delivery through the GIC — and every virtio device backend wired on top.
+- The **boring platform devices** — a serial UART for early boot output, and an RTC (without which the guest boots to 2020-01-01 and every TLS handshake in it fails).
+
+That's the unglamorous middle of every "let's write our own VMM" story, and it's most of the code.
+
+## The cost we knew we'd pay
+
+The known cost was Rosetta. Apple's Linux Rosetta is exposed only through Virtualization.framework, and Apple doesn't let a third-party VMM set the CPU flags it depends on. Leaving Virtualization.framework meant losing Rosetta, and running `linux/amd64` containers now needs a different translator. That's a separate story with its own answer. This post is about the VMM.
+
+## First boot in a week, then the bill came due
+
+The initial port went fast. We split the work into four pieces on April 6 — the FFI wrapper, the boot path, the device integration, and the backend selector — and seven days later all four were shipped. Linux booted; our existing virtio backends talked to the guest over virtio-mmio; the runtime knew how to choose between HV and VZ per VM.
+
+Three days into that sprint, we ran a three-way independent review against the branch: 70 files, roughly 14,000 lines of new code. Around thirty findings came back. Most fell into the same bucket: something Virtualization.framework had been quietly doing, and we hadn't noticed we needed to do it ourselves.
+
+Two examples. **A u16 wrap in the RX ring**: `poll_net_rx` compared the avail and used indices with `>=` instead of `==`. VirtIO ring indices are 16-bit and wrap freely; the spec defines the ring as empty only when the two are strictly equal. After 65,535 injected frames, avail wrapped to zero, the loose comparison passed, the loop exited, and RX stalled permanently. **A use-after-free on shutdown**: we joined vCPU threads before dropping guest memory, but not the block-IO workers, which were still doing `pread`/`pwrite` into memory that had just been freed. Rust doesn't save you from that if the workers hold raw pointers, and ours did.
+
+Neither is a "bad code" moment. They're the kind of bug the framework used to absorb before our code ever saw it. About half of the review's thirty findings closed within days; the deeper ones, like interrupt delivery, ring notification barriers, and idle scheduling, took months and are still going.
+
+## The vsock stall
+
+The rest of the work is easiest to explain through one bug. Once the VMM was booting and serving Docker, we started noticing that `docker` commands hung a second or two before doing anything. Every command.
+
+The first measurements looked like this:
+
+```
+$ curl --unix-socket ~/.arcbox/run/docker.sock http://localhost/_ping
+# 250–760 ms per request
+
+$ docker image ls
+# 1.62 s
+```
+
+Native dockerd answers `/_ping` in microseconds. And the stall got worse the longer the VM had been idle: 340 ms back-to-back, 590 ms after eight seconds of silence.
+
+The daemon log told us the rest. Every vsock connection showed a 90–150 ms gap between the host enqueueing an OP_REQUEST and the guest producing an OP_RESPONSE. Our Docker Engine API compatibility layer proxies over vsock, and each `docker` request pays three sequential vsock connects. Three legs × ~100 ms × two requests ≈ your one-second stall.
+
+Host-to-guest vsock delivery was poll-driven. The guest's vCPU only noticed a pending message when it happened to exit the hypervisor for some other reason, and an idle guest sits inside `hv_vcpu_run()` between virtual timer ticks, roughly 100 ms apart. So every host-side push waited for the next natural VM exit before the guest saw it. On the framework path, Apple services vsock inside the kernel, where guest execution is already visible to it. On our backend, we had to notice the missing wakeup and build it.
+
+The fix mirrored how our network RX worker already worked: a doorbell fired by the producer paths, a dedicated `vsock-io` worker thread waiting on it via `kevent`, and a targeted vCPU exit as soon as data was ready. Guest-to-host vsock (already fast) was untouched.
+
+| Operation | Before (poll-driven) | After (doorbell worker) |
+| --- | --- | --- |
+| `/_ping`, rapid | 250–760 ms | 1.8–19 ms |
+| `/_ping`, after 8s idle | ~590 ms | 5–11 ms |
+| `docker image ls` after idle | 1.62 s | 38 ms |
+| `docker version` | ~1 s | 47 ms |
+
+`docker pull alpine` runs in 7.1 s, network-bound, no visible stall; `docker run --rm alpine echo` runs end-to-end in 620 ms.
+
+Most of the work has felt like that. Something the framework handled for us turns out to be missing, and we rebuild it against our own architecture. Interrupt coalescing. Level vs edge SPI delivery. RNG entropy in the device tree so the guest's CRNG doesn't block on boot. Each one starts as a single bug, and each one has a stretch, before we understand it, where the guest just seems slow.
+
+Not every diagnosis converged cleanly. On one flaky cold-boot hang we were sure the cause was a virtio-net notification barrier race — the theory was clean, the unit tests passed, we shipped the fix, and validation on a signed dev build showed **zero of six boots** reached DHCP. The actual root cause turned out to be elsewhere, in the MMIO register file sizing. Every project of this size has a few of those.
+
+## Does it hold up?
+
+We compared virtio-net throughput against Virtualization.framework's VZNAT baseline on the same host, and looked at Docker CLI latency end-to-end.[^bench]
+
+| Metric | Virtualization.framework | Our HV backend |
+| --- | --- | --- |
+| virtio-net single-flow ↑ | ~10 Gbps | **22.7 Gbps** |
+| virtio-net multi-flow ↑ | ~10 Gbps | ~10 Gbps |
+| Docker CLI latency, after idle ↓ | (not measured) | **5–11 ms** |
+| VirtioFS cache policy | not exposed | **configurable end-to-end** |
+
+Single-flow, we're already past twice VZ's throughput, thanks to the part of the work we're proudest of: a zero-copy RX path that scatters host-side bytes directly into guest descriptors. Multi-flow, we're at parity but no better. The ceiling is the interrupt path, which still does more work per completion than it should.
+
+## What we left on the table
+
+**Interrupt injection is still global.** Every device completion wakes every vCPU, even though the guest routes them all to CPU0. Making delivery per-vCPU is the biggest single lever remaining on multi-flow throughput.
+
+**The idle model still polls.** WFI parks the vCPU for 1 ms and re-enters, so an idle 4-vCPU VM does thousands of hypervisor round-trips per second doing nothing. The `<0.05%` idle-CPU target we set for ourselves is arithmetically incompatible with this. The fix is tickless idle, and we haven't finished it yet.
+
+**Virtualization.framework is still the default.** Users opt in with `abctl system backend hv`, and VZ remains the default while we close the last correctness gaps. The remaining work is happening in the open at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox).
+
+Rosetta didn't come with us, either. That's the next post.
+
+## Try it
+
+Docker on Apple Silicon, on our VMM:
+
+```bash
+# One-time setup
+abctl daemon start
+abctl docker enable
+
+# Opt into the HV backend
+abctl system backend hv
+
+docker run alpine uname -m
+# aarch64
+```
+
+The runtime is open source at [github.com/arcboxlabs/arcbox](https://github.com/arcboxlabs/arcbox). The HV backend lives under `virt/arcbox-vmm/src/vmm/darwin_hv/`, with the FFI wrappers in `virt/arcbox-hv/`.
+
+We left Virtualization.framework behind and got back everything we came for. The gaps that remain, we know how to close.
+
+[^bench]: Apple M5 Max (18 cores), 128 GB, macOS 26.4. Guest given 18 vCPUs / 16 GB, Linux kernel 6.12. Network numbers from `iperf3` inside a container against a host-side server, single TCP stream, host→guest direction. Docker CLI numbers from `curl --unix-socket` against the daemon's Docker Engine API socket, against a warmed-up runtime. Requires macOS 15+ on the host; the HV backend uses `hv_gic_*` (GICv3), which is macOS Sequoia and up.

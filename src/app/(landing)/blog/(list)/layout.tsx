@@ -1,4 +1,4 @@
-import { BlogSource } from '@/blog/cms';
+import { BlogSource, getPostImage } from '@/blog/cms';
 import { ArrowUpRight, CalendarIcon, ClockIcon } from 'lucide-react';
 import BlogThumbnail from '../components/blog-thumbnail';
 import Link from 'next/link';
@@ -20,6 +20,8 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
 
   const posts = BlogSource.getPosts();
   const featured = posts[0];
+  // Posts without a bespoke cover fall back to their generated OG card.
+  const featuredCover = featured.data.cover ?? getPostImage(featured).url;
 
   return (
     <div className="px-4 pt-28 md:pt-32 lg:pt-36">
@@ -58,10 +60,10 @@ export default function BlogListLayout({ children }: React.PropsWithChildren) {
             {/* Thumbnail */}
             <div className="relative w-full aspect-9/5 overflow-hidden">
               <BlogThumbnail
-                src={featured.data.cover!}
+                src={featuredCover}
                 alt={featured.data.title}
                 fill
-                placeholder="blur"
+                placeholder={featured.data.cover ? 'blur' : 'empty'}
                 preload
                 loading="eager"
                 className="h-full w-full object-cover"
