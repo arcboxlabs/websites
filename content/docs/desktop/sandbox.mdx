@@ -64,18 +64,19 @@ The Desktop app's **Snapshots** tab does the same thing.
 
 ## Performance
 
-Restoring from a snapshot is the fast path — measured on an M5 Max (macOS 26, 1 vCPU / 512 MiB sandboxes), from the API call to the first command's output:
+Snapshots are the fast path, and plain `create` uses them automatically: the first create of a given template shape checkpoints itself after boot, and every later create with the same shape restores that snapshot instead of booting. Measured on an M5 Max (macOS 26, 1 vCPU / 512 MiB sandboxes), from the API call to the first command's output:
 
 | Path | Time to first output |
 |------|----------------------|
-| Restore from a snapshot (warm) | **~145 ms** |
-| Restore from a snapshot (first restore) | ~430 ms |
-| Cold create (fresh kernel boot) | ~1.2 s |
-| Command in an already-running sandbox | 13–16 ms |
+| Create (warm — any create after the first of a shape) | **~180 ms** |
+| Restore from a snapshot (warm) | **~125 ms** |
+| Restore from a snapshot (first restore) | ~400 ms |
+| Cold create (fresh kernel boot) | ~640 ms |
+| Command in an already-running sandbox | 12–16 ms |
 
-The first restore of a snapshot also pre-warms a spare slot in the background — a jailed Firecracker process with the snapshot's memory image already staged — so every later restore only loads and resumes. Checkpointing itself takes well under a second.
+A warm create reaches READY in ~25 ms; the numbers above include running the first command. The first restore of a snapshot also pre-warms a spare slot in the background — a jailed Firecracker process with the snapshot's memory image already staged — so every later restore only loads and resumes. Checkpointing itself takes well under a second.
 
-If you create many sandboxes from the same state, checkpoint once and restore copies instead of cold-creating each one.
+Explicit checkpoint/restore still pays off when you want to snapshot *your* state (installed packages, warmed caches) rather than the blank template.
 
 ## Lifecycle
 

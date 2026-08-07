@@ -102,8 +102,11 @@ Sandboxes are Firecracker microVMs the agent launches inside the System VM, and 
 - **eBPF NAT.** The per-TAP translation is a TCX eBPF program doing stateless 1:1 address rewriting keyed on the interface index — no conntrack, no per-sandbox rule chains, one hash-map write per sandbox activation. An iptables implementation remains as a configuration fallback.
 - **Pre-warmed restore slots.** After a snapshot's first restore, the agent keeps a spare jailed Firecracker process with the snapshot's kernel, memory image, and copy-on-write rootfs already staged. A later restore claims the slot and goes straight to load-and-resume.
 - **Event-driven readiness.** The in-microVM agent dials out over vsock the moment it is accepting executions; the sandbox's READY event is that dial-out, not a poll or a timer.
+- **Warm creates.** The first create of a template shape checkpoints itself once the guest is ready; later creates with the same shape restore that snapshot transparently instead of booting a kernel. The cache key fingerprints the kernel and rootfs content, so a bundle update invalidates it.
+- **Self-syncing guest clock.** The in-microVM agent reads the hypervisor clock via `ptp_kvm` on every accepted connection, so a restored guest fixes its wall time without any host RPC on the restore path.
+- **A dedicated microVM kernel.** The sandbox kernel is a minimal flavor built for this path — virtio-mmio only, no PCI/ACPI/EFI/netfilter, 8.9 MB — reaching init in roughly 200 ms under nested virtualization.
 
-Together these put a warm restore at ~145 ms to the first command's output — see [Benchmarks](./benchmarks#sandbox-start).
+Together these put a warm restore at ~125 ms — and a plain warm `create` at ~180 ms — to the first command's output — see [Benchmarks](./benchmarks#sandbox-start).
 
 ## File Locations
 

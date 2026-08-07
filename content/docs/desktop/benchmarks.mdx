@@ -32,19 +32,24 @@ Sandboxes are Firecracker microVMs with their own kernels, so "start" has two ve
 
 | Metric | p50 | p90 |
 |--------|-----|-----|
-| Restore RPC (warm slot) | **81 ms** | 86 ms |
-| Restore → first command output | **144 ms** | 153 ms |
-| Cold create → first command output | 1.19 s | 1.20 s |
-| Command in a running sandbox | 14 ms | 16 ms |
+| Create → READY (warm template) | **24 ms** | — |
+| Create → first command output (warm template) | **180 ms** | 386 ms |
+| Restore RPC (warm slot) | **22 ms** | 28 ms |
+| Restore → first command output | **126 ms** | 137 ms |
+| Cold create → first command output | 640 ms | 655 ms |
+| Command in a running sandbox | 12 ms | 16 ms |
 
-For reference, hosted sandbox services publish cold-start figures around 150 ms for the equivalent resume-from-snapshot operation. ArcBox does it locally — under nested virtualization — with the restore call completing in 81 ms.
+For reference, hosted sandbox services publish cold-start figures around 150 ms for the equivalent resume-from-snapshot operation. ArcBox does it locally — under nested virtualization — with the restore call completing in 22 ms, and plain `create` gets the same treatment: after the first create of a template shape, later creates restore its snapshot transparently.
 
 ### Where the Speed Comes From
 
 1. **Snapshot resume, not boot** — restore maps the memory image lazily; the `LoadSnapshot` call itself takes ~3 ms
-2. **Pre-warmed slots** — after a snapshot's first restore, a jailed Firecracker process with the snapshot staged waits in a pool; the next restore claims it and goes straight to resume
-3. **Network-invariant snapshots** — every sandbox boots the identical internal network identity, and each TAP's external identity is applied host-side by an eBPF program, so a restored clone needs zero in-guest reconfiguration
-4. **Event-driven readiness** — READY fires on an actual vsock dial-out from the in-VM agent the moment it accepts executions, not on a poll
+2. **Warm creates** — the first create of a template shape checkpoints itself after boot; every later create with the same shape restores that snapshot instead of booting a kernel
+3. **Pre-warmed slots** — after a snapshot's first restore, a jailed Firecracker process with the snapshot staged waits in a pool; the next restore claims it and goes straight to resume
+4. **Network-invariant snapshots** — every sandbox boots the identical internal network identity, and each TAP's external identity is applied host-side by an eBPF program, so a restored clone needs zero in-guest reconfiguration
+5. **Event-driven readiness** — READY fires on an actual vsock dial-out from the in-VM agent the moment it accepts executions, not on a poll
+6. **Self-syncing guest clock** — the agent reads the hypervisor's clock through `ptp_kvm` on every accepted connection, so a restored guest needs no host RPC to fix its wall time
+7. **A dedicated microVM kernel** — virtio-mmio only, no PCI/ACPI/EFI/netfilter, 8.9 MB: kernel entry to init in ~200 ms under nested virtualization, half the cold-create time of the stock Firecracker CI kernel
 
 Sandbox numbers come from the `sandbox_coldstart` end-to-end probe in the arcbox repository (`tests/e2e/tests/sandbox_coldstart.rs`); readiness is taken from the gRPC events stream subscribed before the first create.
 
