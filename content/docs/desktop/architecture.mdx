@@ -94,6 +94,17 @@ The macOS networking datapath runs in userspace: DHCP, DNS forwarding, TCP via `
 
 Docker data lives on a Btrfs image (`~/.arcbox/data/docker.img`) paired with a small ext4 metadata image. Your home directory is shared into the guest over VirtioFS at the same path, so `/Users/you` inside the guest is `/Users/you` on the host.
 
+## Sandbox Datapath
+
+Sandboxes are Firecracker microVMs the agent launches inside the System VM, and their start path is built around snapshot resume:
+
+- **Network-invariant snapshots.** Every sandbox guest boots the identical link-local network identity; the pool IP the rest of the system sees is applied per TAP inside the System VM. A snapshot therefore carries no network identity, and a restored clone needs no in-guest reconfiguration at all.
+- **eBPF NAT.** The per-TAP translation is a TCX eBPF program doing stateless 1:1 address rewriting keyed on the interface index — no conntrack, no per-sandbox rule chains, one hash-map write per sandbox activation. An iptables implementation remains as a configuration fallback.
+- **Pre-warmed restore slots.** After a snapshot's first restore, the agent keeps a spare jailed Firecracker process with the snapshot's kernel, memory image, and copy-on-write rootfs already staged. A later restore claims the slot and goes straight to load-and-resume.
+- **Event-driven readiness.** The in-microVM agent dials out over vsock the moment it is accepting executions; the sandbox's READY event is that dial-out, not a poll or a timer.
+
+Together these put a warm restore at ~145 ms to the first command's output — see [Benchmarks](./benchmarks#sandbox-start).
+
 ## File Locations
 
 <Files>

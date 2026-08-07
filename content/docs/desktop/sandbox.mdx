@@ -62,6 +62,21 @@ abctl sandbox delete-snapshot <snapshot-id>
 
 The Desktop app's **Snapshots** tab does the same thing.
 
+## Performance
+
+Restoring from a snapshot is the fast path — measured on an M5 Max (macOS 26, 1 vCPU / 512 MiB sandboxes), from the API call to the first command's output:
+
+| Path | Time to first output |
+|------|----------------------|
+| Restore from a snapshot (warm) | **~145 ms** |
+| Restore from a snapshot (first restore) | ~430 ms |
+| Cold create (fresh kernel boot) | ~1.2 s |
+| Command in an already-running sandbox | 13–16 ms |
+
+The first restore of a snapshot also pre-warms a spare slot in the background — a jailed Firecracker process with the snapshot's memory image already staged — so every later restore only loads and resumes. Checkpointing itself takes well under a second.
+
+If you create many sandboxes from the same state, checkpoint once and restore copies instead of cold-creating each one.
+
 ## Lifecycle
 
 ```mermaid

@@ -4,28 +4,6 @@ description: Performance data for ArcBox on Apple Silicon.
 icon: Gauge
 ---
 
-<Mermaid
-  chart="
-graph TD;
-subgraph AA [Consumers]
-A[Mobile app];
-B[Web app];
-C[Node.js client];
-end
-subgraph BB [Services]
-E[REST API];
-F[GraphQL API];
-G[SOAP API];
-end
-Z[GraphQL API];
-A --> Z;
-B --> Z;
-C --> Z;
-Z --> E;
-Z --> F;
-Z --> G;"
-/>
-
 ## Test Environment
 
 All benchmarks run on Apple Silicon hardware (M3 Max, 36 GB RAM, macOS 15). Numbers represent the median of multiple runs with warm caches unless otherwise noted.
@@ -47,6 +25,28 @@ All benchmarks run on Apple Silicon hardware (M3 Max, 36 GB RAM, macOS 15). Numb
 2. **Optimized kernel** — stripped-down guest kernel with minimal module loading
 3. **Smart caching** — pre-warmed filesystem snapshots eliminate redundant work
 4. **Apple Silicon native** — no translation layer, direct hardware access
+
+## Sandbox Start
+
+Sandboxes are Firecracker microVMs with their own kernels, so "start" has two very different paths: a cold create boots a fresh kernel, while a snapshot restore resumes an already-booted memory image. Measured on an M5 Max (macOS 26), 1 vCPU / 512 MiB sandboxes, serial iterations against a warm daemon, timed from the API call:
+
+| Metric | p50 | p90 |
+|--------|-----|-----|
+| Restore RPC (warm slot) | **81 ms** | 86 ms |
+| Restore → first command output | **144 ms** | 153 ms |
+| Cold create → first command output | 1.19 s | 1.20 s |
+| Command in a running sandbox | 14 ms | 16 ms |
+
+For reference, hosted sandbox services publish cold-start figures around 150 ms for the equivalent resume-from-snapshot operation. ArcBox does it locally — under nested virtualization — with the restore call completing in 81 ms.
+
+### Where the Speed Comes From
+
+1. **Snapshot resume, not boot** — restore maps the memory image lazily; the `LoadSnapshot` call itself takes ~3 ms
+2. **Pre-warmed slots** — after a snapshot's first restore, a jailed Firecracker process with the snapshot staged waits in a pool; the next restore claims it and goes straight to resume
+3. **Network-invariant snapshots** — every sandbox boots the identical internal network identity, and each TAP's external identity is applied host-side by an eBPF program, so a restored clone needs zero in-guest reconfiguration
+4. **Event-driven readiness** — READY fires on an actual vsock dial-out from the in-VM agent the moment it accepts executions, not on a poll
+
+Sandbox numbers come from the `sandbox_coldstart` end-to-end probe in the arcbox repository (`tests/e2e/tests/sandbox_coldstart.rs`); readiness is taken from the gRPC events stream subscribed before the first create.
 
 ## File I/O
 
